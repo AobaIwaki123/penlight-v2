@@ -1,0 +1,691 @@
+openapi: 3.1.0
+info:
+  title: Penlight Quiz v2 API
+  version: 1.0.0
+  description: |
+    坂道ペンライトクイズ完全刷新 (Penlight Quiz v2) の公式 API 仕様書。
+    全エンティティでサロゲートキー (TypeID: grp_, col_, mem_, quiz_, usr_, ans_) を採用し、
+    Local-First / PWA オフライン動作および会場でのリアルタイム同期に対応します。
+servers:
+  - url: https://penlight.aooba.net
+    description: Production Environment (Cloudflare Ingress + Homelab k8s)
+  - url: http://localhost:8080
+    description: Local Development Server
+
+paths:
+  /api/v1/sync/bootstrap:
+    get:
+      summary: オフライン用マスタ一括取得 (Bootstrap)
+      description: |
+        PWA クライアント起動時に、オフラインクイズ実行に必要な全グループ・カラー・メンバー情報を一括取得します。
+        ETag / If-None-Match に対応し、更新がない場合は 304 Not Modified を返します。
+      responses:
+        "200":
+          description: 最新マスタデータ
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: マスタデータのハッシュ値
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BootstrapData"
+        "304":
+          description: 更新なし (クライアントキャッシュ有効)
+
+  /api/v1/groups:
+    get:
+      summary: グループ一覧取得
+      description: 有効なアイドルグループ一覧を表示順 (display_order) で取得します。
+      responses:
+        "200":
+          description: グループ一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Group"
+
+  /api/v1/groups/{slug}/members:
+    get:
+      summary: 特定グループのメンバー一覧取得
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          example: hinatazaka46
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/MemberStatus"
+        - name: generation
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: メンバー一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+
+  /api/v1/colors:
+    get:
+      summary: ペンライトカラーマスタ一覧取得
+      parameters:
+        - name: group_id
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/ID"
+          description: 指定時は特定グループ所属色＋共通色のみ返却
+      responses:
+        "200":
+          description: カラー一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Color"
+
+  /api/v1/quiz/generate:
+    get:
+      summary: クイズ設問動的生成
+      description: |
+        サーバー側で出題ロジックを実行し、指定条件に応じた 4 択クイズ設問を動的生成します。
+        (オフライン時はクライアント側の純粋関数が同等の設問を生成します)
+      parameters:
+        - name: group_id
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/ID"
+        - name: generation
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: strategy
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [random, similar_color, spaced_repetition]
+            default: similar_color
+        - name: count
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 5
+      responses:
+        "200":
+          description: 生成されたクイズ設問一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [questions]
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/QuizQuestion"
+
+  /api/v1/quiz/answers:
+    post:
+      summary: クイズ回答送信・即時採点
+      description: 単一設問への回答を送信し、即時採点結果と正答メタデータを返却します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitAnswerRequest"
+      responses:
+        "200":
+          description: 採点結果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmitAnswerResponse"
+
+  /api/v1/quiz/answers/batch:
+    post:
+      summary: オフライン回答ログ一括同期
+      description: 圏外・オフライン時にクライアント IndexedDB にキューイングされた回答を一括登録します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchAnswerRequest"
+      responses:
+        "200":
+          description: 同期結果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BatchAnswerResponse"
+
+  /api/v1/user/me:
+    get:
+      summary: ログインユーザー情報取得
+      responses:
+        "200":
+          description: ユーザープロファイル
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: 未ログイン
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/user/statistics:
+    get:
+      summary: ユーザー回答統計・分析データ取得
+      responses:
+        "200":
+          description: 正答率および統計情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserStatisticsResponse"
+
+  /api/v1/auth/google/login:
+    get:
+      summary: Google OIDC 認可リダイレクト開始
+      responses:
+        "302":
+          description: Google ログイン画面へのリダイレクト
+
+  /api/v1/auth/google/callback:
+    post:
+      summary: Google OIDC コールバック処理
+      description: 認可コードを検証し、HttpOnly セッション Cookie を発行します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, state]
+              properties:
+                code:
+                  type: string
+                state:
+                  type: string
+      responses:
+        "200":
+          description: ログイン成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: HttpOnly セッション Cookie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /api/v1/auth/logout:
+    post:
+      summary: ログアウト (セッション破棄)
+      responses:
+        "200":
+          description: ログアウト完了
+
+  /api/v1/admin/groups:
+    post:
+      summary: 新グループ登録 (管理者)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGroupRequest"
+      responses:
+        "201":
+          description: グループ作成完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+
+  /api/v1/admin/members:
+    post:
+      summary: 新メンバー登録 (管理者)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMemberRequest"
+      responses:
+        "201":
+          description: メンバー登録完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+
+  /healthz:
+    get:
+      summary: ヘルスチェックプローブ
+      responses:
+        "200":
+          description: サーバー正常稼働
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ok
+
+components:
+  schemas:
+    ID:
+      type: string
+      pattern: "^(grp|col|mem|quiz|usr|ans)_[0-9a-f]{32}$"
+      description: RFC 9562 UUID v7 にエンティティ識別プレフィックスを付与したサロゲートキー (TypeID)
+      example: mem_019245a28c9d7a1e8f2b3c4d5e6f7a8b
+
+    MemberStatus:
+      type: string
+      enum: [active, graduated, hiatus]
+      description: メンバー活動ステータス (active:現役, graduated:卒業, hiatus:休業)
+      example: active
+
+    PenlightPair:
+      type: object
+      required: [left_color_id, right_color_id, ordered]
+      properties:
+        left_color_id:
+          $ref: "#/components/schemas/ID"
+        right_color_id:
+          $ref: "#/components/schemas/ID"
+        ordered:
+          type: boolean
+          description: 左右の持ち順序が固定されているか (true:左右区別あり, false:順不同)
+          example: false
+
+    Group:
+      type: object
+      required: [id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        name:
+          type: string
+          example: 日向坂46
+        short_name:
+          type: string
+          example: 日向坂
+        slug:
+          type: string
+          example: hinatazaka46
+        theme_color_hex:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+          example: "#7CC7E8"
+        display_order:
+          type: integer
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Color:
+      type: object
+      required: [id, name, hex_code, display_order, created_at, updated_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        group_id:
+          $ref: "#/components/schemas/ID"
+        name:
+          type: string
+          example: スカイブルー
+        hex_code:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+          example: "#00BFFF"
+        display_order:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Member:
+      type: object
+      required: [id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, penlight, image_key, created_at, updated_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        group_id:
+          $ref: "#/components/schemas/ID"
+        family_name:
+          type: string
+          example: 加藤
+        given_name:
+          type: string
+          example: 史帆
+        family_name_kana:
+          type: string
+          example: かとう
+        given_name_kana:
+          type: string
+          example: しほ
+        generation:
+          type: integer
+          example: 1
+        status:
+          $ref: "#/components/schemas/MemberStatus"
+        penlight:
+          $ref: "#/components/schemas/PenlightPair"
+        image_key:
+          type: string
+          example: mem_019245a28c9d7a1e8f2b3c4d5e6f7a8b.webp
+        joined_at:
+          type: string
+          format: date-time
+        graduated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    QuizOption:
+      type: object
+      required: [member_id, member_name, generation, penlight, left_hex, right_hex, left_name, right_name, is_correct]
+      properties:
+        member_id:
+          $ref: "#/components/schemas/ID"
+        member_name:
+          type: string
+          example: 加藤 史帆
+        generation:
+          type: integer
+          example: 1
+        penlight:
+          $ref: "#/components/schemas/PenlightPair"
+        left_hex:
+          type: string
+          example: "#00BFFF"
+        right_hex:
+          type: string
+          example: "#0000FF"
+        left_name:
+          type: string
+          example: スカイブルー
+        right_name:
+          type: string
+          example: ブルー
+        is_correct:
+          type: boolean
+          example: true
+
+    QuizQuestion:
+      type: object
+      required: [id, target_member_id, target_member, options, correct_index, generated_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        target_member_id:
+          $ref: "#/components/schemas/ID"
+        target_member:
+          $ref: "#/components/schemas/Member"
+        options:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: "#/components/schemas/QuizOption"
+        correct_index:
+          type: integer
+          minimum: 0
+          maximum: 3
+          example: 0
+        generated_at:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      required: [id, display_name, avatar_url, created_at, last_login_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+        google_sub:
+          type: string
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+          example: 青葉太郎
+        avatar_url:
+          type: string
+          example: https://lh3.googleusercontent.com/a/...
+        created_at:
+          type: string
+          format: date-time
+        last_login_at:
+          type: string
+          format: date-time
+
+    BootstrapData:
+      type: object
+      required: [groups, colors, members, generated_at]
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/Group"
+        colors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Color"
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/Member"
+        generated_at:
+          type: string
+          format: date-time
+
+    SubmitAnswerRequest:
+      type: object
+      required: [quiz_question_id, target_member_id, selected_member_id, response_time_ms]
+      properties:
+        quiz_question_id:
+          $ref: "#/components/schemas/ID"
+        target_member_id:
+          $ref: "#/components/schemas/ID"
+        selected_member_id:
+          $ref: "#/components/schemas/ID"
+        response_time_ms:
+          type: integer
+          example: 1250
+
+    SubmitAnswerResponse:
+      type: object
+      required: [is_correct, correct_member_id, answer_log_id]
+      properties:
+        is_correct:
+          type: boolean
+          example: true
+        correct_member_id:
+          $ref: "#/components/schemas/ID"
+        answer_log_id:
+          $ref: "#/components/schemas/ID"
+
+    BatchAnswerItem:
+      type: object
+      required: [id, quiz_question_id, target_member_id, group_id, is_correct, response_time_ms, answered_at]
+      properties:
+        id:
+          $ref: "#/components/schemas/ID"
+          description: クライアントで先行発行された ans_<uuidv7> (冪等性キー)
+        quiz_question_id:
+          $ref: "#/components/schemas/ID"
+        target_member_id:
+          $ref: "#/components/schemas/ID"
+        group_id:
+          $ref: "#/components/schemas/ID"
+        is_correct:
+          type: boolean
+        response_time_ms:
+          type: integer
+        answered_at:
+          type: string
+          format: date-time
+
+    BatchAnswerRequest:
+      type: object
+      required: [answers]
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/BatchAnswerItem"
+
+    BatchAnswerResponse:
+      type: object
+      required: [synced_count, synced_ids]
+      properties:
+        synced_count:
+          type: integer
+          example: 5
+        synced_ids:
+          type: array
+          items:
+            $ref: "#/components/schemas/ID"
+
+    UserStatisticsResponse:
+      type: object
+      required: [total_answers, total_correct, accuracy_rate, average_response_time_ms]
+      properties:
+        total_answers:
+          type: integer
+          example: 120
+        total_correct:
+          type: integer
+          example: 102
+        accuracy_rate:
+          type: number
+          format: float
+          example: 0.85
+        average_response_time_ms:
+          type: integer
+          example: 1450
+
+    CreateGroupRequest:
+      type: object
+      required: [name, short_name, slug, theme_color_hex, display_order]
+      properties:
+        name:
+          type: string
+          example: 青葉坂46
+        short_name:
+          type: string
+          example: 青葉坂
+        slug:
+          type: string
+          example: aobazaka46
+        theme_color_hex:
+          type: string
+          example: "#2E8B57"
+        display_order:
+          type: integer
+          example: 10
+
+    CreateMemberRequest:
+      type: object
+      required: [group_id, family_name, given_name, family_name_kana, given_name_kana, generation, left_color_id, right_color_id]
+      properties:
+        group_id:
+          $ref: "#/components/schemas/ID"
+        family_name:
+          type: string
+          example: 青葉
+        given_name:
+          type: string
+          example: 太郎
+        family_name_kana:
+          type: string
+          example: あおば
+        given_name_kana:
+          type: string
+          example: たろう
+        generation:
+          type: integer
+          example: 1
+        left_color_id:
+          $ref: "#/components/schemas/ID"
+        right_color_id:
+          $ref: "#/components/schemas/ID"
+        ordered:
+          type: boolean
+          default: false
+
+    ErrorResponse:
+      type: object
+      required: [title, status, code, detail]
+      properties:
+        title:
+          type: string
+          example: Bad Request
+        status:
+          type: integer
+          example: 400
+        code:
+          type: string
+          enum: [INVALID_PARAMS, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, INSUFFICIENT_MEMBERS, INTERNAL_ERROR]
+          example: INVALID_PARAMS
+        detail:
+          type: string
+          example: Validation failed for request parameters
+        invalid_params:
+          type: array
+          items:
+            type: object
+            required: [field, message]
+            properties:
+              field:
+                type: string
+                example: member_id
+              message:
+                type: string
+                example: Must be a valid TypeID starting with 'mem_'
+
