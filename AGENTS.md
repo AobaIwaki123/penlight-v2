@@ -2,15 +2,15 @@
 
 ## 1. 主要な設計方針 (ADR)
 
-設計方針の詳細・背景は各 ADR を参照すること。
+プロダクトの概要や開発背景は [README.md](./README.md)、設計方針の詳細・決定経緯は [ADR インデックス](./adr/README.md) を参照すること。
 
-- **型定義の一元管理**: `pkg/model/` をマスターとし、TS型やDDLは自動生成する (ADR-0004)
-- **サロゲートキー**: 全エンティティで TypeID を使用し、自然キーは使わない (ADR-0001, ADR-0006)
-- **単一バイナリ**: フロントエンド静的アセットを Go バイナリに内包して配信する (ADR-0002, ADR-0011)
-- **Local-First**: ライブ会場の圏外でもクライアント単独でクイズが完結する (ADR-0007)
-- **不変画像**: `mem_<uuid>.webp` と永続キャッシュにより CDN パージを不要にする (ADR-0008)
-- **動的マスタ**: グループやメンバーをコード内に固定せず、DBで動的管理する (ADR-0006)
-- **最小構成**: 環境変数は 4 つ、エラーコードは 6 つに固定する (ADR-0014, ADR-0015)
+- **型定義の一元管理**: `pkg/model/` をマスターとし、TS型やDDLは自動生成する ([ADR-0004](./adr/0004-go-schema-as-single-source-of-truth.md))
+- **サロゲートキー**: 全エンティティで TypeID を使用し、自然キーは使わない ([ADR-0001](./adr/0001-surrogate-key-typeid-uuidv7.md), [ADR-0006](./adr/0006-domain-schema-and-typeid-structure.md))
+- **単一バイナリ**: フロントエンド静的アセットを Go バイナリに内包して配信する ([ADR-0002](./adr/0002-backend-go-architecture.md), [ADR-0011](./adr/0011-directory-structure-and-responsibility-boundaries.md))
+- **Local-First**: ライブ会場の圏外でもクライアント単独でクイズが完結する ([ADR-0007](./adr/0007-local-first-offline-pwa-architecture.md))
+- **不変画像**: `mem_<uuid>.webp` と永続キャッシュにより CDN パージを不要にする ([ADR-0008](./adr/0008-immutable-image-caching-and-zero-purge.md))
+- **動的マスタ**: グループやメンバーをコード内に固定せず、DBで動的管理する ([ADR-0006](./adr/0006-domain-schema-and-typeid-structure.md))
+- **最小構成**: 環境変数は 4 つ、エラーコードは 6 つに固定する ([ADR-0014](./adr/0014-error-handling-and-minimal-problem-details.md), [ADR-0015](./adr/0015-minimal-configuration-and-secrets-management.md))
 
 ## 2. 技術スタック
 
@@ -25,6 +25,7 @@
 
 ```
 penlight-v2/
+├── adr/            # アーキテクチャ意思決定記録 (ADR)
 ├── cmd/server/     # main.go（エントリーポイント、依存関係の注入とサーバー起動）
 ├── pkg/
 │   ├── model/      # 型定義のマスター（外部依存ゼロのドメインモデル・DTO・エラー型）
