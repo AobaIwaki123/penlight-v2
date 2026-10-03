@@ -72,7 +72,6 @@ npx knip
 | **typos** | Rust | [`_typos.toml`](../../../_typos.toml) | スペルチェッカー | `typos -w` |
 | **ast-grep** (`sg`) | Rust | [`sgconfig.yml`](../../../sgconfig.yml) | 構造的 AST パターン検索・一括置換 | `ast-grep scan` |
 | **Repomix** | Node.js | [`repomix.config.json`](../../../repomix.config.json) | AI コンテキスト圧縮・集約 | `repomix` |
-| **sqlc** | Go | *(ADR-0017により廃止)* | Go標準 `database/sql` に統合 (SSoT直結) | - |
 | **Knip** | Node.js | [`knip.json`](../../../knip.json) | デッドコード・ゾンビ依存駆除 | `npx knip --fix` |
 | **ts-pattern** | TS | (frontend 依存) | 網羅的パターンマッチング（出題状態遷移） | `.exhaustive()` |
 | **ts-morph** | TS | (frontend 依存) | TypeScript AST 一括変換・リファクタ | スクリプト実行 |
@@ -83,6 +82,6 @@ npx knip
 
 - **Biome 未インストール環境**: `brew install biome` または `npx @biomejs/biome check --write`。
 - **typos 未インストール環境**: `brew install typos-cli`。
-- **ast-grep / Repomix / sqlc**: `brew install ast-grep repomix sqlc` で配備可能。
+- **ast-grep / Repomix**: `brew install ast-grep repomix` で配備可能。
 - **固有名詞の誤検知**: メンバー名や独自接頭辞がスペルエラーになった場合は、[`_typos.toml`](../../../_typos.toml) の `[default.extend-words]` に登録する（手動でスペルを崩さない）。
 
