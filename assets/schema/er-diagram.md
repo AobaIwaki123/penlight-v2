@@ -4,6 +4,7 @@
 
 ```mermaid
 erDiagram
+    GROUP ||--o{ MEMBER : "group_id"
     USER ||--o{ ANSWER_LOG : "user_id"
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
@@ -15,7 +16,6 @@ erDiagram
     QUIZ_QUESTION ||--o{ BATCH_ANSWER_ITEM : "quiz_question_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     GROUP ||--o{ BATCH_ANSWER_ITEM : "group_id"
-    GROUP ||--o{ MEMBER : "group_id"
     MEMBER ||--o{ QUIZ_QUESTION : "target_member_id"
 
     GROUP {

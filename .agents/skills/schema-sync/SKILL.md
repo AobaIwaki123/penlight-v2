@@ -5,7 +5,7 @@ description: Go構造体（pkg/model/）を唯一のマスターとし、TypeScr
 
 # スキーマ一元管理・同期規約 (schema-sync)
 
-> **管轄 ADR**: [ADR-0004](../../../adr/0004-go-schema-as-single-source-of-truth.md)
+> **管轄 ADR**: [ADR-0004](../../../adr/0004-go-schema-as-single-source-of-truth.md), [ADR-0017](../../../adr/0017-repository-interface-and-pure-go-sqlite-architecture.md)
 
 本スキルは、Go 構造体（`pkg/model/`）を Single Source of Truth（マスター）とし、派生コードの整合性を維持するための規約と手順を定める。
 
@@ -17,7 +17,11 @@ description: Go構造体（pkg/model/）を唯一のマスターとし、TypeScr
    - `api/openapi.yaml`（API仕様書）
    上記ファイルを手書きで編集してはならない。必ず `pkg/model/*.go` を編集し、生成スクリプト経由で出力すること。
 2. **モデル層の外部依存ゼロ**:
-   - `pkg/model/` は純粋なドメイン型・DTO・エラー型のみを定義し、外部サードパーティライブラリや DB ドライバに依存しない。
+   - `pkg/model/` は純粋なドメイン型・DTO・エラー型、および `Repository` インターフェースのみを定義し、外部サードパーティライブラリや DB ドライバに依存しない（Go 標準 `context.Context` のみ許容）。
+3. **リポジトリ層の独自モデル排除 (Zero-Duplication)**:
+   - `pkg/repository/` 内に独自 struct（中間 DTO や DB 専用モデル）を作ってはならない。必ず `pkg/model` の正本構造体に直接 `rows.Scan` し、二重管理を根絶する。
+4. **依存性逆転 (DIP) の厳守**:
+   - 上位レイヤ（`pkg/quiz`, `cmd/server`）は具象 DB（`pkg/repository.SQLiteRepository`）に直接依存せず、`pkg/model.Repository` インターフェースにのみ依存すること。
 
 ---
 
