@@ -50,13 +50,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install Biome & typos
-        run: |
-          npm install -g @biomejs/biome
-          curl -sSf https://raw.githubusercontent.com/crate-ci/typos/master/install.sh | sh -s -- --to /usr/local/bin
+      - name: Install Biome
+        run: npm install -g @biomejs/biome
 
       - name: Run Biome Check
         run: biome check
 
       - name: Run typos Spell Check
-        run: typos
+        uses: crate-ci/typos@13d4ad9e5ad5db0958564fe6fb02b9b0f5ddb1aa
