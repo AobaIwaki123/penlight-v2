@@ -37,8 +37,9 @@ flowchart LR
 - **目的**: 外部依存（DB/ネットワーク）なしで高速にクイズを生成・採点するドメイン層の完成。
 - **実装内容**:
   - `pkg/quiz/`: 出題エンジン。
-    - `RandomStrategy`: 完全ランダム選定（初期実装はコンテキスト維持のため `random` のみに専念し、複雑な色差計算等は将来拡張とする）。
+    - `RandomStrategy`: 完全ランダム選定（初期実装はコンテキスト維持のため `random` のみに専念）。
   - グループ別・期生別絞り込みフィルター（母集団抽出）および正誤判定ロジック。
+  - **合意プロセス**: 出題 Strategy の追加・改善にあたっては、実装前に複数の出題アルゴリズムパターン（難易度感、選定ルール等）をユーザーと壁打ちして決定する。
 - **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md), [ADR-0018](../../adr/0018-quiz-candidate-pool-filtering-architecture.md)
 
 ### M3: HTTP API ＆ 不変画像配信 (HTTP API & Assets)
