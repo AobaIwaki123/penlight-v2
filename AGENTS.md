@@ -1,8 +1,8 @@
 # 開発規約 (AGENTS.md)
 
-## 1. 主要な設計方針 (ADR)
-
 プロダクトの概要や開発背景は [README.md](./README.md)、設計方針の詳細・決定経緯は [ADR インデックス](./adr/README.md) を参照すること。
+
+## 1. 主要な設計方針 (ADR)
 
 - **型定義の一元管理**: `pkg/model/` をマスターとし、TS型やDDLは自動生成する ([ADR-0004](./adr/0004-go-schema-as-single-source-of-truth.md))
 - **サロゲートキー**: 全エンティティで TypeID を使用し、自然キーは使わない ([ADR-0001](./adr/0001-surrogate-key-typeid-uuidv7.md), [ADR-0006](./adr/0006-domain-schema-and-typeid-structure.md))
@@ -12,7 +12,18 @@
 - **動的マスタ**: グループやメンバーをコード内に固定せず、DBで動的管理する ([ADR-0006](./adr/0006-domain-schema-and-typeid-structure.md))
 - **最小構成**: 環境変数は 4 つ、エラーコードは 6 つに固定する ([ADR-0014](./adr/0014-error-handling-and-minimal-problem-details.md), [ADR-0015](./adr/0015-minimal-configuration-and-secrets-management.md))
 
-## 2. 技術スタック
+## 2. 協業プロセス（AI Slop の抑止）
+
+- **一括生成の禁止**: ドキュメント作成や設計時、一度に全体を一括出力してはならない。
+- **セクション単位の段階的承認**: まず見出し構成を合意し、セクション単位でドラフトを提示してユーザーの認可（フィードバック・承認）を得ながら 1 つずつ埋めていく。
+- **事実とポインタの優先**: 概念の教科書的解説や陳腐化するバージョン表記を記述しない。事実、数値、決定事項、および ADR へのポインタのみを簡潔に記述する。
+
+## 3. ADR と Skill の対応規約 (Governance & Enforcement)
+
+- **決定と執行の分離**: アーキテクチャの意思決定・背景は `adr/` に記録し、その遵守・機械的検証は対応する Skill（`.agents/skills/`）が担う (`Skill ||--< ADR`)。
+- **管轄 ADR の明記**: 新しい Skill を作成する際は、どの ADR を保護・執行するためのスキルかを冒頭に明記すること。あらゆるルールを 1 つの Skill に集約せず、ADR の目的に応じて疎結合に分割する。
+
+## 4. 技術スタック
 
 - **バックエンド**: Go（標準ライブラリ中心）
 - **データベース**: SQLite（WAL モード、ドライバ: `modernc.org/sqlite`）
@@ -21,11 +32,13 @@
 - **オフラインストレージ**: IndexedDB（ブラウザ内データ保持）
 - **インフラ**: 自宅 Kubernetes（単一 Pod 構成）、Cloudflare Tunnel、Cloudflare R2（Litestream による DB バックアップ）
 
-## 3. ディレクトリ構成
+## 5. ディレクトリ構成
 
 ```
 penlight-v2/
+├── .agents/skills/ # プロジェクト固有の執行スキル (Skill ||--< ADR)
 ├── adr/            # アーキテクチャ意思決定記録 (ADR)
+├── docs/notes/     # 調査・設計検討用ノート (ADR昇格前の壁打ち領域)
 ├── cmd/server/     # main.go（エントリーポイント、依存関係の注入とサーバー起動）
 ├── pkg/
 │   ├── model/      # 型定義のマスター（外部依存ゼロのドメインモデル・DTO・エラー型）
@@ -39,12 +52,11 @@ penlight-v2/
 └── api/            # API 仕様書（OpenAPI）
 ```
 
-## 4. クイックスタート
+## 6. クイックスタート
 
 外部ミドルウェア（PostgreSQL や Redis 等）の立ち上げは不要。ローカル環境では環境変数の設定なしでそのまま起動できる。
 
 ```bash
-cd backend
 go run ./cmd/server
 ```
 
@@ -61,13 +73,12 @@ go run ./cmd/server
 | `GOOGLE_CLIENT_ID` | 任意 | 空（ゲストモード） | Google OIDC 認証用クライアント ID |
 | `GOOGLE_CLIENT_SECRET` | 任意 | 空（ゲストモード） | Google OIDC 認証用シークレット |
 
-## 5. 変更後の検証手順
+## 7. 変更後の検証手順
 
 コードを変更した際は、以下のコマンドで静的解析とテストの通過を確認すること。
 
 ```bash
 # バックエンドの静的解析とテスト
-cd backend
 go vet ./...
 go test ./...
 
@@ -75,7 +86,7 @@ go test ./...
 ./scripts/generate-all.sh
 ```
 
-## 6. 用語集
+## 8. 用語集
 
 - **TypeID**: エンティティの種類を表す接頭辞が付いた一意な識別子（例: メンバーは `mem_<uuid>`、グループは `grp_<uuid>`）。名前重複や改名によるデータの破損を防ぐために使用する。
 - **WAL (Write-Ahead Logging)**: SQLite の動作モードの一つ。変更を専用ログに先行追記することで、読み取り処理と書き込み処理を互いに邪魔させずに同時に実行できる。
