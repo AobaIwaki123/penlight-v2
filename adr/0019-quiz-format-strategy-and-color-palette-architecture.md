@@ -1,6 +1,6 @@
 # 0019. 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 (0019-quiz-format-strategy-and-color-palette-architecture.md)
 
-- **ステータス**: 承認 (Accepted)
+- **ステータス**: 提案中 (Proposed) - ※Strategyパターン自体は現時点ではfixせず検討対象として保持
 - **日付**: 2026-10-03
 
 ---

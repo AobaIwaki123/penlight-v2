@@ -15,7 +15,7 @@
 | [0006](./0006-domain-schema-and-typeid-structure.md) | プレフィックス付きサロゲートキーと動的ドメインスキーマ構成の採用 | Accepted |
 | [0007](./0007-local-first-offline-pwa-architecture.md) | ライブ会場での完全動作を保証する Local-First / オフライン PWA アーキテクチャの採用 | Accepted |
 | [0008](./0008-immutable-image-caching-and-zero-purge.md) | 画像アセットの永久不変キャッシュ (RFC 8246 immutable) とゼロパージ運用の採用 | Accepted |
-| [0009](./0009-quiz-generation-strategy-pattern.md) | クイズ出題アルゴリズムにおける Strategy パターンの採用 | Accepted |
+| [0009](./0009-quiz-generation-strategy-pattern.md) | クイズ出題アルゴリズムにおける Strategy パターンの採用 | Proposed |
 | [0010](./0010-google-oidc-authentication-and-session-security.md) | Google OIDC 認証と HttpOnly セッション Cookie の採用 | Accepted |
 | [0011](./0011-directory-structure-and-responsibility-boundaries.md) | プロジェクトディレクトリ構成および責務境界の策定 | Accepted |
 | [0012](./0012-kubernetes-deployment-and-gitops-architecture.md) | Kubernetes デプロイおよび ArgoCD GitOps アーキテクチャの採用 | Accepted |
@@ -25,7 +25,7 @@
 | [0016](./0016-adr-governance-and-immutable-sequential-architecture.md) | ADR ガバナンスおよびフラット不変連番管理の採用 | Accepted |
 | [0017](./0017-repository-interface-and-pure-go-sqlite-architecture.md) | データアクセス層におけるリポジトリインターフェース集約および Pure Go SQLite 直接実装の採用 | Accepted |
 | [0018](./0018-quiz-candidate-pool-filtering-architecture.md) | クイズ出題における母集団フィルタリング設計の分離 | Accepted |
-| [0019](./0019-quiz-format-strategy-and-color-palette-architecture.md) | 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 | Accepted |
+| [0019](./0019-quiz-format-strategy-and-color-palette-architecture.md) | 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 | Proposed |
 
 ---
 
