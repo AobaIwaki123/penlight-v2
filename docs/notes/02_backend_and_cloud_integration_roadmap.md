@@ -36,10 +36,9 @@ flowchart LR
 ### M2: コア出題エンジン (Quiz Domain Logic)
 - **目的**: 外部依存（DB/ネットワーク）なしで高速にクイズを生成・採点するドメイン層の完成。
 - **実装内容**:
-  - `pkg/quiz/`: Strategy パターンによる出題ロジック。
-    - `RandomStrategy`: 完全ランダム誤答選定。
-    - `SimilarColorStrategy`: CIELAB 色空間色差 $\Delta E$ に基づく紛らわしい誤答選定。
-  - 期生別・グループ別絞り込みフィルターおよび採点ロジック。
+  - `pkg/quiz/`: 出題エンジン。
+    - `RandomStrategy`: 完全ランダム選定（初期実装はコンテキスト維持のため `random` のみに専念し、複雑な色差計算等は将来拡張とする）。
+  - グループ別・期生別絞り込みフィルターおよび正誤判定ロジック。
 - **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md)
 
 ### M3: HTTP API ＆ 不変画像配信 (HTTP API & Assets)
@@ -77,7 +76,7 @@ flowchart LR
 | マイルストーン | 完了判定（ローカル / CI 検証） |
 |---|---|
 | **M1** | `sqlite.Open` 時にテーブルが自動生成され、3グループのデータが正しく引ける Go 単体テストがパスする |
-| **M2** | ピュアな単体テスト（`pkg/quiz/generator_test.go`）で、指定条件通りの4択問題・正解・類似誤答が生成できる |
+| **M2** | ピュアな単体テスト（`pkg/quiz/generator_test.go`）で、ランダム選定による4択問題・正解・重複なし誤答が生成できる |
 | **M3** | `go run ./cmd/server` で起動し、`curl` による `/healthz`, `/api/v1/bootstrap`, `/quiz/generate` の疎通がパスする |
 | **M4** | セッション Cookie による認証状態の維持と、回答履歴の保存・取得が単体テストおよび curl で確認できる |
 | **M5** | k8s クラスタ上で Pod が起動し、`penlight.db` の更新が Cloudflare R2 に秒単位で同期され、Pod 再起動時に自動復元される |
