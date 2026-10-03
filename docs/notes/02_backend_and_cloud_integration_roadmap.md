@@ -37,11 +37,12 @@ flowchart LR
 - **目的**: 外部依存（DB/ネットワーク）なしで高速にクイズを生成・採点するドメイン層の完成。
 - **実装内容**:
   - `pkg/quiz/`: 出題エンジン。
-    - **解答形式 Strategy (`QuizFormat`)**: 自由回答（カラーパレットから左右2色を直接選択）を第一級市民とし、4択選択式もサポート。
-    - **4択時 誤答選定 Strategy**: 完全ランダム選定（初期実装はコンテキスト維持のため `random` のみに専念）。
+    - **出題対象メンバー選出 Strategy (`TargetSelectionStrategy`)**: 誰を出題するか。初期は完全ランダム（`random`）のみ実装（将来的に正答率連動等を拡張可能）。
+    - **解答形式 Strategy (`QuizFormat`)**: どう答えさせるか。自由回答（カラーパレット選択）および4択選択式。
+    - **4択時 誤答選定 Strategy**: 4択形式の場合の誤答選定（初期は `random` のみ）。
   - グループ別・期生別絞り込みフィルター（母集団抽出）および正誤判定ロジック。
   - **合意プロセス**: 出題 Strategy の追加・改善にあたっては、実装前に複数の出題アルゴリズムパターン（難易度感、選定ルール等）をユーザーと壁打ちして決定する。
-- **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md), [ADR-0018](../../adr/0018-quiz-candidate-pool-filtering-architecture.md), [ADR-0019](../../adr/0019-quiz-format-strategy-and-color-palette-architecture.md)
+- **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md), [ADR-0018](../../adr/0018-quiz-candidate-pool-filtering-architecture.md), [ADR-0019](../../adr/0019-quiz-format-strategy-and-color-palette-architecture.md), [ADR-0020](../../adr/0020-quiz-target-member-selection-strategy.md)
 
 ### M3: HTTP API ＆ 不変画像配信 (HTTP API & Assets)
 - **目的**: サーバープロセス起動とクライアント疎通の実現。
