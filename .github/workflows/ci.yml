@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-verify:
+    name: Test and Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Install tygo
+        run: go install github.com/gzuidhof/tygo@latest
+
+      - name: "Verify Schema Generation (Ref: ADR-0004)"
+        run: |
+          ./scripts/generate-all.sh
+          git diff --exit-code || {
+            echo "::error::Schema artifacts out of sync. Run ./scripts/generate-all.sh locally and commit."
+            exit 1
+          }
+
+      - name: Run Tests & Coverage
+        run: |
+          go test -race -coverprofile=coverage.out -covermode=atomic ./...
+          {
+            echo "## 🧪 Test & Coverage Summary"
+            echo "| Package | Coverage |"
+            echo "|---|---:|"
+            go tool cover -func=coverage.out | awk '{printf("| %s | **%s** |\n", $1, $3)}'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Setup Node & Biome
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Install Biome & typos
+        run: |
+          npm install -g @biomejs/biome
+          curl -sSf https://raw.githubusercontent.com/crate-ci/typos/master/install.sh | sh -s -- --to /usr/local/bin
+
+      - name: Run Biome Check
+        run: biome check
+
+      - name: Run typos Spell Check
+        run: typos

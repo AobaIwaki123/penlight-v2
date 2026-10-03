@@ -79,7 +79,10 @@ go run ./cmd/server
 コードを変更した際は、以下のコマンドで静的解析とテストの通過を確認すること。
 
 ```bash
-# バックエンドの静的解析とテスト
+# 【推奨】全自動一括検証（スキーマ再生成・同期検証・テスト・Biome・typos・actionlint）
+./scripts/verify-all.sh
+
+# バックエンドの静的解析とテスト（個別実行）
 go vet ./...
 go test ./...
 

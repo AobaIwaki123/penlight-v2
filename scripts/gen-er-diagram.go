@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -140,7 +141,16 @@ func main() {
 	var buf bytes.Buffer
 	buf.WriteString("erDiagram\n")
 
-	// 1. リレーション出力
+	// 1. リレーション出力（決定論的ソート）
+	sort.Slice(relations, func(i, j int) bool {
+		if relations[i].From != relations[j].From {
+			return relations[i].From < relations[j].From
+		}
+		if relations[i].To != relations[j].To {
+			return relations[i].To < relations[j].To
+		}
+		return relations[i].Label < relations[j].Label
+	})
 	for _, rel := range relations {
 		buf.WriteString(fmt.Sprintf("    %s ||--o{ %s : \"%s\"\n", rel.From, rel.To, rel.Label))
 	}
