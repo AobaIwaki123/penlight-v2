@@ -24,6 +24,7 @@
 | [0015](./0015-minimal-configuration-and-secrets-management.md) | 最小環境変数および機密性分離アーキテクチャの採用 | Accepted |
 | [0016](./0016-adr-governance-and-immutable-sequential-architecture.md) | ADR ガバナンスおよびフラット不変連番管理の採用 | Accepted |
 | [0017](./0017-repository-interface-and-pure-go-sqlite-architecture.md) | データアクセス層におけるリポジトリインターフェース集約および Pure Go SQLite 直接実装の採用 | Accepted |
+| [0018](./0018-quiz-candidate-pool-filtering-architecture.md) | クイズ出題における母集団フィルタリング設計の分離 | Accepted |
 
 ---
 

@@ -38,8 +38,8 @@ flowchart LR
 - **実装内容**:
   - `pkg/quiz/`: 出題エンジン。
     - `RandomStrategy`: 完全ランダム選定（初期実装はコンテキスト維持のため `random` のみに専念し、複雑な色差計算等は将来拡張とする）。
-  - グループ別・期生別絞り込みフィルターおよび正誤判定ロジック。
-- **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md)
+  - グループ別・期生別絞り込みフィルター（母集団抽出）および正誤判定ロジック。
+- **関連 ADR**: [ADR-0009](../../adr/0009-quiz-generation-strategy-pattern.md), [ADR-0018](../../adr/0018-quiz-candidate-pool-filtering-architecture.md)
 
 ### M3: HTTP API ＆ 不変画像配信 (HTTP API & Assets)
 - **目的**: サーバープロセス起動とクライアント疎通の実現。
