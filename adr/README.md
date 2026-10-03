@@ -25,6 +25,7 @@
 | [0016](./0016-adr-governance-and-immutable-sequential-architecture.md) | ADR ガバナンスおよびフラット不変連番管理の採用 | Accepted |
 | [0017](./0017-repository-interface-and-pure-go-sqlite-architecture.md) | データアクセス層におけるリポジトリインターフェース集約および Pure Go SQLite 直接実装の採用 | Accepted |
 | [0018](./0018-quiz-candidate-pool-filtering-architecture.md) | クイズ出題における母集団フィルタリング設計の分離 | Accepted |
+| [0019](./0019-quiz-format-strategy-and-color-palette-architecture.md) | 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 | Accepted |
 
 ---
 
