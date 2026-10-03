@@ -84,6 +84,10 @@ go test ./...
 
 # pkg/model/ を変更した場合（型定義・スキーマ・ER図の一括再生成）
 ./scripts/generate-all.sh
+
+# コード整形・構文リント・誤字脱字の自動修復 (Ref: ADR-0013)
+biome check --write
+typos -w
 ```
 
 ## 8. 用語集

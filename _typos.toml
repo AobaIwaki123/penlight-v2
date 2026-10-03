@@ -1,0 +1,22 @@
+# _typos.toml
+# Configuration for typos spell checker (Ref: ADR-0013)
+
+[files]
+extend-exclude = [
+    ".git",
+    "node_modules",
+    "frontend/src/types/generated.ts",
+    "assets/schema/er-diagram.mermaid"
+]
+
+[default.extend-words]
+ans = "ans"
+col = "col"
+grp = "grp"
+mem = "mem"
+usr = "usr"
+tygo = "tygo"
+modernc = "modernc"
+litestream = "litestream"
+subagent = "subagent"
+subagents = "subagents"
