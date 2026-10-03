@@ -9,6 +9,7 @@ erDiagram
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     GROUP ||--o{ ANSWER_LOG : "group_id"
+    GROUP ||--o{ MEMBER : "group_id"
     GROUP ||--o{ COLOR : "group_id"
     GROUP ||--o{ GENERATE_QUIZ_REQUEST : "group_id"
     QUIZ_QUESTION ||--o{ SUBMIT_ANSWER_REQUEST : "quiz_question_id"
@@ -16,7 +17,6 @@ erDiagram
     QUIZ_QUESTION ||--o{ BATCH_ANSWER_ITEM : "quiz_question_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     GROUP ||--o{ BATCH_ANSWER_ITEM : "group_id"
-    GROUP ||--o{ MEMBER : "group_id"
 
     GROUP {
         string id PK "grp_... (UUID v7)"
