@@ -17,14 +17,14 @@
 
 ## 2. 決定事項と具現化仕様 (Decision & Specification)
 
-クイズ出題の処理パイプラインを **「1. 母集団フィルタリング (Filtering)」** と **「2. 選択肢選定 (Strategy)」** の 2 つの独立した責務に完全分離する。
+クイズ出題の処理パイプラインにおいて、**「母集団フィルタリング (Filtering)」** を独立したデータ抽出（前処理）責務として分離する。
 
 ```mermaid
 flowchart LR
-    Request["出題リクエスト<br/>(GroupID, Generation, etc.)"] --> Filter["1. 母集団フィルタリング<br/>(データ層 / クエリ層)"]
+    Request["出題リクエスト<br/>(GroupID, Generation)"] --> Filter["1. 母集団フィルタリング<br/>(本ADR: データ抽出)"]
     Filter --> Pool["出題母集団<br/>pool: []Member"]
-    Pool --> Strategy["2. 選択肢選定 Strategy<br/>(RandomStrategy 等)"]
-    Strategy --> Question["完成した4択クイズ<br/>QuizQuestion"]
+    Pool --> Target["2. 出題メンバー選出<br/>(ADR-0020: 誰を出すか)"]
+    Target --> Format["3. 解答形式<br/>(ADR-0019: どう答えるか)"]
 ```
 
 ### 具現化仕様
@@ -36,11 +36,11 @@ flowchart LR
        Generation *int // 期生絞り込み (任意)
    }
    ```
-2. **2段階の責務境界**:
-   - **前処理 (Filter)**: リポジトリまたはメモリ内のメンバーマスタから、`QuizFilter` に合致する `[]Member`（母集団）を抽出する。
-   - **アルゴリズム (Strategy)**: 抽出された母集団から、正解 1 件と重複しない誤答 3 件を選定する（[ADR-0009](./0009-quiz-generation-strategy-pattern.md)）。
+2. **責務境界**:
+   - **前処理 (本ADR)**: リポジトリまたはメモリ内のメンバーマスタから、`QuizFilter` に合致する `[]Member`（母集団）を抽出する。
+   - **後続パイプライン**: 抽出された母集団を [ADR-0020](./0020-quiz-target-member-selection-strategy.md)（出題メンバー選出）へ引き渡す。
 3. **バリデーション**:
-   - 抽出された母集団の件数が 4 択クイズを構成する最小数（4名以上）に満たない場合は、エラー（Problem Details `ERR_INVALID_INPUT`）を返却する。
+   - 抽出された母集団の件数が出題に必要な最小数に満たない場合は、エラー（Problem Details `ERR_INVALID_INPUT`）を返却する。
 
 ---
 

@@ -5,7 +5,7 @@ description: ライブ会場での圏外完結出題（Local-First）、電波�
 
 # Local-First / 単一バイナリ規約 (local-first-pwa)
 
-> **管轄 ADR**: [ADR-0002](../../../adr/0002-backend-go-architecture.md), [ADR-0007](../../../adr/0007-local-first-offline-pwa-architecture.md), [ADR-0008](../../../adr/0008-immutable-image-caching-and-zero-purge.md), [ADR-0011](../../../adr/0011-directory-structure-and-responsibility-boundaries.md), [ADR-0019](../../../adr/0019-quiz-format-strategy-and-color-palette-architecture.md)
+> **管轄 ADR**: [ADR-0002](../../../adr/0002-backend-go-architecture.md), [ADR-0007](../../../adr/0007-local-first-offline-pwa-architecture.md), [ADR-0008](../../../adr/0008-immutable-image-caching-and-zero-purge.md), [ADR-0011](../../../adr/0011-directory-structure-and-responsibility-boundaries.md), [ADR-0018](../../../adr/0018-quiz-candidate-pool-filtering-architecture.md), [ADR-0019](../../../adr/0019-quiz-format-strategy-and-color-palette-architecture.md), [ADR-0020](../../../adr/0020-quiz-target-member-selection-strategy.md)
 
 本スキルは、ライブ会場での圏外動作を保証するクライアント設計、単一バイナリ配信、および画像不変キャッシュを統制する。
 
@@ -13,7 +13,7 @@ description: ライブ会場での圏外完結出題（Local-First）、電波�
 
 1. **クイズ設問生成・採点の端末内完結 (Local-First)**:
    - マスタデータ（グループ・メンバー・色情報）は初回に IndexedDB へ保存する。
-   - クイズプレイ時の設問生成・正誤判定（自由回答カラーパレット選択および4択式）はブラウザ内の純粋関数で完結させ、毎問サーバー問い合わせを行わないこと。
+   - クイズプレイ時の設問生成（出題メンバー選出 ADR-0020、解答形式 ADR-0019、誤答選定 ADR-0009）および正誤判定はブラウザ内の純粋関数で完結させ、毎問サーバー問い合わせを行わないこと。
 2. **回答ログのバッチ同期と冪等性**:
    - 圏外時の回答ログは IndexedDB に蓄積し、回線復旧時に `POST /api/v1/quiz/answers/batch` で一括送信する。
    - サーバー側は `INSERT OR IGNORE` で処理し、多重送信によるデータ不整合を防止する。

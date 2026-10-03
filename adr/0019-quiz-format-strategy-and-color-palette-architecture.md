@@ -24,7 +24,7 @@
 
 ```mermaid
 flowchart TD
-    Target["出題対象メンバー"] --> Format{"解答形式 (QuizFormat)"}
+    Target["出題対象メンバー<br/>(ADR-0020で選出)"] --> Format{"解答形式 (QuizFormat)"}
     
     subgraph Mode1 ["カラーパレット自由選択式 (初期第一級市民)"]
         Format -->|color_palette| Pal["全カラーパレット一覧提示<br/>(左手色 + 右手色を直接タップ)"]
@@ -67,4 +67,4 @@ flowchart TD
 - **ライブ現場での最高の実用性**:
   - 「全色から直感で2色を当てる」という体験は、ファンにとって最も刺さるライブ予習・暗記ツールとなる。
 - **アーキテクチャの直交性**:
-  - 「母集団の抽出（[ADR-0018](./0018-quiz-candidate-pool-filtering-architecture.md)）」「解答形式（本ADR）」「4択時の誤答選定（[ADR-0009](./0009-quiz-generation-strategy-pattern.md)）」の 3 つが互いに疎結合となり、UI側で自由に組み合わせ可能になる。
+  - 「母集団の抽出（[ADR-0018](./0018-quiz-candidate-pool-filtering-architecture.md)）」「出題メンバー選出（[ADR-0020](./0020-quiz-target-member-selection-strategy.md)）」「解答形式（本ADR）」「4択時の誤答選定（[ADR-0009](./0009-quiz-generation-strategy-pattern.md)）」の 4 つが互いに疎結合となり、UI側で自由に組み合わせ可能になる。
