@@ -22,6 +22,8 @@ description: GitHub Actionsの最新メジャーバージョン特定、サプ�
    - `npm install -g <tool>` や `curl ... | sh` など、CI 実行時にバージョンが浮くインストールは禁止。必ず [`aqua.yaml`](../../../aqua.yaml) および [`aqua-checksums.json`](../../../aqua-checksums.json) でバージョンと SHA-256 チェックサムを固定する。
 4. **ローカルでの `actionlint` 静的検証の必須化**:
    - push 前に必ずローカルで `actionlint` を実行し、YAML 構文、shellcheck、アクション入力値の妥当性を確認すること。
+5. **CI 実行完了の待機禁止 (No Polling / No Watching)**:
+   - ローカル検証（`actionlint` および `./scripts/verify-all.sh`）をパスして push / PR 作成した後は、リモート CI の完了を待つポーリング（`gh run watch` や `sleep` 等）を行わない。直ちに次の実装タスクまたはユーザー報告へ移行すること。
 
 ---
 
