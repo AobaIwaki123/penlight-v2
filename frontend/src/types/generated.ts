@@ -270,6 +270,16 @@ export interface QuizQuestion {
 }
 
 //////////
+// source: repository.go
+
+/**
+ * Repository defines data access operations required by the domain and HTTP handlers.
+ * Following ADR-0004 and ADR-0017, this interface uses only Go standard library and
+ * model package types to preserve zero external dependencies in the model layer.
+ */
+export type Repository = any;
+
+//////////
 // source: user.go
 
 /**

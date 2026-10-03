@@ -4,12 +4,12 @@
 
 ```mermaid
 erDiagram
+    GROUP ||--o{ MEMBER : "group_id"
     MEMBER ||--o{ QUIZ_QUESTION : "target_member_id"
     USER ||--o{ ANSWER_LOG : "user_id"
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     GROUP ||--o{ ANSWER_LOG : "group_id"
-    GROUP ||--o{ MEMBER : "group_id"
     GROUP ||--o{ COLOR : "group_id"
     GROUP ||--o{ GENERATE_QUIZ_REQUEST : "group_id"
     QUIZ_QUESTION ||--o{ SUBMIT_ANSWER_REQUEST : "quiz_question_id"

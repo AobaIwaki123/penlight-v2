@@ -23,6 +23,7 @@
 | [0014](./0014-error-handling-and-minimal-problem-details.md) | エラー設計および最小 Problem Details 規約の採用 | Accepted |
 | [0015](./0015-minimal-configuration-and-secrets-management.md) | 最小環境変数および機密性分離アーキテクチャの採用 | Accepted |
 | [0016](./0016-adr-governance-and-immutable-sequential-architecture.md) | ADR ガバナンスおよびフラット不変連番管理の採用 | Accepted |
+| [0017](./0017-repository-interface-and-pure-go-sqlite-architecture.md) | データアクセス層におけるリポジトリインターフェース集約および Pure Go SQLite 直接実装の採用 | Accepted |
 
 ---
 

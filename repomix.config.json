@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/repomix.json",
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "removeComments": false,
+    "removeEmptyLines": true,
+    "topFilesLength": 10
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "frontend/src/types/generated.ts",
+      "assets/**",
+      "data/**",
+      "*.webp",
+      "*.sqlite",
+      "*.db"
+    ]
+  }
+}
