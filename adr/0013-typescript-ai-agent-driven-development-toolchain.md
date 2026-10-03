@@ -29,7 +29,6 @@ AI コーディングエージェント（Claude Code / Antigravity / Cursor 等
 | **ast-grep (`sg`)** | **Rust** | 構造的 AST 検索 & リライト | 正規表現を超えた「構文木パターン」で危険コードを検出・自動修正 |
 | **ts-morph** | TS / AST | 決定論的コード一括変換 | TypeScript AST を直接操作し、Branded Types の注入や大規模リファクタリングをプログラム実行 |
 | **ts-pattern** | TS / 型安全 | 網羅的パターンマッチング | クイズ進行状態の Discriminated Union に対し、`.exhaustive()` で全ケース網羅を型強制し処理漏れをコンパイルエラー化 |
-| **sqlc** | Go | 型安全 SQL コード自動生成 | プレーン SQL から型安全な Go リポジトリを機械生成し、手動パースバグを根絶 |
 | **Repomix** | Node.js | AI コンテキスト最適化 | リポジトリ構造とコードを XML/Markdown に 1 ファイル集約し、AI のトークン消費を抑え理解度を向上 |
 
 ### AI 自律修復ループ (Self-Healing Loop)

@@ -64,18 +64,24 @@ npx knip
 
 ---
 
-## 3. 設定ファイル構成
+## 3. ADR-0013 支援ツール群の全体構成
 
-| ツール | 設定ファイル | 役割 | 注意事項 |
-|---|---|---|---|
-| **Biome** | [`biome.json`](../../../biome.json) | フォーマッター & リンター | `generated.ts` や `assets` は includes / ignore で除外 |
-| **typos** | [`_typos.toml`](../../../_typos.toml) | スペルチェッカー | TypeID 接頭辞 (`mem`, `grp`, `ans` 等) を allowlist 登録 |
-| **Knip** | `knip.json` | デッドコード・ゾンビ依存駆除 | `frontend/` 配下の TypeScript プロジェクトを監査 |
+| ツール | 実装 | 設定ファイル | 役割 | 実行コマンド |
+|---|---|---|---|---|
+| **Biome** | Rust | [`biome.json`](../../../biome.json) | 超高速フォーマッター & リンター | `biome check --write` |
+| **typos** | Rust | [`_typos.toml`](../../../_typos.toml) | スペルチェッカー | `typos -w` |
+| **ast-grep** (`sg`) | Rust | [`sgconfig.yml`](../../../sgconfig.yml) | 構造的 AST パターン検索・一括置換 | `ast-grep scan` |
+| **Repomix** | Node.js | [`repomix.config.json`](../../../repomix.config.json) | AI コンテキスト圧縮・集約 | `repomix` |
+| **Knip** | Node.js | [`knip.json`](../../../knip.json) | デッドコード・ゾンビ依存駆除 | `npx knip --fix` |
+| **ts-pattern** | TS | (frontend 依存) | 網羅的パターンマッチング（出題状態遷移） | `.exhaustive()` |
+| **ts-morph** | TS | (frontend 依存) | TypeScript AST 一括変換・リファクタ | スクリプト実行 |
 
 ---
 
 ## 4. トラブルシュート・Tips
 
-- **Biome 未インストール環境**: `npx @biomejs/biome check --write` で代用可能（Homebrew 環境では `brew install biome` が最速）。
-- **typos 未インストール環境**: `brew install typos-cli` または `cargo install typos-cli`。
+- **Biome 未インストール環境**: `brew install biome` または `npx @biomejs/biome check --write`。
+- **typos 未インストール環境**: `brew install typos-cli`。
+- **ast-grep / Repomix**: `brew install ast-grep repomix` で配備可能。
 - **固有名詞の誤検知**: メンバー名や独自接頭辞がスペルエラーになった場合は、[`_typos.toml`](../../../_typos.toml) の `[default.extend-words]` に登録する（手動でスペルを崩さない）。
+

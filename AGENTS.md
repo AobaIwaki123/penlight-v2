@@ -11,6 +11,7 @@
 - **不変画像**: `mem_<uuid>.webp` と永続キャッシュにより CDN パージを不要にする ([ADR-0008](./adr/0008-immutable-image-caching-and-zero-purge.md))
 - **動的マスタ**: グループやメンバーをコード内に固定せず、DBで動的管理する ([ADR-0006](./adr/0006-domain-schema-and-typeid-structure.md))
 - **最小構成**: 環境変数は 4 つ、エラーコードは 6 つに固定する ([ADR-0014](./adr/0014-error-handling-and-minimal-problem-details.md), [ADR-0015](./adr/0015-minimal-configuration-and-secrets-management.md))
+- **リポジトリ集約**: 上位ロジックは具象DBではなく `pkg/model/repository.go` のインターフェースに依存し、DB層は `pkg/model` の構造体に直接マッピングする ([ADR-0017](./adr/0017-repository-interface-and-pure-go-sqlite-architecture.md))
 
 ## 2. 協業プロセス（AI Slop の抑止）
 

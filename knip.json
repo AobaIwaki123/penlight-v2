@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@5/overview/config.schema.json",
+  "workspaces": {
+    "frontend": {
+      "entry": ["src/app/**/*.{ts,tsx}", "src/pages/**/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignore": ["src/types/generated.ts"]
+    }
+  }
+}
