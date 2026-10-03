@@ -1,0 +1,74 @@
+{
+  "checksums": [
+    {
+      "id": "github_release/github.com/biomejs/biome/@biomejs/biome@2.5.15/biome-darwin-arm64",
+      "checksum": "3636796D8C78BFCFE0D45946DC93E21E12D27A49EBA7401E18AF1EA854D25503",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/biomejs/biome/@biomejs/biome@2.5.15/biome-darwin-x64",
+      "checksum": "86FC618563D19F373AC24EB5B8F1E41BD753A506D5DF1F198C152EC365141490",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/biomejs/biome/@biomejs/biome@2.5.15/biome-linux-arm64",
+      "checksum": "A56BCD73DDBFDB0F57A82BB67B7EA698EED4027AFF602B95AA18FAFE919D59E0",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/biomejs/biome/@biomejs/biome@2.5.15/biome-linux-x64",
+      "checksum": "5D867A0B2CCEA1755B7E508B01D836A8C64E31A1E4D11EC24B43B6B4EEC8B3B6",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/crate-ci/typos/v1.50.3/typos-v1.50.3-x86_64-apple-darwin.tar.gz",
+      "checksum": "7CC75E42FFF1E3B66928DE325B3EA1EC7E23CE35FFAA3561FDB0EDE8E7275F6F",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/crate-ci/typos/v1.50.3/typos-v1.50.3-x86_64-pc-windows-msvc.zip",
+      "checksum": "B59F149D84E86AAB535D52DB029FA8D3AC5ECBA9AE5C7F19CF07ACB5AA0CAAAF",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/crate-ci/typos/v1.50.3/typos-v1.50.3-x86_64-unknown-linux-musl.tar.gz",
+      "checksum": "ACA6B5D546307092B8D0A8E0A89DD80F9DA51F2F7617C5E45C5607C1684FFBF2",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_darwin_amd64.tar.gz",
+      "checksum": "5B44C3BC2255115C9B69E30EFC0FECDF498FDB63C5D58E17084FD5F16324C644",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_darwin_arm64.tar.gz",
+      "checksum": "ABA9CED2DEE8D27FECCA3DC7FEB1A7F9A52CAEFA1EB46F3271EA66B6E0E6953F",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz",
+      "checksum": "8ACA8DB96F1B94770F1B0D72B6DDDCB1EBB8123CB3712530B08CC387B349A3D8",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_linux_arm64.tar.gz",
+      "checksum": "325E971B6BA9BFA504672E29BE93C24981EEB1C07576D730E9F7C8805AFFF0C6",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_windows_amd64.zip",
+      "checksum": "6E7241B51E6817EA6A047693D8E6FED13B31819C9A0DD6C5A726E1592D22F6E9",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "github_release/github.com/rhysd/actionlint/v1.7.12/actionlint_1.7.12_windows_arm64.zip",
+      "checksum": "CADCF7EA4EFE3A68728893813643CEBE1185E5B1D4BE5B96245F65C9A4D5EA41",
+      "algorithm": "sha256"
+    },
+    {
+      "id": "registries/github_content/github.com/aquaproj/aqua-registry/v4.99.1/registry.yaml",
+      "checksum": "351DA9FFC8B02F9090EDA39981FFFD416B0484DC9E28E6C0EE5205931906F2E8",
+      "algorithm": "sha256"
+    }
+  ]
+}
