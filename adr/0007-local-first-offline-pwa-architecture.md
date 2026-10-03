@@ -21,7 +21,7 @@
    - **画像アセット (CacheStorage)**: WebP 写真を不変キーで最大 30 日/LRU 保持。
    - **マスタデータ (IndexedDB)**: 全グループ・カラー・メンバー情報を保持し、初回 `/api/v1/sync/bootstrap` で取得。
 2. **クライアント側純粋関数による完全ローカル出題**:
-   - クイズ設問生成および採点ロジックを TypeScript の純粋関数（`src/features/quiz/logic.ts`）として実装。端末内データから 0ms で出題・正誤判定を完結。
+   - クイズ出題（出題メンバー選出 [ADR-0020](./0020-quiz-target-member-selection-strategy.md)、解答形式 [ADR-0019](./0019-quiz-format-strategy-and-color-palette-architecture.md)、誤答選定 [ADR-0009](./0009-quiz-generation-strategy-pattern.md)）および採点ロジックを TypeScript の純粋関数（`src/features/quiz/logic.ts`）として実装。端末内データから 0ms で出題・正誤判定を完結。
 3. **Outbox パターン & Background Sync**:
    - オフライン中の回答ログは IndexedDB の送信キューに蓄積し、オンライン復帰を検知した瞬間に `POST /api/v1/quiz/answers/batch` でバックグラウンド一括同期。
 
