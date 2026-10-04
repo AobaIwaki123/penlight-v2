@@ -4,7 +4,7 @@ import { test } from '@playwright/test';
 const ARTIFACT_DIR =
   '/Users/aobaiwaki/.gemini/antigravity-cli/brain/8ecc8ee2-c710-4933-8609-831f179266c5';
 
-test('capture full-screen photo layout and donut ring modal on penlight tap', async ({
+test('capture FeedbackModal comparing user answer vs correct colors', async ({
   page,
 }) => {
   // Go to quiz page
@@ -14,43 +14,31 @@ test('capture full-screen photo layout and donut ring modal on penlight tap', as
   await page.waitForSelector('text=13th Single 制服', { timeout: 10000 });
   await page.waitForTimeout(1000);
 
-  // 1. Capture Full-Screen Photo Mode (No palette at bottom! 100% photo immersion)
-  await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-fullscreen-photo.png'),
-    fullPage: true,
-  });
-
-  // 2. Click the Left Penlight on top of the photo to open Donut Ring Modal
+  // 1. Click Left Penlight to open DonutRingModal
   await page.locator('div[title="タップして左手の色を選択"]').click();
+  await page.waitForTimeout(500);
+
+  // Select wrong color: レッド
+  await page.locator('div[role="button"][aria-label="レッド"]').click();
+  await page.waitForTimeout(500);
+
+  // Select wrong color: グリーン -> triggers answer and opens FeedbackModal
+  await page.locator('div[role="button"][aria-label="グリーン"]').click();
   await page.waitForTimeout(600);
 
-  // Capture Modal Overlay with Donut Ring
+  // 2. Capture FeedbackModal (Incorrect state with Your Answer vs Correct Colors comparison)
   await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-modal-donut-open.png'),
+    path: path.join(ARTIFACT_DIR, 'screenshot-feedback-modal.png'),
     fullPage: true,
   });
 
-  // 3. Select a color on the Donut Ring (e.g. イエロー)
-  const yellowColorBtn = page.locator(
-    'div[role="button"][aria-label="イエロー"]',
-  );
-  await yellowColorBtn.click();
-  await page.waitForTimeout(600);
-
-  // Capture step 2 (Left hand set to Yellow, now selecting Right hand)
-  await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-modal-donut-step2.png'),
-    fullPage: true,
-  });
-
-  // 4. Select right hand color (e.g. レッド) -> modal closes and returns to full photo
-  const redColorBtn = page.locator('div[role="button"][aria-label="レッド"]');
-  await redColorBtn.click();
+  // 3. Click "次へ進む"
+  await page.locator('button:has-text("次へ進む")').click();
   await page.waitForTimeout(800);
 
-  // Capture final answered state on full-screen photo
+  // Capture next question screen
   await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-fullscreen-answered.png'),
+    path: path.join(ARTIFACT_DIR, 'screenshot-next-question.png'),
     fullPage: true,
   });
 });

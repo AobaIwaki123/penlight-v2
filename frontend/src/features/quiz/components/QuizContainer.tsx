@@ -14,6 +14,7 @@ import {
 import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
+import { FeedbackModal } from '@/features/quiz/components/FeedbackModal';
 import { Header } from '@/features/quiz/components/Header';
 import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
@@ -115,26 +116,25 @@ export function QuizContainer() {
     if (isCorrect) {
       setScore((s) => s + 1);
       setFeedback('correct');
-      // Trigger haptic vibration if supported on mobile
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
         navigator.vibrate(50);
       }
     } else {
       setFeedback('wrong');
     }
+  };
 
-    // Advance to next question after brief 1.2s delay for visual feedback
-    setTimeout(() => {
-      setFeedback('idle');
-      setSelectedLeft(undefined);
-      setSelectedRight(undefined);
+  // Move to next question from FeedbackModal
+  const handleNextQuestion = () => {
+    setFeedback('idle');
+    setSelectedLeft(undefined);
+    setSelectedRight(undefined);
 
-      if (currentIndex + 1 < members.length) {
-        setCurrentIndex((i) => i + 1);
-      } else {
-        setIsFinished(true);
-      }
-    }, 1200);
+    if (currentIndex + 1 < members.length) {
+      setCurrentIndex((i) => i + 1);
+    } else {
+      setIsFinished(true);
+    }
   };
 
   const handleRestart = () => {
@@ -280,26 +280,6 @@ export function QuizContainer() {
           {renderLayout()}
         </Box>
 
-        {/* 正誤判定フィードバックバナー */}
-        {feedback !== 'idle' && (
-          <Box
-            py={6}
-            px={16}
-            style={{
-              borderRadius: 20,
-              backgroundColor: feedback === 'correct' ? '#2b8a3e' : '#c92a2a',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '13px',
-              animation: 'popIn 0.2s ease',
-            }}
-          >
-            {feedback === 'correct'
-              ? '🎉 大正解！ (左右順不同OK)'
-              : `😢 不正解... 正解: ${colorMap.get(currentMember.penlight.left_color_id)?.name} × ${colorMap.get(currentMember.penlight.right_color_id)?.name}`}
-          </Box>
-        )}
-
         {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
         {inputMode === 'grid' && (
           <PaletteGridInput
@@ -324,6 +304,17 @@ export function QuizContainer() {
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}
         initialHand={activeHand}
+      />
+
+      {/* 回答正誤判定モーダル (あなたの回答 vs 正解のカラー 比較カード) */}
+      <FeedbackModal
+        opened={feedback !== 'idle'}
+        isCorrect={feedback === 'correct'}
+        userLeftColor={selectedLeft}
+        userRightColor={selectedRight}
+        correctLeftColor={colorMap.get(currentMember.penlight.left_color_id)}
+        correctRightColor={colorMap.get(currentMember.penlight.right_color_id)}
+        onNext={handleNextQuestion}
       />
 
       {/* 結果発表モーダル */}
