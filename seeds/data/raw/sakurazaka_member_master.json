@@ -1,0 +1,1163 @@
+{
+  "kind": "bigquery#tableDataList",
+  "etag": "/UTZlZdP00cEMAar1surCw==",
+  "totalRows": "34",
+  "rows": [
+    {
+      "f": [
+        {
+          "v": "0"
+        },
+        {
+          "v": "小池美波"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "😄"
+        },
+        {
+          "v": "1st"
+        },
+        {
+          "v": "true"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "7"
+        },
+        {
+          "v": "田村保乃"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐻\u200d"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "10"
+        },
+        {
+          "v": "松田里奈"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🌺"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "2"
+        },
+        {
+          "v": "3"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "12"
+        },
+        {
+          "v": "守屋麗奈"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🍫"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "3"
+        },
+        {
+          "v": "7"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "4"
+        },
+        {
+          "v": "大沼晶保"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐟"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "3"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "8"
+        },
+        {
+          "v": "藤吉夏鈴"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎐"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "11"
+        },
+        {
+          "v": "森田ひかる"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🌱"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "4"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "3"
+        },
+        {
+          "v": "大園玲"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "📝"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "9"
+        },
+        {
+          "v": "増本綺良"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "✨"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "13"
+        },
+        {
+          "v": "13"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "5"
+        },
+        {
+          "v": "幸阪茉里乃"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🍼"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "11"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "1"
+        },
+        {
+          "v": "井上梨名"
+        },
+        {
+          "v": "いのり"
+        },
+        {
+          "v": "🦒"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "2"
+        },
+        {
+          "v": "遠藤光莉"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🦋"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "6"
+        },
+        {
+          "v": "6"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "6"
+        },
+        {
+          "v": "武元唯衣"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐶"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "12"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "13"
+        },
+        {
+          "v": "山﨑天"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐍"
+        },
+        {
+          "v": "2nd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "2"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "19"
+        },
+        {
+          "v": "中嶋優月"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "😄"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "7"
+        },
+        {
+          "v": "7"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "18"
+        },
+        {
+          "v": "谷口愛季"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎸"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "4"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "14"
+        },
+        {
+          "v": "石森璃花"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🩷"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "2"
+        },
+        {
+          "v": "7"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "16"
+        },
+        {
+          "v": "小田倉麗奈"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎻\t"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "22"
+        },
+        {
+          "v": "村井優"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐇"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "6"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "24"
+        },
+        {
+          "v": "山下瞳月"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🍜"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "4"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "21"
+        },
+        {
+          "v": "向井純葉"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🫛"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "8"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "20"
+        },
+        {
+          "v": "的野美青"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎯"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "23"
+        },
+        {
+          "v": "村山美羽"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🪽"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "6"
+        },
+        {
+          "v": "14"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "15"
+        },
+        {
+          "v": "遠藤理子"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🥁"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "17"
+        },
+        {
+          "v": "小島凪紗"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎹"
+        },
+        {
+          "v": "3rd"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "13"
+        },
+        {
+          "v": "2ndAlbum"
+        },
+        {
+          "v": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/400_320_102400.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "25"
+        },
+        {
+          "v": "浅井恋乃未"
+        },
+        {
+          "v": "このみん"
+        },
+        {
+          "v": "🎷"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "4"
+        },
+        {
+          "v": "8"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_asai_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "29"
+        },
+        {
+          "v": "中川智尋"
+        },
+        {
+          "v": "ちーたん"
+        },
+        {
+          "v": "🦜"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "3"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_nakagawa_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "26"
+        },
+        {
+          "v": "稲熊ひな"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🐻"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "8"
+        },
+        {
+          "v": "13"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_inaguna_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "31"
+        },
+        {
+          "v": "目黒陽色"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "💃🏻"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "12"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_meguro_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "28"
+        },
+        {
+          "v": "佐藤愛桜"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🖌️"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_sato_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "33"
+        },
+        {
+          "v": "山田桃実"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🍑"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "10"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamada_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "32"
+        },
+        {
+          "v": "山川宇衣"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "👼🏻"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "5"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamakawa_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "27"
+        },
+        {
+          "v": "勝又春"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎸"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "1"
+        },
+        {
+          "v": "4"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_katsumata_bgFGJ38s_00.jpg"
+        }
+      ]
+    },
+    {
+      "f": [
+        {
+          "v": "30"
+        },
+        {
+          "v": "松本和子"
+        },
+        {
+          "v": null
+        },
+        {
+          "v": "🎻"
+        },
+        {
+          "v": "4th"
+        },
+        {
+          "v": "false"
+        },
+        {
+          "v": "0"
+        },
+        {
+          "v": "8"
+        },
+        {
+          "v": "4thTowel"
+        },
+        {
+          "v": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_matsumoto_bgFGJ38s_00.jpg"
+        }
+      ]
+    }
+  ]
+}

@@ -5,8 +5,8 @@
     "short_name": "日向坂",
     "theme_color_hex": "#7CC7E8",
     "display_order": 1,
-    "colors_file": "data/bq_export/hinatazaka_penlight.json",
-    "members_file": "data/bq_export/hinatazaka_member_master.json"
+    "colors_file": "seeds/data/raw/hinatazaka_penlight.json",
+    "members_file": "seeds/data/raw/hinatazaka_member_master.json"
   },
   {
     "slug": "sakurazaka46",
@@ -14,7 +14,7 @@
     "short_name": "櫻坂",
     "theme_color_hex": "#F19DB5",
     "display_order": 2,
-    "colors_file": "data/bq_export/sakurazaka_penlight.json",
-    "members_file": "data/bq_export/sakurazaka_member_master.json"
+    "colors_file": "seeds/data/raw/sakurazaka_penlight.json",
+    "members_file": "seeds/data/raw/sakurazaka_member_master.json"
   }
 ]
