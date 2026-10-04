@@ -181,7 +181,7 @@
   },
   {
     "group_slug": "nogizaka46",
-    "name": "白",
+    "name": "ホワイト",
     "hex_code": "#FFFFFF",
     "display_order": 0
   },
@@ -193,25 +193,25 @@
   },
   {
     "group_slug": "nogizaka46",
-    "name": "青",
+    "name": "ブルー",
     "hex_code": "#0000FF",
     "display_order": 2
   },
   {
     "group_slug": "nogizaka46",
-    "name": "黄",
+    "name": "イエロー",
     "hex_code": "#FFFF00",
     "display_order": 3
   },
   {
     "group_slug": "nogizaka46",
-    "name": "紫",
+    "name": "パープル",
     "hex_code": "#800080",
     "display_order": 4
   },
   {
     "group_slug": "nogizaka46",
-    "name": "緑",
+    "name": "グリーン",
     "hex_code": "#008000",
     "display_order": 5
   },
@@ -223,7 +223,7 @@
   },
   {
     "group_slug": "nogizaka46",
-    "name": "赤",
+    "name": "レッド",
     "hex_code": "#FF0000",
     "display_order": 7
   },
@@ -235,7 +235,7 @@
   },
   {
     "group_slug": "nogizaka46",
-    "name": "黄緑",
+    "name": "ライトグリーン",
     "hex_code": "#7FFF00",
     "display_order": 9
   },

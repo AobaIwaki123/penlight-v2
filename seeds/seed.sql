@@ -70,25 +70,25 @@ VALUES ('col_defa1cf2f1d25339b617b924a03f77b8', 'grp_92629918b190528ab9ea941cd2e
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
 VALUES ('col_8b2d93c75ddc5218b21e0dcabb1b59d7', 'grp_92629918b190528ab9ea941cd2e425f2', 'ブルー', '#0000F1', 14, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_2cb38fd84c285e8aa0b01eecaa58399f', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '白', '#FFFFFF', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_12742e6dca855ced8207a88b38a37bd9', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'ホワイト', '#FFFFFF', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
 VALUES ('col_7861e0471b535651960a5f48d333188a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'オレンジ', '#FF8C00', 1, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_a82ebf4d9d2e5091829eb5f7dabad70e', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '青', '#0000FF', 2, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_5766e36884e55ecf9a7caa305e241b61', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'ブルー', '#0000FF', 2, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_0e3bcc4b8dc153bfb871430f9b33e9d5', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '黄', '#FFFF00', 3, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_6169da74854252179aa2a38467e35b0b', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'イエロー', '#FFFF00', 3, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_87fc0b6e85de5efa89231f31d6a07a10', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '紫', '#800080', 4, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_025d5a45ea045d859f6d3514518f7cc2', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'パープル', '#800080', 4, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_ad922d18f82b5cd2a86274118e6d6ca5', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '緑', '#008000', 5, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_4a2177e9826b5dee821de26eb99c4fd5', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'グリーン', '#008000', 5, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
 VALUES ('col_713d423be138518ba71ded73fd7acb96', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'ピンク', '#FFC0CB', 6, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_7bc01f8b62c552278010d22af934b6fb', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '赤', '#FF0000', 7, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_79323113651455c9b153abf40defbc2c', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'レッド', '#FF0000', 7, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
 VALUES ('col_7aac97d0504756f3979b01d34218416f', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '水色', '#00BFFF', 8, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
-VALUES ('col_8d400b8a4ffc5015ae1fca7b369291b6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '黄緑', '#7FFF00', 9, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('col_3f5bcfdaa75a576a8650e9e29213061c', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'ライトグリーン', '#7FFF00', 9, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
 VALUES ('col_453d944be3615f218525584a28cbf218', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'ターコイズ', '#40E0D0', 10, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 
@@ -254,61 +254,61 @@ VALUES ('mem_4de21332af30544e87c1d89bc21d01e1', 'grp_92629918b190528ab9ea941cd2e
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
 VALUES ('mem_61023eeb30125bfdb2c2284d3c77b3d6', 'grp_92629918b190528ab9ea941cd2e425f2', '遠藤', '理子', 'えんどう', 'りこ', 3, 'active', 'col_58beea4b0fcf54f39debdb8dc08a788d', 'col_f764f14f2f985512845f27a266d0f17d', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_5bb8d5630c4956c1ba2a63ea8761b9e6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '伊藤', '理々杏', 'いとう', 'りりあ', 3, 'active', 'col_87fc0b6e85de5efa89231f31d6a07a10', 'col_7bc01f8b62c552278010d22af934b6fb', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_5bb8d5630c4956c1ba2a63ea8761b9e6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '伊藤', '理々杏', 'いとう', 'りりあ', 3, 'active', 'col_025d5a45ea045d859f6d3514518f7cc2', 'col_79323113651455c9b153abf40defbc2c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_bc7a957b5b0d531da9480fd8943506a6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '岩本', '蓮加', 'いわもと', 'れんか', 3, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_7bc01f8b62c552278010d22af934b6fb', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_bc7a957b5b0d531da9480fd8943506a6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '岩本', '蓮加', 'いわもと', 'れんか', 3, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_79323113651455c9b153abf40defbc2c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_916df6220b6755fbb8d4d5736a453d8a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '梅澤', '美波', 'うめざわ', 'みなみ', 3, 'active', 'col_a82ebf4d9d2e5091829eb5f7dabad70e', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_916df6220b6755fbb8d4d5736a453d8a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '梅澤', '美波', 'うめざわ', 'みなみ', 3, 'active', 'col_5766e36884e55ecf9a7caa305e241b61', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_fbdc833f0cb4562c8a60767ce7c6039d', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '久保', '史緒里', 'くぼ', 'しおり', 3, 'active', 'col_7aac97d0504756f3979b01d34218416f', 'col_0e3bcc4b8dc153bfb871430f9b33e9d5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_fbdc833f0cb4562c8a60767ce7c6039d', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '久保', '史緒里', 'くぼ', 'しおり', 3, 'active', 'col_7aac97d0504756f3979b01d34218416f', 'col_6169da74854252179aa2a38467e35b0b', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_b55f84aa951e538b92cf6fab897f1996', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '佐藤', '楓', 'さとう', 'かえで', 3, 'active', 'col_7bc01f8b62c552278010d22af934b6fb', 'col_7bc01f8b62c552278010d22af934b6fb', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_b55f84aa951e538b92cf6fab897f1996', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '佐藤', '楓', 'さとう', 'かえで', 3, 'active', 'col_79323113651455c9b153abf40defbc2c', 'col_79323113651455c9b153abf40defbc2c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_ba886957a68656009e0883affce7df96', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '中村', '麗乃', 'なかむら', 'れの', 3, 'active', 'col_a82ebf4d9d2e5091829eb5f7dabad70e', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_ba886957a68656009e0883affce7df96', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '中村', '麗乃', 'なかむら', 'れの', 3, 'active', 'col_5766e36884e55ecf9a7caa305e241b61', 'col_12742e6dca855ced8207a88b38a37bd9', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_d45a34bbf5ad585d8e4ef46a589d2c00', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '吉田', '綾乃クリスティー', 'よしだ', 'あやのくりすてぃー', 3, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_87fc0b6e85de5efa89231f31d6a07a10', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_d45a34bbf5ad585d8e4ef46a589d2c00', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '吉田', '綾乃クリスティー', 'よしだ', 'あやのくりすてぃー', 3, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_025d5a45ea045d859f6d3514518f7cc2', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_5ba3a312bdc55b2aa91175a94878e760', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '与田', '祐希', 'よだ', 'ゆうき', 3, 'active', 'col_7bc01f8b62c552278010d22af934b6fb', 'col_ad922d18f82b5cd2a86274118e6d6ca5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_5ba3a312bdc55b2aa91175a94878e760', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '与田', '祐希', 'よだ', 'ゆうき', 3, 'active', 'col_79323113651455c9b153abf40defbc2c', 'col_4a2177e9826b5dee821de26eb99c4fd5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_c602aee07c595f669c537f7140abc1fa', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '遠藤', 'さくら', 'えんどう', 'さくら', 4, 'active', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 'col_713d423be138518ba71ded73fd7acb96', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_c602aee07c595f669c537f7140abc1fa', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '遠藤', 'さくら', 'えんどう', 'さくら', 4, 'active', 'col_12742e6dca855ced8207a88b38a37bd9', 'col_713d423be138518ba71ded73fd7acb96', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_88a6fd58df4057379d255e88d3ad0ba0', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '賀喜', '遥香', 'かき', 'はるか', 4, 'active', 'col_7861e0471b535651960a5f48d333188a', 'col_ad922d18f82b5cd2a86274118e6d6ca5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_88a6fd58df4057379d255e88d3ad0ba0', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '賀喜', '遥香', 'かき', 'はるか', 4, 'active', 'col_7861e0471b535651960a5f48d333188a', 'col_4a2177e9826b5dee821de26eb99c4fd5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_1454226e525550b6996fcceb589e4ffc', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '金川', '紗耶', 'かながわ', 'さや', 4, 'active', 'col_7bc01f8b62c552278010d22af934b6fb', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_1454226e525550b6996fcceb589e4ffc', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '金川', '紗耶', 'かながわ', 'さや', 4, 'active', 'col_79323113651455c9b153abf40defbc2c', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_fedbe59b2ebb540d90a643520479c407', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '黒見', '明香', 'くろみ', 'はるか', 4, 'active', 'col_87fc0b6e85de5efa89231f31d6a07a10', 'col_ad922d18f82b5cd2a86274118e6d6ca5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_fedbe59b2ebb540d90a643520479c407', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '黒見', '明香', 'くろみ', 'はるか', 4, 'active', 'col_025d5a45ea045d859f6d3514518f7cc2', 'col_4a2177e9826b5dee821de26eb99c4fd5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
 VALUES ('mem_9f6cb5cac6135987b73167203ee8235c', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '佐藤', '璃果', 'さとう', 'りか', 4, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_453d944be3615f218525584a28cbf218', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_3fb604b7c78253e58e667751e125b79e', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '柴田', '柚菜', 'しばた', 'ゆな', 4, 'active', 'col_a82ebf4d9d2e5091829eb5f7dabad70e', 'col_8d400b8a4ffc5015ae1fca7b369291b6', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_3fb604b7c78253e58e667751e125b79e', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '柴田', '柚菜', 'しばた', 'ゆな', 4, 'active', 'col_5766e36884e55ecf9a7caa305e241b61', 'col_3f5bcfdaa75a576a8650e9e29213061c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_2d1a0b5c9b4a5402a2cb8737152711e6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '田村', '真佑', 'たむら', 'まゆ', 4, 'active', 'col_87fc0b6e85de5efa89231f31d6a07a10', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_2d1a0b5c9b4a5402a2cb8737152711e6', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '田村', '真佑', 'たむら', 'まゆ', 4, 'active', 'col_025d5a45ea045d859f6d3514518f7cc2', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_1c731613b2cb5339813a718c55fa3ef8', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '筒井', 'あやめ', 'つつい', 'あやめ', 4, 'active', 'col_87fc0b6e85de5efa89231f31d6a07a10', 'col_87fc0b6e85de5efa89231f31d6a07a10', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_1c731613b2cb5339813a718c55fa3ef8', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '筒井', 'あやめ', 'つつい', 'あやめ', 4, 'active', 'col_025d5a45ea045d859f6d3514518f7cc2', 'col_025d5a45ea045d859f6d3514518f7cc2', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
 VALUES ('mem_900332b6a7f35d2fb0f779f4025f158f', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '林', '瑠奈', 'はやし', 'るな', 4, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_713d423be138518ba71ded73fd7acb96', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_b44ec03b6e0d51d6a43de351bd9629f9', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '松尾', '美佑', 'まつお', 'みゆ', 4, 'active', 'col_453d944be3615f218525584a28cbf218', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_b44ec03b6e0d51d6a43de351bd9629f9', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '松尾', '美佑', 'まつお', 'みゆ', 4, 'active', 'col_453d944be3615f218525584a28cbf218', 'col_12742e6dca855ced8207a88b38a37bd9', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_a3e621228cff565c90b19ee7f36fc06b', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '矢久保', '美緒', 'やくぼ', 'みお', 4, 'active', 'col_0e3bcc4b8dc153bfb871430f9b33e9d5', 'col_713d423be138518ba71ded73fd7acb96', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_a3e621228cff565c90b19ee7f36fc06b', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '矢久保', '美緒', 'やくぼ', 'みお', 4, 'active', 'col_6169da74854252179aa2a38467e35b0b', 'col_713d423be138518ba71ded73fd7acb96', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_4ee76929b757597ba0a78a582d04270a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '弓木', '奈於', 'ゆみき', 'なお', 4, 'active', 'col_7bc01f8b62c552278010d22af934b6fb', 'col_8d400b8a4ffc5015ae1fca7b369291b6', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_4ee76929b757597ba0a78a582d04270a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '弓木', '奈於', 'ゆみき', 'なお', 4, 'active', 'col_79323113651455c9b153abf40defbc2c', 'col_3f5bcfdaa75a576a8650e9e29213061c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_6515da2348d85a4ba0fd6d6000ad8188', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '五百城', '茉央', 'いおき', 'まお', 5, 'active', 'col_453d944be3615f218525584a28cbf218', 'col_a82ebf4d9d2e5091829eb5f7dabad70e', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_6515da2348d85a4ba0fd6d6000ad8188', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '五百城', '茉央', 'いおき', 'まお', 5, 'active', 'col_453d944be3615f218525584a28cbf218', 'col_5766e36884e55ecf9a7caa305e241b61', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_36fc8a7f13d05fe88ae58017b3b59d1c', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '池田', '瑛紗', 'いけだ', 'てれさ', 5, 'active', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 'col_ad922d18f82b5cd2a86274118e6d6ca5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_36fc8a7f13d05fe88ae58017b3b59d1c', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '池田', '瑛紗', 'いけだ', 'てれさ', 5, 'active', 'col_12742e6dca855ced8207a88b38a37bd9', 'col_4a2177e9826b5dee821de26eb99c4fd5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
 VALUES ('mem_972e96e488ad5c69a5ca94181967a0f8', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '一ノ瀬', '美空', 'いちのせ', 'みく', 5, 'active', 'col_7aac97d0504756f3979b01d34218416f', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_af5652d5e4bf5a06908862e18d47f9d8', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '井上', '和', 'いのうえ', 'なぎ', 5, 'active', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 'col_7bc01f8b62c552278010d22af934b6fb', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_af5652d5e4bf5a06908862e18d47f9d8', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '井上', '和', 'いのうえ', 'なぎ', 5, 'active', 'col_12742e6dca855ced8207a88b38a37bd9', 'col_79323113651455c9b153abf40defbc2c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_170a8cd7930c512d99c1187064c6ebd4', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '岡本', '姫奈', 'おかもと', 'ひな', 5, 'active', 'col_87fc0b6e85de5efa89231f31d6a07a10', 'col_a82ebf4d9d2e5091829eb5f7dabad70e', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_170a8cd7930c512d99c1187064c6ebd4', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '岡本', '姫奈', 'おかもと', 'ひな', 5, 'active', 'col_025d5a45ea045d859f6d3514518f7cc2', 'col_5766e36884e55ecf9a7caa305e241b61', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_df93a6771b075440b452957007b2689e', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '小川', '彩', 'おがわ', 'あや', 5, 'active', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 'col_2cb38fd84c285e8aa0b01eecaa58399f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_df93a6771b075440b452957007b2689e', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '小川', '彩', 'おがわ', 'あや', 5, 'active', 'col_12742e6dca855ced8207a88b38a37bd9', 'col_12742e6dca855ced8207a88b38a37bd9', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_076f4ee6f7b05730b15ff56cbd457be7', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '奥田', 'いろは', 'おくだ', 'いろは', 5, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_8d400b8a4ffc5015ae1fca7b369291b6', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_076f4ee6f7b05730b15ff56cbd457be7', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '奥田', 'いろは', 'おくだ', 'いろは', 5, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_3f5bcfdaa75a576a8650e9e29213061c', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
-VALUES ('mem_e7e29d6c19875964ba0079913195d513', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '川﨑', '桜', 'かわさき', 'さくら', 5, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_ad922d18f82b5cd2a86274118e6d6ca5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('mem_e7e29d6c19875964ba0079913195d513', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '川﨑', '桜', 'かわさき', 'さくら', 5, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_4a2177e9826b5dee821de26eb99c4fd5', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
 VALUES ('mem_f45a1e45200256bb870fc195e360119a', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '菅原', '咲月', 'すがわら', 'さつき', 5, 'active', 'col_713d423be138518ba71ded73fd7acb96', 'col_7aac97d0504756f3979b01d34218416f', 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
@@ -528,4 +528,4 @@ VALUES ('img_b84c0981292159e3afcac4e68a61c586', 'mem_61f64dc955b55de8b3540cc265d
 
 -- Master Version (Ref: ADR-0021)
 INSERT OR REPLACE INTO master_versions (id, version, updated_at)
-VALUES ('current', '2026.10.04-2', '2026-10-04T00:00:00Z');
+VALUES ('current', '2026.10.04-3', '2026-10-04T00:00:00Z');

@@ -1321,8 +1321,8 @@
     "given_name_kana": "りりあ",
     "generation": 3,
     "status": "active",
-    "left_color": "紫",
-    "right_color": "赤",
+    "left_color": "パープル",
+    "right_color": "レッド",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1340,7 +1340,7 @@
     "generation": 3,
     "status": "active",
     "left_color": "ピンク",
-    "right_color": "赤",
+    "right_color": "レッド",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1357,7 +1357,7 @@
     "given_name_kana": "みなみ",
     "generation": 3,
     "status": "active",
-    "left_color": "青",
+    "left_color": "ブルー",
     "right_color": "水色",
     "images": [
       {
@@ -1376,7 +1376,7 @@
     "generation": 3,
     "status": "active",
     "left_color": "水色",
-    "right_color": "黄",
+    "right_color": "イエロー",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1393,8 +1393,8 @@
     "given_name_kana": "かえで",
     "generation": 3,
     "status": "active",
-    "left_color": "赤",
-    "right_color": "赤",
+    "left_color": "レッド",
+    "right_color": "レッド",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1411,8 +1411,8 @@
     "given_name_kana": "れの",
     "generation": 3,
     "status": "active",
-    "left_color": "青",
-    "right_color": "白",
+    "left_color": "ブルー",
+    "right_color": "ホワイト",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1430,7 +1430,7 @@
     "generation": 3,
     "status": "active",
     "left_color": "ピンク",
-    "right_color": "紫",
+    "right_color": "パープル",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1447,8 +1447,8 @@
     "given_name_kana": "ゆうき",
     "generation": 3,
     "status": "active",
-    "left_color": "赤",
-    "right_color": "緑",
+    "left_color": "レッド",
+    "right_color": "グリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1465,7 +1465,7 @@
     "given_name_kana": "さくら",
     "generation": 4,
     "status": "active",
-    "left_color": "白",
+    "left_color": "ホワイト",
     "right_color": "ピンク",
     "images": [
       {
@@ -1484,7 +1484,7 @@
     "generation": 4,
     "status": "active",
     "left_color": "オレンジ",
-    "right_color": "緑",
+    "right_color": "グリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1501,7 +1501,7 @@
     "given_name_kana": "さや",
     "generation": 4,
     "status": "active",
-    "left_color": "赤",
+    "left_color": "レッド",
     "right_color": "水色",
     "images": [
       {
@@ -1519,8 +1519,8 @@
     "given_name_kana": "はるか",
     "generation": 4,
     "status": "active",
-    "left_color": "紫",
-    "right_color": "緑",
+    "left_color": "パープル",
+    "right_color": "グリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1555,8 +1555,8 @@
     "given_name_kana": "ゆな",
     "generation": 4,
     "status": "active",
-    "left_color": "青",
-    "right_color": "黄緑",
+    "left_color": "ブルー",
+    "right_color": "ライトグリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1573,7 +1573,7 @@
     "given_name_kana": "まゆ",
     "generation": 4,
     "status": "active",
-    "left_color": "紫",
+    "left_color": "パープル",
     "right_color": "水色",
     "images": [
       {
@@ -1591,8 +1591,8 @@
     "given_name_kana": "あやめ",
     "generation": 4,
     "status": "active",
-    "left_color": "紫",
-    "right_color": "紫",
+    "left_color": "パープル",
+    "right_color": "パープル",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1628,7 +1628,7 @@
     "generation": 4,
     "status": "active",
     "left_color": "ターコイズ",
-    "right_color": "白",
+    "right_color": "ホワイト",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1645,7 +1645,7 @@
     "given_name_kana": "みお",
     "generation": 4,
     "status": "active",
-    "left_color": "黄",
+    "left_color": "イエロー",
     "right_color": "ピンク",
     "images": [
       {
@@ -1663,8 +1663,8 @@
     "given_name_kana": "なお",
     "generation": 4,
     "status": "active",
-    "left_color": "赤",
-    "right_color": "黄緑",
+    "left_color": "レッド",
+    "right_color": "ライトグリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1682,7 +1682,7 @@
     "generation": 5,
     "status": "active",
     "left_color": "ターコイズ",
-    "right_color": "青",
+    "right_color": "ブルー",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1699,8 +1699,8 @@
     "given_name_kana": "てれさ",
     "generation": 5,
     "status": "active",
-    "left_color": "白",
-    "right_color": "緑",
+    "left_color": "ホワイト",
+    "right_color": "グリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1735,8 +1735,8 @@
     "given_name_kana": "なぎ",
     "generation": 5,
     "status": "active",
-    "left_color": "白",
-    "right_color": "赤",
+    "left_color": "ホワイト",
+    "right_color": "レッド",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1753,8 +1753,8 @@
     "given_name_kana": "ひな",
     "generation": 5,
     "status": "active",
-    "left_color": "紫",
-    "right_color": "青",
+    "left_color": "パープル",
+    "right_color": "ブルー",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1771,8 +1771,8 @@
     "given_name_kana": "あや",
     "generation": 5,
     "status": "active",
-    "left_color": "白",
-    "right_color": "白",
+    "left_color": "ホワイト",
+    "right_color": "ホワイト",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1790,7 +1790,7 @@
     "generation": 5,
     "status": "active",
     "left_color": "ピンク",
-    "right_color": "黄緑",
+    "right_color": "ライトグリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
@@ -1808,7 +1808,7 @@
     "generation": 5,
     "status": "active",
     "left_color": "ピンク",
-    "right_color": "緑",
+    "right_color": "グリーン",
     "images": [
       {
         "photo_type_slug": "artist_photo",
