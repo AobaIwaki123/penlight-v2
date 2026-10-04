@@ -1,8 +1,8 @@
 'use client';
 
-import { Box, Group, Paper, Text } from '@mantine/core';
+import { Box, Paper } from '@mantine/core';
+import { IconArrowsLeftRight } from '@tabler/icons-react';
 import { useState } from 'react';
-import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { Color } from '@/types/generated';
 
 interface AnchorColorPickerProps {
@@ -67,7 +67,6 @@ export function AnchorColorPicker({
 
   const activeColor =
     activeHand === 'left' ? selectedLeftColor : selectedRightColor;
-  const displayColor = hoveredColor || activeColor;
 
   return (
     <Box
@@ -98,114 +97,38 @@ export function AnchorColorPicker({
         }}
       />
 
-      {/* 中央ミニマル切り替えUI: 左・右のミニスティックを直接タップ可能 */}
+      {/* 中央ミニマル切り替えボタン: タップで左↔右を瞬時にスイッチ */}
       <Paper
+        role="button"
+        tabIndex={0}
+        onClick={() => onHandChange(activeHand === 'left' ? 'right' : 'left')}
+        title={`タップして${activeHand === 'left' ? '右手' : '左手'}へ切り替え`}
         radius="50%"
         style={{
-          width: 90,
-          height: 90,
+          width: 54,
+          height: 54,
           borderRadius: '50%',
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
           backdropFilter: 'blur(10px)',
-          border: '1.5px solid rgba(255,255,255,0.25)',
+          border:
+            activeHand === 'left' ? '2px solid #339af0' : '2px solid #ff922b',
+          boxShadow:
+            activeHand === 'left'
+              ? '0 0 16px rgba(51, 154, 240, 0.75), inset 0 0 8px rgba(51, 154, 240, 0.25)'
+              : '0 0 16px rgba(255, 146, 43, 0.75), inset 0 0 8px rgba(255, 146, 43, 0.25)',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 6,
-          boxShadow: '0 4px 18px rgba(0,0,0,0.5)',
+          cursor: 'pointer',
           zIndex: 2,
+          transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       >
-        {/* 左・右のミニマルスティックセレクター */}
-        <Group gap={8} justify="center" align="center" wrap="nowrap">
-          {/* 左手切り替えスティック */}
-          <Box
-            role="button"
-            tabIndex={0}
-            onClick={() => onHandChange('left')}
-            title="左手を選択"
-            style={{
-              cursor: 'pointer',
-              padding: '3px 4px',
-              borderRadius: 999,
-              backgroundColor:
-                activeHand === 'left'
-                  ? 'rgba(34, 139, 230, 0.4)'
-                  : 'transparent',
-              border:
-                activeHand === 'left'
-                  ? '1.5px solid #339af0'
-                  : '1.5px solid transparent',
-              boxShadow:
-                activeHand === 'left'
-                  ? '0 0 10px rgba(51, 154, 240, 0.7)'
-                  : 'none',
-              transform: activeHand === 'left' ? 'scale(1.12)' : 'scale(0.92)',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <PenlightStick
-              color={selectedLeftColor}
-              height={36}
-              width={15}
-              textColor="#ffffff"
-            />
-          </Box>
-
-          {/* 右手切り替えスティック */}
-          <Box
-            role="button"
-            tabIndex={0}
-            onClick={() => onHandChange('right')}
-            title="右手を選択"
-            style={{
-              cursor: 'pointer',
-              padding: '3px 4px',
-              borderRadius: 999,
-              backgroundColor:
-                activeHand === 'right'
-                  ? 'rgba(253, 126, 20, 0.4)'
-                  : 'transparent',
-              border:
-                activeHand === 'right'
-                  ? '1.5px solid #ff922b'
-                  : '1.5px solid transparent',
-              boxShadow:
-                activeHand === 'right'
-                  ? '0 0 10px rgba(255, 146, 43, 0.7)'
-                  : 'none',
-              transform: activeHand === 'right' ? 'scale(1.12)' : 'scale(0.92)',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <PenlightStick
-              color={selectedRightColor}
-              height={36}
-              width={15}
-              textColor="#ffffff"
-            />
-          </Box>
-        </Group>
-
-        {/* 選択中/ホバー中の色名 (未選択時は空白でクリーンに) */}
-        <Text
-          fw={700}
-          c={displayColor ? 'white' : 'transparent'}
-          mt={2}
-          style={{
-            fontSize: (displayColor?.name.length || 0) >= 6 ? '8.5px' : '9.5px',
-            whiteSpace: 'nowrap',
-            maxWidth: 78,
-            minHeight: 12,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            textAlign: 'center',
-            lineHeight: 1.1,
-          }}
-        >
-          {displayColor ? displayColor.name : ' '}
-        </Text>
+        <IconArrowsLeftRight
+          size={22}
+          color={activeHand === 'left' ? '#339af0' : '#ff922b'}
+          stroke={2.2}
+        />
       </Paper>
 
       {/* 円周上に並ぶ 15 色のカラージュエル */}
