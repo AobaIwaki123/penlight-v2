@@ -1356,7 +1356,7 @@
     "family_name_kana": "うめざわ",
     "given_name_kana": "みなみ",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "ブルー",
     "right_color": "水色",
     "images": [
@@ -1374,7 +1374,7 @@
     "family_name_kana": "くぼ",
     "given_name_kana": "しおり",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "水色",
     "right_color": "イエロー",
     "images": [
@@ -1392,7 +1392,7 @@
     "family_name_kana": "さとう",
     "given_name_kana": "かえで",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "レッド",
     "right_color": "レッド",
     "images": [
@@ -1410,7 +1410,7 @@
     "family_name_kana": "なかむら",
     "given_name_kana": "れの",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "ブルー",
     "right_color": "ホワイト",
     "images": [
@@ -1428,7 +1428,7 @@
     "family_name_kana": "よしだ",
     "given_name_kana": "あやのくりすてぃー",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "ピンク",
     "right_color": "パープル",
     "images": [
@@ -1446,7 +1446,7 @@
     "family_name_kana": "よだ",
     "given_name_kana": "ゆうき",
     "generation": 3,
-    "status": "active",
+    "status": "graduated",
     "left_color": "レッド",
     "right_color": "グリーン",
     "images": [
@@ -1536,7 +1536,7 @@
     "family_name_kana": "さとう",
     "given_name_kana": "りか",
     "generation": 4,
-    "status": "active",
+    "status": "graduated",
     "left_color": "ピンク",
     "right_color": "ターコイズ",
     "images": [
@@ -1626,7 +1626,7 @@
     "family_name_kana": "まつお",
     "given_name_kana": "みゆ",
     "generation": 4,
-    "status": "active",
+    "status": "graduated",
     "left_color": "ターコイズ",
     "right_color": "ホワイト",
     "images": [
@@ -1644,7 +1644,7 @@
     "family_name_kana": "やくぼ",
     "given_name_kana": "みお",
     "generation": 4,
-    "status": "active",
+    "status": "graduated",
     "left_color": "イエロー",
     "right_color": "ピンク",
     "images": [
