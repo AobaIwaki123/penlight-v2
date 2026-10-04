@@ -32,13 +32,15 @@ description: 自宅KubernetesクラスタにおけるArgoCD宣言的GitOps、Clo
 ArgoCD にアプリケーションを初回登録する手順：
 
 ```bash
-# 1. ArgoCD Application マニフェストの適用
+# 1. 本番用 Secret (SESSION_SECRET >= 32バイト) の作成
+kubectl create secret generic penlight-secret -n penlight \
+  --from-literal=SESSION_SECRET="$(openssl rand -base64 32)" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+# 2. ArgoCD Application マニフェストの適用
 kubectl apply -f deploy/argocd/app.yml
 
-# 2. アプリケーション登録状態の確認
-kubectl get application penlight -n argocd
-
-# 3. 正常同期の確認 (SYNC: Synced, HEALTH: Healthy)
+# 3. アプリケーション登録状態の確認 (SYNC: Synced, HEALTH: Healthy)
 kubectl get application penlight -n argocd
 ```
 
