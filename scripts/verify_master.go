@@ -134,6 +134,45 @@ func main() {
 			} else {
 				fmt.Printf("✅ Bootstrap ETag: %s\n", etag)
 			}
+
+			var bootstrap model.BootstrapResponse
+			if err := json.NewDecoder(bootResp.Body).Decode(&bootstrap); err != nil {
+				fmt.Printf("❌ Failed to decode bootstrap response: %v\n", err)
+				hasErrors = true
+			} else {
+				noRedirectClient := &http.Client{
+					Timeout: 2 * time.Second,
+					CheckRedirect: func(req *http.Request, via []*http.Request) error {
+						return http.ErrUseLastResponse
+					},
+				}
+				imageFailures := 0
+				for _, m := range bootstrap.Members {
+					var key string
+					if len(m.Images) > 0 {
+						key = m.Images[0].ImageKey
+					}
+					if key == "" {
+						fmt.Printf("❌ Member %s%s has no primary image\n", m.FamilyName, m.GivenName)
+						imageFailures++
+						continue
+					}
+					imgResp, err := noRedirectClient.Head(fmt.Sprintf("http://localhost:8080/images/%s", key))
+					if err != nil || (imgResp.StatusCode != http.StatusFound && imgResp.StatusCode != http.StatusOK) {
+						fmt.Printf("❌ Image endpoint failed for %s%s (%s)\n", m.FamilyName, m.GivenName, key)
+						imageFailures++
+					}
+					if imgResp != nil {
+						imgResp.Body.Close()
+					}
+				}
+				if imageFailures > 0 {
+					fmt.Printf("❌ %d members failed image resolution\n", imageFailures)
+					hasErrors = true
+				} else {
+					fmt.Printf("✅ Live image endpoints: %d/%d active members resolved (302/200 OK)\n", len(bootstrap.Members), len(bootstrap.Members))
+				}
+			}
 		}
 	}
 
