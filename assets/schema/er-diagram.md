@@ -10,6 +10,7 @@ erDiagram
     GROUP ||--o{ GENERATE_QUIZ_REQUEST : "group_id"
     GROUP ||--o{ MEMBER : "group_id"
     GROUP ||--o{ PHOTO_TYPE : "group_id"
+    GROUP ||--o{ QUIZ_FILTER : "group_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     MEMBER ||--o{ MEMBER_IMAGE : "member_id"

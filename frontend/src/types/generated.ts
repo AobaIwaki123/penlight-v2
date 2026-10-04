@@ -312,6 +312,15 @@ export interface QuizQuestion {
   correct_index: number /* int */; // 0-3
   generated_at: string;
 }
+/**
+ * QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018).
+ */
+export interface QuizFilter {
+  group_id?: ID;
+  generations?: number /* int */[];
+  photo_type_ids?: ID[];
+  include_graduated: boolean;
+}
 
 //////////
 // source: repository.go

@@ -20,11 +20,11 @@
 クイズ出題の処理パイプラインにおいて、**「母集団フィルタリング (Filtering)」** を独立したデータ抽出（前処理）責務として分離する。
 
 ```mermaid
-flowchart LR
-    Request["出題リクエスト<br/>(GroupID, Generation)"] --> Filter["1. 母集団フィルタリング<br/>(本ADR: データ抽出)"]
+flowchart TD
+    Request["出題リクエスト<br/>(Filter)"] --> Filter["1. 母集団フィルタリング<br/>(本ADR: データ抽出)"]
     Filter --> Pool["出題母集団<br/>pool: []Member"]
-    Pool --> Target["2. 出題メンバー選出<br/>(ADR-0020: 誰を出すか)"]
-    Target --> Format["3. 解答形式<br/>(ADR-0019: どう答えるか)"]
+    Pool --> Target["2. 出題メンバー選出<br/>(ADR-0020: ブレンドデッキ)"]
+    Target --> Format["3. 解答形式<br/>(ADR-0019: 自由回答パレット)"]
 ```
 
 ### 具現化仕様
@@ -32,15 +32,25 @@ flowchart LR
 1. **母集団フィルター (`QuizFilter`)**:
    ```go
    type QuizFilter struct {
-       GroupID    *ID  // 特定グループ絞り込み (任意)
-       Generation *int // 期生絞り込み (任意)
+       // グループ絞り込み (nil の場合は全グループ対象)
+       GroupID *ID `json:"group_id,omitempty"`
+
+       // 期生絞り込み (空の場合は全期生対象。複数指定可: 例 [3, 4])
+       Generations []int `json:"generations,omitempty"`
+
+       // 衣装・写真種別絞り込み (ADR-0021。指定時は該当衣装を持つメンバーのみ抽出)
+       PhotoTypeIDs []ID `json:"photo_type_ids,omitempty"`
+
+       // 卒業生フラグ (false: 現役 active のみ / true: 卒業生 graduated も含む)
+       IncludeGraduated bool `json:"include_graduated"`
    }
    ```
 2. **責務境界**:
    - **前処理 (本ADR)**: リポジトリまたはメモリ内のメンバーマスタから、`QuizFilter` に合致する `[]Member`（母集団）を抽出する。
-   - **後続パイプライン**: 抽出された母集団を [ADR-0020](./0020-quiz-target-member-selection-strategy.md)（出題メンバー選出）へ引き渡す。
+   - **衣装フィルタ連動**: `PhotoTypeIDs` が指定された場合、その衣装の `MemberImage` を保持しているメンバーのみを抽出し、出題画像も該当衣装を優先する。
+   - **後続パイプライン**: 抽出された母集団を [ADR-0020](./0020-quiz-target-member-selection-strategy.md)（ブレンドデッキ選出）へ引き渡す。
 3. **バリデーション**:
-   - 抽出された母集団の件数が出題に必要な最小数に満たない場合は、エラー（Problem Details `ERR_INVALID_INPUT`）を返却する。
+   - 抽出された母集団の件数が出題に必要な最小数（4名未満など）に満たない場合は、エラー（`ErrInsufficientCandidates` / Problem Details `ERR_INVALID_INPUT`）を返却する。
 
 ---
 

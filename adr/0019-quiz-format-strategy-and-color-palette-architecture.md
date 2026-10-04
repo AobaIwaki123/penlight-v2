@@ -1,7 +1,7 @@
 # 0019. 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 (0019-quiz-format-strategy-and-color-palette-architecture.md)
 
-- **ステータス**: 提案中 (Proposed) - ※Strategyパターン自体は現時点ではfixせず検討対象として保持
-- **日付**: 2026-10-03
+- **ステータス**: 承認 (Accepted)
+- **日付**: 2026-10-04
 
 ---
 
@@ -20,43 +20,39 @@
 
 ## 2. 決定事項と具現化仕様 (Decision & Specification)
 
-解答形式そのものを **Strategy パターン (`QuizFormat`)** として設計し、初期実装から **「自由回答（カラーパレット選択式）」** を第一級市民として正式採用する。
+解答形式に **「自由回答（カラーパレット選択式）」** を第一級市民（デフォルト形式）として正式採用する。4択選択式はオプション/カジュアルモードとして将来または後続フェーズで連携可能とする。
 
 ```mermaid
 flowchart TD
-    Target["出題対象メンバー<br/>(ADR-0020で選出)"] --> Format{"解答形式 (QuizFormat)"}
+    Target["出題対象メンバー<br/>(ADR-0020で選出)"] --> Format{"解答形式"}
     
-    subgraph Mode1 ["カラーパレット自由選択式 (初期第一級市民)"]
-        Format -->|color_palette| Pal["カラーパレット選択<br/>(左手色 + 右手色の選択)"]
-        Pal --> Ver1["正誤判定: 入力2色と正解2色の照合"]
+    subgraph Mode1 ["カラーパレット自由選択式 (初期第一級市民・採用)"]
+        Format --> Pal["カラーパレット選択<br/>(1色目タップ → 2色目タップ)"]
+        Pal --> Ver1["左右順不同判定<br/>(逆持ちも100%正解)"]
     end
 
-    subgraph Mode2 ["4択選択式 (カジュアルモード)"]
-        Format -->|multiple_choice| Opt["4つの選択肢提示<br/>(ADR-0009 誤答選定Strategyと連携)"]
-        Opt --> Ver2["正誤判定: 選択インデックス照合"]
+    subgraph Mode2 ["4択選択式 (将来拡張/オプション)"]
+        Format -.-> Opt["4つの選択肢提示<br/>(ADR-0009 誤答選定Strategy)"]
+        Opt -.-> Ver2["選択インデックス照合"]
     end
 ```
 
 ### 具現化仕様
 
-1. **解答形式インターフェース (`QuizFormat`)**:
+1. **カラーパレット自由選択式の操作仕様**:
+   - 出題: 対象メンバーの顔写真・名前（漢字/かな）・期生。
+   - 解答UI: 画面下部に公式カラーパレット（15〜20色のボタン）。
+   - タップ操作:
+     - 1タップ目: 左手ペンライト色をセット。
+     - 2タップ目: 右手ペンライト色をセットし、**即座に正誤判定**（送信ボタン不要）。
+     - 同色2本（白×白など）の場合は同一色ボタンを 2 回連続タップで選択。
+2. **左右順不同判定 (`JudgeAnswer`)**:
+   - ファンのペンライト持ち替え実態を考慮し、左右の並び順は問わない。
+   - `(L == ans.L && R == ans.R) || (L == ans.R && R == ans.L)` で正解と判定する。
+3. **判定関数仕様**:
    ```go
-   type QuizFormat interface {
-       Type() string // "color_palette" | "multiple_choice"
-       BuildQuestion(ctx context.Context, target Member, pool []Member, allColors []Color) (QuizQuestion, error)
-       JudgeAnswer(input AnswerInput, target Member) bool
-   }
+   func JudgeAnswer(leftColorID, rightColorID ID, target Member) bool
    ```
-2. **2つの提供形式（案・未fix）**:
-   - **`color_palette`（カラーパレット自由選択式）**:
-     - 出題: 対象メンバーの情報（名前・期生・写真）。
-     - 解答UI: カラーパレット（全色提示、または絞り込み色提示など、具体的なUI・ダミー色の要否は実装前壁打ちで決定）。
-     - 特徴: 左右の2色を直感的に選択。順不同許容で判定。
-   - **`multiple_choice`（4択選択式）**:
-     - 出題: 対象メンバーと 4 つのカラーペア選択肢（正解 1 + 誤答 3）。
-     - 誤答選定: [ADR-0009](./0009-quiz-generation-strategy-pattern.md) の `OptionSelectionStrategy`（初期は `random`）によって誤答を生成。
-3. **判定ロジック（順不同の許容）**:
-   - ペンライトカラーは「左手・右手の持ち替え」が日常的であるため、判定は左右の順序を問わず `(L == ans.L && R == ans.R) || (L == ans.R && R == ans.L)` で正解とみなす。
 
 ---
 
