@@ -147,13 +147,19 @@ INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, up
 VALUES ('pht_018156cbb46b5dc18b73bbce32f85908', 'grp_e6722901acc15ce2af3dacee3a83840c', '5th_member', '5期生 新メンバー', 3, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
 INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)
+VALUES ('pht_4b91365a499d5b549bc247e0b39a662f', 'grp_e6722901acc15ce2af3dacee3a83840c', '18th_single', '18th Single 制服', 4, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
+ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
+INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)
 VALUES ('pht_03fa748438005b17821b28150dc4b2f7', 'grp_92629918b190528ab9ea941cd2e425f2', '2nd_album', '2nd Album アー写', 1, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
 INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)
 VALUES ('pht_7313925d7c1f5993ab1ffef4436ede35', 'grp_92629918b190528ab9ea941cd2e425f2', '4th_tour_towel', '4th ARENA TOUR 2024 個別マフラータオル', 2, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
 INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)
-VALUES ('pht_a5fae6c6dc12513d9df6c654d07a51bb', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', 'artist_photo', 'アーティスト写真', 1, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
+VALUES ('pht_dc453731473f5153a976928abb923cc2', 'grp_92629918b190528ab9ea941cd2e425f2', '16th_single', '16th Single アー写', 3, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
+ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
+INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)
+VALUES ('pht_f360ed530c545e898c306f9efe66e3e3', 'grp_fb2466e223f1558ea71bf2d0ba4c7469', '42nd_single', '42nd Single アー写', 1, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;
 
 -- Idol Members
@@ -517,7 +523,7 @@ VALUES ('img_5e8b4187ced354978b711d8145fd8110', 'mem_002a63d1dd7556b788df1ca6734
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_df0b3d407f9551609493c198bad21f7a', 'mem_5ec3d7cd9b5352b5b485607d96c791f1', 'pht_a3767a13eab9576096db8ebe60c0468c', 'img_df0b3d407f9551609493c198bad21f7a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_9cd38926169f54a1a2d69ee7e9ad818c', 'mem_93989e0003815378bcef9beab6a6417b', 'pht_a3767a13eab9576096db8ebe60c0468c', 'img_9cd38926169f54a1a2d69ee7e9ad818c.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_9cd38926169f54a1a2d69ee7e9ad818c', 'mem_93989e0003815378bcef9beab6a6417b', 'pht_4b91365a499d5b549bc247e0b39a662f', 'img_9cd38926169f54a1a2d69ee7e9ad818c.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_4de5514473695e94aac8c781f3ef5b43', 'mem_dbedef91333c5dbe958d62c5c9f1e95d', 'pht_a3767a13eab9576096db8ebe60c0468c', 'img_4de5514473695e94aac8c781f3ef5b43.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -545,7 +551,7 @@ VALUES ('img_a8e9f6db42915d1a8a7026afde47793a', 'mem_2098487fb2b45b129414de6e618
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_590214468c4c5cf198afeb3d453b50e6', 'mem_6c4b735992ef5962bf0b3aff3369675e', 'pht_a3767a13eab9576096db8ebe60c0468c', 'img_590214468c4c5cf198afeb3d453b50e6.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_57b9bb4ae04a5a9d89fdc119b2620e31', 'mem_2bfae489f3d855a29a6f892a5ddbe65a', 'pht_a3767a13eab9576096db8ebe60c0468c', 'img_57b9bb4ae04a5a9d89fdc119b2620e31.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_57b9bb4ae04a5a9d89fdc119b2620e31', 'mem_2bfae489f3d855a29a6f892a5ddbe65a', 'pht_4b91365a499d5b549bc247e0b39a662f', 'img_57b9bb4ae04a5a9d89fdc119b2620e31.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_eb3e8032a1e55308b9f8f8e3bdc8a336', 'mem_7d4191c0d176566b9af06261ef10e653', 'pht_018156cbb46b5dc18b73bbce32f85908', 'img_eb3e8032a1e55308b9f8f8e3bdc8a336.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -553,13 +559,13 @@ VALUES ('img_70d464ba4e765cf5880c7b98c4cdb7fc', 'mem_557bdbe582b65aaa8bda577d6b8
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_79fb832d845a571ea74eb1e93ae73f29', 'mem_7550f1fb98455b3d908d3e1438d08cbb', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_79fb832d845a571ea74eb1e93ae73f29.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_9a738c9f4bed5c119697df6ecada2118', 'mem_d38196cf0669533c9955bb5cbaffa794', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_9a738c9f4bed5c119697df6ecada2118.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_9a738c9f4bed5c119697df6ecada2118', 'mem_d38196cf0669533c9955bb5cbaffa794', 'pht_dc453731473f5153a976928abb923cc2', 'img_9a738c9f4bed5c119697df6ecada2118.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_51053d00961e5c608db9c50e77f17b9a', 'mem_77120098dfd1559bb76b0ac075274c71', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_51053d00961e5c608db9c50e77f17b9a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_2244b2278fb558118c3474f622999e1e', 'mem_8d052fe65505563697db724e25831609', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_2244b2278fb558118c3474f622999e1e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_2244b2278fb558118c3474f622999e1e', 'mem_8d052fe65505563697db724e25831609', 'pht_dc453731473f5153a976928abb923cc2', 'img_2244b2278fb558118c3474f622999e1e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_1343d055447c54818b4ca63acd624b05', 'mem_c60767d6b3995b9cbec82db107c45e77', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_1343d055447c54818b4ca63acd624b05.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_1343d055447c54818b4ca63acd624b05', 'mem_c60767d6b3995b9cbec82db107c45e77', 'pht_dc453731473f5153a976928abb923cc2', 'img_1343d055447c54818b4ca63acd624b05.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_8e752b142e0f5dabb33f8dcba9d4000c', 'mem_0123417027f2515792cea1b774422504', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_8e752b142e0f5dabb33f8dcba9d4000c.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -579,9 +585,9 @@ VALUES ('img_4be90f0be129579daf8e9d987af14a03', 'mem_18f81f86103e530c83029797f5d
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_d31accff20855c53ae58176a6d4d6f7a', 'mem_cbf48a1ef0ba55838b20daec8ac4a584', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_d31accff20855c53ae58176a6d4d6f7a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_abdf2137ef83576cbda9885ac76f2110', 'mem_27a7aab4d3d75ccda67f8d3a9537be63', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_abdf2137ef83576cbda9885ac76f2110.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_abdf2137ef83576cbda9885ac76f2110', 'mem_27a7aab4d3d75ccda67f8d3a9537be63', 'pht_dc453731473f5153a976928abb923cc2', 'img_abdf2137ef83576cbda9885ac76f2110.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_92580a8a37285fb58a55c47e7e6d835c', 'mem_a5ff8617344859cc83f0283976298c25', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_92580a8a37285fb58a55c47e7e6d835c.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_92580a8a37285fb58a55c47e7e6d835c', 'mem_a5ff8617344859cc83f0283976298c25', 'pht_dc453731473f5153a976928abb923cc2', 'img_92580a8a37285fb58a55c47e7e6d835c.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_13b028aafe2057ed8fa99707b5e2cf3a', 'mem_4682dd06532d525eada319118369d3a1', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_13b028aafe2057ed8fa99707b5e2cf3a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -591,7 +597,7 @@ VALUES ('img_c5afacf251385b9da5c170d8d10a6cd2', 'mem_a18f6a3db23358e3bc926a160cd
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_805998d4052759cf924daee7a09ff042', 'mem_72fcd84ec1545dd4b22c1a3feae5343d', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_805998d4052759cf924daee7a09ff042.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_d939f11dfd9c5aac81b939441ceb9587', 'mem_22ece5b62004540eb1070bd9f76817a6', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_d939f11dfd9c5aac81b939441ceb9587.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_d939f11dfd9c5aac81b939441ceb9587', 'mem_22ece5b62004540eb1070bd9f76817a6', 'pht_dc453731473f5153a976928abb923cc2', 'img_d939f11dfd9c5aac81b939441ceb9587.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_1a98968441d0518bb125a872da53848f', 'mem_ad244c328d655784b06e124a84502c20', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_1a98968441d0518bb125a872da53848f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -599,17 +605,17 @@ VALUES ('img_a0a7a8df5fd755f8a25c2c8042d1e299', 'mem_02371e75dd1a54329cf6529e614
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_5f26a2dd6976518eaca08f4187540c69', 'mem_ef141612bb7050259ad94fbe98990b93', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_5f26a2dd6976518eaca08f4187540c69.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_9bec0c8b4c165bee82f9c33787730425', 'mem_652418691e795202b9f2aff5fae6477b', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_9bec0c8b4c165bee82f9c33787730425.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_9bec0c8b4c165bee82f9c33787730425', 'mem_652418691e795202b9f2aff5fae6477b', 'pht_dc453731473f5153a976928abb923cc2', 'img_9bec0c8b4c165bee82f9c33787730425.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_7639803534265aad90c1e00b00eee2cb', 'mem_9b900e3d9a815ea6a154d92799d08430', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_7639803534265aad90c1e00b00eee2cb.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_c375e30dc3e457bea1993b4bafdccc24', 'mem_564ba06a76b3502fbb951399a5c5d24e', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_c375e30dc3e457bea1993b4bafdccc24.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_f42676ee14765390b1522e7e0683a054', 'mem_f25d8752867a51e6b29c26170a1ddafd', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_f42676ee14765390b1522e7e0683a054.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_f42676ee14765390b1522e7e0683a054', 'mem_f25d8752867a51e6b29c26170a1ddafd', 'pht_dc453731473f5153a976928abb923cc2', 'img_f42676ee14765390b1522e7e0683a054.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_48a9dd7e66475e8681726fdeaef3c348', 'mem_d2a98fc47bd751ffb69f02300e05f9fc', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_48a9dd7e66475e8681726fdeaef3c348.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_9f405a8b75f15f7dadeb00cbf5f996b5', 'mem_eb9f507b74235d9ab3e1759a400becbb', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_9f405a8b75f15f7dadeb00cbf5f996b5.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_9f405a8b75f15f7dadeb00cbf5f996b5', 'mem_eb9f507b74235d9ab3e1759a400becbb', 'pht_dc453731473f5153a976928abb923cc2', 'img_9f405a8b75f15f7dadeb00cbf5f996b5.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_2c49eb8c0d62509380fdf68375903ce1', 'mem_e21c08bd18f45171bb92edaa956ba233', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_2c49eb8c0d62509380fdf68375903ce1.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
@@ -619,68 +625,68 @@ VALUES ('img_bfd0bb5f370e5c20a0b8c0cae0ef44e3', 'mem_4de21332af30544e87c1d89bc21
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
 VALUES ('img_7acf8543cede556581254eea3a473f47', 'mem_61023eeb30125bfdb2c2284d3c77b3d6', 'pht_03fa748438005b17821b28150dc4b2f7', 'img_7acf8543cede556581254eea3a473f47.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_633021fe5ee959ac841ec699dbfdf709', 'mem_5bb8d5630c4956c1ba2a63ea8761b9e6', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_633021fe5ee959ac841ec699dbfdf709.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_633021fe5ee959ac841ec699dbfdf709', 'mem_5bb8d5630c4956c1ba2a63ea8761b9e6', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_633021fe5ee959ac841ec699dbfdf709.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_8b1125f1df685d98975b2e6ebe4fbe8e', 'mem_bc7a957b5b0d531da9480fd8943506a6', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_8b1125f1df685d98975b2e6ebe4fbe8e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_8b1125f1df685d98975b2e6ebe4fbe8e', 'mem_bc7a957b5b0d531da9480fd8943506a6', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_8b1125f1df685d98975b2e6ebe4fbe8e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_81795641ee3155668bb1e9ed0ce108a2', 'mem_916df6220b6755fbb8d4d5736a453d8a', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_81795641ee3155668bb1e9ed0ce108a2.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_81795641ee3155668bb1e9ed0ce108a2', 'mem_916df6220b6755fbb8d4d5736a453d8a', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_81795641ee3155668bb1e9ed0ce108a2.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_0e28988dbed455388898034be781219f', 'mem_fbdc833f0cb4562c8a60767ce7c6039d', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_0e28988dbed455388898034be781219f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_0e28988dbed455388898034be781219f', 'mem_fbdc833f0cb4562c8a60767ce7c6039d', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_0e28988dbed455388898034be781219f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_3f2088f3819352b7b9902a3c636bcc62', 'mem_b55f84aa951e538b92cf6fab897f1996', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_3f2088f3819352b7b9902a3c636bcc62.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_3f2088f3819352b7b9902a3c636bcc62', 'mem_b55f84aa951e538b92cf6fab897f1996', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_3f2088f3819352b7b9902a3c636bcc62.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_f97484a80af3581cae8298a07323f39e', 'mem_ba886957a68656009e0883affce7df96', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_f97484a80af3581cae8298a07323f39e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_f97484a80af3581cae8298a07323f39e', 'mem_ba886957a68656009e0883affce7df96', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_f97484a80af3581cae8298a07323f39e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_d32aedd04bc55ba989d83c78dd708e93', 'mem_d45a34bbf5ad585d8e4ef46a589d2c00', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_d32aedd04bc55ba989d83c78dd708e93.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_d32aedd04bc55ba989d83c78dd708e93', 'mem_d45a34bbf5ad585d8e4ef46a589d2c00', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_d32aedd04bc55ba989d83c78dd708e93.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_864348581c795295b48fbda617a3750b', 'mem_5ba3a312bdc55b2aa91175a94878e760', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_864348581c795295b48fbda617a3750b.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_864348581c795295b48fbda617a3750b', 'mem_5ba3a312bdc55b2aa91175a94878e760', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_864348581c795295b48fbda617a3750b.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_90f99d1977865cf3b49f6e42c3933700', 'mem_c602aee07c595f669c537f7140abc1fa', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_90f99d1977865cf3b49f6e42c3933700.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_90f99d1977865cf3b49f6e42c3933700', 'mem_c602aee07c595f669c537f7140abc1fa', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_90f99d1977865cf3b49f6e42c3933700.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_26f9a0f3ab8256caa73f24bd7625a24b', 'mem_88a6fd58df4057379d255e88d3ad0ba0', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_26f9a0f3ab8256caa73f24bd7625a24b.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_26f9a0f3ab8256caa73f24bd7625a24b', 'mem_88a6fd58df4057379d255e88d3ad0ba0', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_26f9a0f3ab8256caa73f24bd7625a24b.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_b9bdbc19b18a565da8eebf00307b3cc1', 'mem_1454226e525550b6996fcceb589e4ffc', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_b9bdbc19b18a565da8eebf00307b3cc1.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_b9bdbc19b18a565da8eebf00307b3cc1', 'mem_1454226e525550b6996fcceb589e4ffc', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_b9bdbc19b18a565da8eebf00307b3cc1.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_0cb65c9a8b9e5aa3bd9e78693aa30592', 'mem_fedbe59b2ebb540d90a643520479c407', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_0cb65c9a8b9e5aa3bd9e78693aa30592.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_0cb65c9a8b9e5aa3bd9e78693aa30592', 'mem_fedbe59b2ebb540d90a643520479c407', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_0cb65c9a8b9e5aa3bd9e78693aa30592.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_f930801f7f535614a30ee4e5fc31aa02', 'mem_9f6cb5cac6135987b73167203ee8235c', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_f930801f7f535614a30ee4e5fc31aa02.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_f930801f7f535614a30ee4e5fc31aa02', 'mem_9f6cb5cac6135987b73167203ee8235c', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_f930801f7f535614a30ee4e5fc31aa02.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_5a18d56479085112a8c3743880f3c8be', 'mem_3fb604b7c78253e58e667751e125b79e', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_5a18d56479085112a8c3743880f3c8be.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_5a18d56479085112a8c3743880f3c8be', 'mem_3fb604b7c78253e58e667751e125b79e', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_5a18d56479085112a8c3743880f3c8be.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_68f0997c80455eb5add619a60822031e', 'mem_2d1a0b5c9b4a5402a2cb8737152711e6', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_68f0997c80455eb5add619a60822031e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_68f0997c80455eb5add619a60822031e', 'mem_2d1a0b5c9b4a5402a2cb8737152711e6', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_68f0997c80455eb5add619a60822031e.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_53cf2e59c5d3515e832fb760e522acb7', 'mem_1c731613b2cb5339813a718c55fa3ef8', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_53cf2e59c5d3515e832fb760e522acb7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_53cf2e59c5d3515e832fb760e522acb7', 'mem_1c731613b2cb5339813a718c55fa3ef8', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_53cf2e59c5d3515e832fb760e522acb7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_19d2ff5124995238993ce849e493f1a0', 'mem_900332b6a7f35d2fb0f779f4025f158f', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_19d2ff5124995238993ce849e493f1a0.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_19d2ff5124995238993ce849e493f1a0', 'mem_900332b6a7f35d2fb0f779f4025f158f', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_19d2ff5124995238993ce849e493f1a0.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_922749481c4655d18207361cfb6305d2', 'mem_b44ec03b6e0d51d6a43de351bd9629f9', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_922749481c4655d18207361cfb6305d2.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_922749481c4655d18207361cfb6305d2', 'mem_b44ec03b6e0d51d6a43de351bd9629f9', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_922749481c4655d18207361cfb6305d2.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_1b95df4565f35ddea43de8f0db99e80f', 'mem_a3e621228cff565c90b19ee7f36fc06b', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_1b95df4565f35ddea43de8f0db99e80f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_1b95df4565f35ddea43de8f0db99e80f', 'mem_a3e621228cff565c90b19ee7f36fc06b', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_1b95df4565f35ddea43de8f0db99e80f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_0ba446fcdcfb5979bb25afa75fb426d7', 'mem_4ee76929b757597ba0a78a582d04270a', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_0ba446fcdcfb5979bb25afa75fb426d7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_0ba446fcdcfb5979bb25afa75fb426d7', 'mem_4ee76929b757597ba0a78a582d04270a', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_0ba446fcdcfb5979bb25afa75fb426d7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_85b179c7c0b55e70931593bf1227a871', 'mem_6515da2348d85a4ba0fd6d6000ad8188', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_85b179c7c0b55e70931593bf1227a871.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_85b179c7c0b55e70931593bf1227a871', 'mem_6515da2348d85a4ba0fd6d6000ad8188', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_85b179c7c0b55e70931593bf1227a871.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_ee2485aab58251c5af26412e3df32647', 'mem_36fc8a7f13d05fe88ae58017b3b59d1c', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_ee2485aab58251c5af26412e3df32647.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_ee2485aab58251c5af26412e3df32647', 'mem_36fc8a7f13d05fe88ae58017b3b59d1c', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_ee2485aab58251c5af26412e3df32647.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_ccdf1f3933e55d1dba27cf20b6d2797a', 'mem_972e96e488ad5c69a5ca94181967a0f8', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_ccdf1f3933e55d1dba27cf20b6d2797a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_ccdf1f3933e55d1dba27cf20b6d2797a', 'mem_972e96e488ad5c69a5ca94181967a0f8', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_ccdf1f3933e55d1dba27cf20b6d2797a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_92eb0d03e92f50aa996c647124863bc7', 'mem_af5652d5e4bf5a06908862e18d47f9d8', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_92eb0d03e92f50aa996c647124863bc7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_92eb0d03e92f50aa996c647124863bc7', 'mem_af5652d5e4bf5a06908862e18d47f9d8', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_92eb0d03e92f50aa996c647124863bc7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_a5b5b097cf1c5e53a683ce6188657d6a', 'mem_170a8cd7930c512d99c1187064c6ebd4', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_a5b5b097cf1c5e53a683ce6188657d6a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_a5b5b097cf1c5e53a683ce6188657d6a', 'mem_170a8cd7930c512d99c1187064c6ebd4', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_a5b5b097cf1c5e53a683ce6188657d6a.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_336de6274f3855d0ac1ebe93e616ce43', 'mem_df93a6771b075440b452957007b2689e', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_336de6274f3855d0ac1ebe93e616ce43.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_336de6274f3855d0ac1ebe93e616ce43', 'mem_df93a6771b075440b452957007b2689e', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_336de6274f3855d0ac1ebe93e616ce43.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_1e2b9eb5976a5016a05a4e75cebf3ba7', 'mem_076f4ee6f7b05730b15ff56cbd457be7', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_1e2b9eb5976a5016a05a4e75cebf3ba7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_1e2b9eb5976a5016a05a4e75cebf3ba7', 'mem_076f4ee6f7b05730b15ff56cbd457be7', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_1e2b9eb5976a5016a05a4e75cebf3ba7.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_2648ee7d6b585251a2fb718857021c5f', 'mem_e7e29d6c19875964ba0079913195d513', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_2648ee7d6b585251a2fb718857021c5f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_2648ee7d6b585251a2fb718857021c5f', 'mem_e7e29d6c19875964ba0079913195d513', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_2648ee7d6b585251a2fb718857021c5f.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_5396336c1a29549087224b695b975254', 'mem_f45a1e45200256bb870fc195e360119a', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_5396336c1a29549087224b695b975254.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_5396336c1a29549087224b695b975254', 'mem_f45a1e45200256bb870fc195e360119a', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_5396336c1a29549087224b695b975254.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_039f3b449f32571f9de521899a193933', 'mem_c0bafbff935b5eed8ed3e700cbbc09c7', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_039f3b449f32571f9de521899a193933.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_039f3b449f32571f9de521899a193933', 'mem_c0bafbff935b5eed8ed3e700cbbc09c7', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_039f3b449f32571f9de521899a193933.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
-VALUES ('img_b84c0981292159e3afcac4e68a61c586', 'mem_61f64dc955b55de8b3540cc265dd27de', 'pht_a5fae6c6dc12513d9df6c654d07a51bb', 'img_b84c0981292159e3afcac4e68a61c586.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+VALUES ('img_b84c0981292159e3afcac4e68a61c586', 'mem_61f64dc955b55de8b3540cc265dd27de', 'pht_f360ed530c545e898c306f9efe66e3e3', 'img_b84c0981292159e3afcac4e68a61c586.webp', 1, 0, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
 
 -- Master Version (Ref: ADR-0021)
 INSERT OR REPLACE INTO master_versions (id, version, updated_at)
-VALUES ('current', '2026.10.04-5', '2026-10-04T00:00:00Z');
+VALUES ('current', '2026.10.04-6', '2026-10-04T00:00:00Z');

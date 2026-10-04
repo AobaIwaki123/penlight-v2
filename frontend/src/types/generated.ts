@@ -209,7 +209,7 @@ export type ID = string;
 /**
  * CurrentMasterVersion defines the canonical version of master data (seeds/data/*.json).
  */
-export const CurrentMasterVersion = "2026.10.04-5";
+export const CurrentMasterVersion = "2026.10.04-6";
 /**
  * MasterVersion tracks the current master data synchronization version (Ref: ADR-0021).
  */
