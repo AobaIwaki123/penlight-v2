@@ -88,3 +88,35 @@ func shuffleMembers(members []model.Member, rng *rand.Rand) {
 		members[i], members[j] = members[j], members[i]
 	}
 }
+
+// SelectQuestionImage selects the presentation image for a member based on the quiz filter (Ref: ADR-0020).
+// If the filter specifies photo types, an image matching one of those photo types is chosen.
+// Otherwise, an image is randomly selected from the member's available images (falling back to primary image).
+func SelectQuestionImage(member model.Member, filter model.QuizFilter, rng *rand.Rand) *model.MemberImage {
+	if len(member.Images) == 0 {
+		return member.PrimaryImage()
+	}
+
+	phtSet := make(map[model.ID]bool, len(filter.PhotoTypeIDs))
+	for _, id := range filter.PhotoTypeIDs {
+		phtSet[id] = true
+	}
+
+	if len(phtSet) > 0 {
+		var matched []model.MemberImage
+		for _, img := range member.Images {
+			if phtSet[img.PhotoTypeID] {
+				matched = append(matched, img)
+			}
+		}
+		if len(matched) > 0 {
+			idx := rng.Intn(len(matched))
+			return &matched[idx]
+		}
+	}
+
+	// When no costume filter is specified, randomly select among available images
+	idx := rng.Intn(len(member.Images))
+	return &member.Images[idx]
+}
+
