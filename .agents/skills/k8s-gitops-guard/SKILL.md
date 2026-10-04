@@ -81,7 +81,7 @@ kubectl describe application penlight -n argocd
 |---|---|---|
 | `deploy: app path does not exist` | `main` ブランチに `deploy/` がまだマージされていない | PR を `main` にマージ後、ArgoCD をハードリフレッシュ (`kubectl annotate application penlight -n argocd argocd.argoproj.io/refresh=hard --overwrite`) する |
 | `ErrImagePull / ImagePullBackOff` | GitHub Actions のコンテナビルド未完了、またはタグ名不一致 | `gh run list --workflow=Deploy` でビルド完了を確認。リポジトリが Public であることを確認 |
-| `CrashLoopBackOff (permission denied)` | `/data` の所有権が非rootユーザーと不一致 | Dockerfile で `chown -R penlight:penlight /data` を指定し、PVC のパーミッションを確認 |
+| `CrashLoopBackOff (unable to open database file / permission denied)` | PVC（`/data`）の所有権が非rootユーザーと不一致 | PodSpec に `securityContext.fsGroup: 10001` を指定して PVC の所有権を自動調整する |
 | `go: go.mod requires go >= X` | Dockerfile 内の Go ビルダーバージョン不足 | Dockerfile の `golang:<version>-alpine` を `go.mod` 以上（`container-guard` 参照）に更新する |
 
 ---
@@ -89,6 +89,7 @@ kubectl describe application penlight -n argocd
 ## 5. ローカル検証チェックリスト (マニフェスト変更時)
 
 - [ ] `replicas: 1` かつ `strategy.type: Recreate` が設定されているか
+- [ ] PodSpec に `securityContext.fsGroup: 10001` が設定され、PVC 書き込み権限が確保されているか
 - [ ] PVC のマウントパスが `/data`、`DATA_DIR` が `/data` になっているか
 - [ ] Ingress の `ingressClassName` が `"cloudflare-tunnel"` になっているか
 - [ ] リソース制限（Requests 32Mi / Limits 128Mi）が守られているか
