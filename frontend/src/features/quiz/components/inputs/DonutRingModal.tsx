@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Group, Modal, Paper, Text } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { Color } from '@/types/generated';
 
@@ -11,6 +11,8 @@ interface DonutRingModalProps {
   colors: Color[];
   selectedLeftColor?: Color;
   selectedRightColor?: Color;
+  leftConfirmed: boolean;
+  rightConfirmed: boolean;
   onAnswer: (input: { leftColorId: string; rightColorId: string }) => void;
   onColorSelect: (hand: 'left' | 'right', color: Color) => void;
   disabled: boolean;
@@ -23,6 +25,8 @@ export function DonutRingModal({
   colors,
   selectedLeftColor,
   selectedRightColor,
+  leftConfirmed,
+  rightConfirmed,
   onAnswer,
   onColorSelect,
   disabled,
@@ -31,33 +35,35 @@ export function DonutRingModal({
   const [currentHand, setCurrentHand] = useState<'left' | 'right'>(initialHand);
   const [hoveredColor, setHoveredColor] = useState<Color | null>(null);
 
+  // 開くたびに指定された手へ切り替える
+  useEffect(() => {
+    if (opened) setCurrentHand(initialHand);
+  }, [opened, initialHand]);
+
   const radius = 120; // 円環の半径 (px)
   const buttonSize = 38; // 各カラージュエルの直径 (px)
 
+  // 保持された前問の色は選択済み表示のみ。今問で左右とも選び直した時に送信する
   const handleColorClick = (color: Color) => {
     if (disabled) return;
 
     if (currentHand === 'left') {
       onColorSelect('left', color);
-      if (selectedRightColor) {
-        // Both colors selected -> submit and close
+      if (rightConfirmed && selectedRightColor) {
         onAnswer({
           leftColorId: color.id,
           rightColorId: selectedRightColor.id,
         });
         onClose();
       } else {
-        // Auto-switch focus visually to right hand
         setCurrentHand('right');
       }
     } else {
       onColorSelect('right', color);
-      if (selectedLeftColor) {
-        // Both colors selected -> submit and close
+      if (leftConfirmed && selectedLeftColor) {
         onAnswer({ leftColorId: selectedLeftColor.id, rightColorId: color.id });
         onClose();
       } else {
-        // Auto-switch focus visually to left hand
         setCurrentHand('left');
       }
     }

@@ -47,6 +47,7 @@ export function QuizContainer() {
   // Current question selection state
   const [selectedLeft, setSelectedLeft] = useState<Color | undefined>();
   const [selectedRight, setSelectedRight] = useState<Color | undefined>();
+  const [confirmed, setConfirmed] = useState({ left: false, right: false });
   const [feedback, setFeedback] = useState<'idle' | 'correct' | 'wrong'>(
     'idle',
   );
@@ -83,18 +84,20 @@ export function QuizContainer() {
   const colorMap = new Map<string, Color>(colors.map((c) => [c.id, c]));
 
   // Handle color selection updates for live preview
+  // 選択色は次の問題でも保持し、各問題で左右とも選び直した時だけ送信対象とする
   const handleColorSelect = (step: 'left' | 'right', color: Color) => {
     if (step === 'left') {
       setSelectedLeft(color);
-      setSelectedRight(undefined);
     } else {
       setSelectedRight(color);
     }
+    setConfirmed((c) => ({ ...c, [step]: true }));
   };
 
   const handleResetSelection = () => {
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
+    setConfirmed({ left: false, right: false });
   };
 
   // Handle final 2-tap answer
@@ -120,18 +123,16 @@ export function QuizContainer() {
         navigator.vibrate(50);
       }
     } else {
+      // 不正解でも選択したペンライト色は保持する (正解はフィードバックバーに表示)
       setFeedback('wrong');
-      // 不正解時は、写真上のペンライトを正解の光にシュッと切り替えて点灯！
-      setSelectedLeft(colorMap.get(correctL));
-      setSelectedRight(colorMap.get(correctR));
     }
   };
 
-  // Move to next question
+  // Move to next question (選択色は保持、確定状態のみリセット)
   const handleNextQuestion = () => {
     setFeedback('idle');
-    setSelectedLeft(undefined);
-    setSelectedRight(undefined);
+    setConfirmed({ left: false, right: false });
+    setActiveHand('left');
 
     if (currentIndex + 1 < members.length) {
       setCurrentIndex((i) => i + 1);
@@ -146,12 +147,15 @@ export function QuizContainer() {
     setIsFinished(false);
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
+    setConfirmed({ left: false, right: false });
     setFeedback('idle');
   };
 
   // Render selected layout component
   const renderLayout = () => {
     const handleOpenInput = (hand: 'left' | 'right') => {
+      // 「次へ」表示中 (解答済み) はカラーピッカーを開けない
+      if (feedback !== 'idle') return;
       setActiveHand(hand);
       setIsDonutModalOpen(true);
     };
@@ -312,11 +316,13 @@ export function QuizContainer() {
 
       {/* ドーナツリングカラー選択モーダル (完全透過 ＆ 2本のミニペンライトで左右を視覚化) */}
       <DonutRingModal
-        opened={isDonutModalOpen}
+        opened={isDonutModalOpen && feedback === 'idle'}
         onClose={() => setIsDonutModalOpen(false)}
         colors={colors}
         selectedLeftColor={selectedLeft}
         selectedRightColor={selectedRight}
+        leftConfirmed={confirmed.left}
+        rightConfirmed={confirmed.right}
         onAnswer={handleAnswer}
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}

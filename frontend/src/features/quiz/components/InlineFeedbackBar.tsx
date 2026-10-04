@@ -33,17 +33,18 @@ export function InlineFeedbackBar({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 6,
+        gap: 8,
         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
         animation: 'popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
         flexShrink: 0,
       }}
     >
-      {/* 左側: 正誤アイコン ＋ 正解色 */}
+      {/* 左側: 正誤アイコン ＋ 正解色 (幅不足時は折り返して見切れを防ぐ) */}
       <Group
         gap={6}
         wrap="nowrap"
-        style={{ overflow: 'hidden', flexShrink: 1 }}
+        align="center"
+        style={{ flex: 1, minWidth: 0 }}
       >
         <Box
           style={{
@@ -69,13 +70,13 @@ export function InlineFeedbackBar({
             大正解！
           </Text>
         ) : (
-          <Group gap={4} wrap="nowrap" style={{ overflow: 'hidden' }}>
+          <Group gap={4} wrap="wrap" style={{ flex: 1, minWidth: 0 }}>
             <Text
               size="xs"
               fw={700}
               style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
             >
-              正解:
+              不正解:
             </Text>
             {correctLeftColor && (
               <Box
