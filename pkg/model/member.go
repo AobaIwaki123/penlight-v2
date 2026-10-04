@@ -23,15 +23,17 @@ type PenlightPair struct {
 
 // MemberImage represents an image asset associated with a member (Ref: ADR-0021).
 type MemberImage struct {
-	ID           ID        `json:"id"`            // img_... (UUID v7 surrogate key)
-	MemberID     ID        `json:"member_id"`     // mem_... (FK)
-	ImageKey     string    `json:"image_key"`     // Immutable image filename: e.g. "img_<uuidv7>.webp"
-	Title        string    `json:"title"`         // e.g. "13th Single 制服", "5thひな誕祭個別タオル"
-	IsPrimary    bool      `json:"is_primary"`    // true for the primary/default image
-	DisplayOrder int       `json:"display_order"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID           ID         `json:"id"`                    // img_... (UUID v7 surrogate key)
+	MemberID     ID         `json:"member_id"`             // mem_... (FK)
+	PhotoTypeID  ID         `json:"photo_type_id"`         // pht_... (FK, Ref: ADR-0021)
+	PhotoType    *PhotoType `json:"photo_type,omitempty"`  // Associated costume/photo category
+	ImageKey     string     `json:"image_key"`             // Immutable image filename: e.g. "img_<uuidv7>.webp"
+	IsPrimary    bool       `json:"is_primary"`            // true for the primary/default image
+	DisplayOrder int        `json:"display_order"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
 }
+
 
 // Member represents an idol member.
 // Natural keys (names) are never used as identifiers to prevent collisions on homonyms or name changes.

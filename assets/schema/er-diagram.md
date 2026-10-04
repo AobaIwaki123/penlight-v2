@@ -9,11 +9,13 @@ erDiagram
     GROUP ||--o{ COLOR : "group_id"
     GROUP ||--o{ GENERATE_QUIZ_REQUEST : "group_id"
     GROUP ||--o{ MEMBER : "group_id"
+    GROUP ||--o{ PHOTO_TYPE : "group_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     MEMBER ||--o{ MEMBER_IMAGE : "member_id"
     MEMBER ||--o{ QUIZ_QUESTION : "target_member_id"
     MEMBER ||--o{ SUBMIT_ANSWER_REQUEST : "target_member_id"
+    PHOTO_TYPE ||--o{ MEMBER_IMAGE : "photo_type_id"
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
     QUIZ_QUESTION ||--o{ BATCH_ANSWER_ITEM : "quiz_question_id"
     QUIZ_QUESTION ||--o{ SUBMIT_ANSWER_REQUEST : "quiz_question_id"
@@ -41,6 +43,16 @@ erDiagram
         datetime updated_at
     }
 
+    PHOTO_TYPE {
+        string id PK "pht_... (UUID v7 surrogate key)"
+        string group_id FK "grp_... (FK)"
+        string slug UK "e.g. '13th_single', '2nd_album'"
+        string name "e.g. '13th Single 制服', '2nd Album アー写'"
+        int display_order
+        datetime created_at
+        datetime updated_at
+    }
+
     MEMBER {
         string id PK "mem_... (UUID v7 immutable surrogate key)"
         string group_id FK "grp_..."
@@ -61,8 +73,9 @@ erDiagram
     MEMBER_IMAGE {
         string id PK "img_... (UUID v7 surrogate key)"
         string member_id FK "mem_... (FK)"
+        string photo_type_id FK "pht_... (FK, Ref: ADR-0021)"
+        string photo_type "Associated costume/photo category"
         string image_key "Immutable image filename: e.g. 'img_<uuidv7>.webp'"
-        string title "e.g. '13th Single 制服', '5thひな誕祭個別タオル'"
         boolean is_primary "true for the primary/default image"
         int display_order
         datetime created_at

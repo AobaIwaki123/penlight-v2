@@ -145,15 +145,58 @@ func (r *SQLiteRepository) ListColors(ctx context.Context) ([]model.Color, error
 	return colors, nil
 }
 
+// ListPhotoTypes returns all costume/photo categories for a group (Ref: ADR-0021).
+func (r *SQLiteRepository) ListPhotoTypes(ctx context.Context, groupID model.ID) ([]model.PhotoType, error) {
+	const query = `
+		SELECT id, group_id, slug, name, display_order, created_at, updated_at
+		FROM photo_types
+		WHERE (? = '' OR group_id = ?)
+		ORDER BY display_order ASC;
+	`
+	rows, err := r.db.QueryContext(ctx, query, string(groupID), string(groupID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to query photo types: %w", err)
+	}
+	defer rows.Close()
+
+	var photoTypes []model.PhotoType
+	for rows.Next() {
+		var pt model.PhotoType
+		var createdAtStr, updatedAtStr string
+
+		if err := rows.Scan(
+			&pt.ID,
+			&pt.GroupID,
+			&pt.Slug,
+			&pt.Name,
+			&pt.DisplayOrder,
+			&createdAtStr,
+			&updatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan photo type: %w", err)
+		}
+
+		pt.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+		pt.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		photoTypes = append(photoTypes, pt)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error in photo types: %w", err)
+	}
+	return photoTypes, nil
+}
+
 // ListMembers returns all non-graduated members with their primary image.
 func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, error) {
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
 		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
-		       mi.id, mi.image_key, mi.title, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at
+		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
 		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
+		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
 		WHERE m.status != 'graduated'
 		ORDER BY m.generation ASC, m.family_name_kana ASC;
 	`
@@ -166,9 +209,11 @@ func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
 		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
-		       mi.id, mi.image_key, mi.title, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at
+		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
 		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
+		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
 		WHERE m.group_id = ? AND m.status != 'graduated'
 		ORDER BY m.generation ASC, m.family_name_kana ASC;
 	`
@@ -178,10 +223,12 @@ func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model
 // ListMemberImages returns all images associated with a member.
 func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.ID) ([]model.MemberImage, error) {
 	const query = `
-		SELECT id, member_id, image_key, title, is_primary, display_order, created_at, updated_at
-		FROM member_images
-		WHERE member_id = ?
-		ORDER BY display_order ASC, created_at ASC;
+		SELECT mi.id, mi.member_id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
+		FROM member_images mi
+		JOIN photo_types pt ON mi.photo_type_id = pt.id
+		WHERE mi.member_id = ?
+		ORDER BY mi.display_order ASC, mi.created_at ASC;
 	`
 	rows, err := r.db.QueryContext(ctx, query, memberID)
 	if err != nil {
@@ -192,18 +239,27 @@ func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.
 	var images []model.MemberImage
 	for rows.Next() {
 		var img model.MemberImage
+		var pt model.PhotoType
 		var isPrimaryInt int
 		var createdAtStr, updatedAtStr string
+		var ptCreatedAtStr, ptUpdatedAtStr string
 
 		if err := rows.Scan(
 			&img.ID,
 			&img.MemberID,
+			&img.PhotoTypeID,
 			&img.ImageKey,
-			&img.Title,
 			&isPrimaryInt,
 			&img.DisplayOrder,
 			&createdAtStr,
 			&updatedAtStr,
+			&pt.ID,
+			&pt.GroupID,
+			&pt.Slug,
+			&pt.Name,
+			&pt.DisplayOrder,
+			&ptCreatedAtStr,
+			&ptUpdatedAtStr,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan member image: %w", err)
 		}
@@ -211,6 +267,10 @@ func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.
 		img.IsPrimary = isPrimaryInt == 1
 		img.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
 		img.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		pt.CreatedAt, _ = time.Parse(time.RFC3339, ptCreatedAtStr)
+		pt.UpdatedAt, _ = time.Parse(time.RFC3339, ptUpdatedAtStr)
+		img.PhotoType = &pt
+
 		images = append(images, img)
 	}
 	if err := rows.Err(); err != nil {
@@ -252,8 +312,10 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 		var orderedInt int
 		var joinedAtStr, graduatedAtStr sql.NullString
 		var createdAtStr, updatedAtStr string
-		var imgID, imgKey, imgTitle, imgCreatedAtStr, imgUpdatedAtStr sql.NullString
+		var imgID, imgPhotoTypeID, imgKey, imgCreatedAtStr, imgUpdatedAtStr sql.NullString
 		var imgIsPrimary, imgDisplayOrder sql.NullInt64
+		var ptID, ptGroupID, ptSlug, ptName, ptCreatedAtStr, ptUpdatedAtStr sql.NullString
+		var ptDisplayOrder sql.NullInt64
 
 		if err := rows.Scan(
 			&m.ID,
@@ -272,12 +334,19 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 			&createdAtStr,
 			&updatedAtStr,
 			&imgID,
+			&imgPhotoTypeID,
 			&imgKey,
-			&imgTitle,
 			&imgIsPrimary,
 			&imgDisplayOrder,
 			&imgCreatedAtStr,
 			&imgUpdatedAtStr,
+			&ptID,
+			&ptGroupID,
+			&ptSlug,
+			&ptName,
+			&ptDisplayOrder,
+			&ptCreatedAtStr,
+			&ptUpdatedAtStr,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan member: %w", err)
 		}
@@ -297,16 +366,30 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 		if imgID.Valid {
 			imgCreated, _ := time.Parse(time.RFC3339, imgCreatedAtStr.String)
 			imgUpdated, _ := time.Parse(time.RFC3339, imgUpdatedAtStr.String)
-			m.Images = append(m.Images, model.MemberImage{
+			memberImg := model.MemberImage{
 				ID:           model.ID(imgID.String),
 				MemberID:     m.ID,
+				PhotoTypeID:  model.ID(imgPhotoTypeID.String),
 				ImageKey:     imgKey.String,
-				Title:        imgTitle.String,
 				IsPrimary:    imgIsPrimary.Int64 == 1,
 				DisplayOrder: int(imgDisplayOrder.Int64),
 				CreatedAt:    imgCreated,
 				UpdatedAt:    imgUpdated,
-			})
+			}
+			if ptID.Valid {
+				ptCreated, _ := time.Parse(time.RFC3339, ptCreatedAtStr.String)
+				ptUpdated, _ := time.Parse(time.RFC3339, ptUpdatedAtStr.String)
+				memberImg.PhotoType = &model.PhotoType{
+					ID:           model.ID(ptID.String),
+					GroupID:      model.ID(ptGroupID.String),
+					Slug:         ptSlug.String,
+					Name:         ptName.String,
+					DisplayOrder: int(ptDisplayOrder.Int64),
+					CreatedAt:    ptCreated,
+					UpdatedAt:    ptUpdated,
+				}
+			}
+			m.Images = append(m.Images, memberImg)
 		}
 
 		members = append(members, m)
@@ -316,6 +399,7 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 	}
 	return members, nil
 }
+
 
 
 // InsertAnswerLog inserts an individual quiz answer record idempotently (Ref: ADR-0007).

@@ -192,6 +192,7 @@ export const PrefixGroup: Prefix = "grp"; // Group: grp_<uuidv7>
 export const PrefixColor: Prefix = "col"; // Color: col_<uuidv7>
 export const PrefixMember: Prefix = "mem"; // Member: mem_<uuidv7>
 export const PrefixImage: Prefix = "img"; // Member Image: img_<uuidv7>
+export const PrefixPhotoType: Prefix = "pht"; // Photo Type: pht_<uuidv7>
 export const PrefixQuiz: Prefix = "quiz"; // Quiz Question: quiz_<uuidv7>
 export const PrefixUser: Prefix = "usr"; // User: usr_<uuidv7>
 export const PrefixAnswer: Prefix = "ans"; // Answer Log: ans_<uuidv7>
@@ -238,8 +239,9 @@ export interface PenlightPair {
 export interface MemberImage {
   id: ID; // img_... (UUID v7 surrogate key)
   member_id: ID; // mem_... (FK)
+  photo_type_id: ID; // pht_... (FK, Ref: ADR-0021)
+  photo_type?: PhotoType; // Associated costume/photo category
   image_key: string; // Immutable image filename: e.g. "img_<uuidv7>.webp"
-  title: string; // e.g. "13th Single 制服", "5thひな誕祭個別タオル"
   is_primary: boolean; // true for the primary/default image
   display_order: number /* int */;
   created_at: string;
@@ -262,6 +264,22 @@ export interface Member {
   images?: MemberImage[]; // Associated images (1:N, Ref: ADR-0021)
   joined_at?: string; // Optional joining date
   graduated_at?: string; // Optional graduation date
+  created_at: string;
+  updated_at: string;
+}
+
+//////////
+// source: photo_type.go
+
+/**
+ * PhotoType represents a costume or photo category (Ref: ADR-0021).
+ */
+export interface PhotoType {
+  id: ID; // pht_... (UUID v7 surrogate key)
+  group_id: ID; // grp_... (FK)
+  slug: string; // e.g. "13th_single", "2nd_album"
+  name: string; // e.g. "13th Single 制服", "2nd Album アー写"
+  display_order: number /* int */;
   created_at: string;
   updated_at: string;
 }

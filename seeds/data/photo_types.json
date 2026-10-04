@@ -1,0 +1,32 @@
+[
+  {
+    "group_slug": "hinatazaka46",
+    "slug": "13th_single",
+    "name": "13th Single 制服",
+    "display_order": 1
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "slug": "5th_hinatansai_towel",
+    "name": "5回目のひな誕祭 個別マフラータオル",
+    "display_order": 2
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "slug": "5th_member",
+    "name": "5期生 新メンバー",
+    "display_order": 3
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "slug": "2nd_album",
+    "name": "2nd Album アー写",
+    "display_order": 1
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "slug": "4th_tour_towel",
+    "name": "4th ARENA TOUR 2024 個別マフラータオル",
+    "display_order": 2
+  }
+]

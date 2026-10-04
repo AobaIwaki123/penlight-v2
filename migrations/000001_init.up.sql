@@ -30,7 +30,22 @@ CREATE TABLE IF NOT EXISTS colors (
 
 CREATE INDEX IF NOT EXISTS idx_colors_group ON colors(group_id, display_order);
 
--- 3. Idol Members
+-- 3. Photo Types / Costumes (Ref: ADR-0021)
+CREATE TABLE IF NOT EXISTS photo_types (
+    id TEXT PRIMARY KEY,                       -- pht_<uuidv7>
+    group_id TEXT NOT NULL,                    -- grp_<uuidv7>
+    slug TEXT NOT NULL,                        -- e.g. "13th_single"
+    name TEXT NOT NULL,                        -- e.g. "13th Single 制服"
+    display_order INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE,
+    UNIQUE (group_id, slug)
+);
+
+CREATE INDEX IF NOT EXISTS idx_photo_types_group ON photo_types(group_id, display_order);
+
+-- 4. Idol Members
 CREATE TABLE IF NOT EXISTS members (
     id TEXT PRIMARY KEY,                       -- mem_<uuidv7>
     group_id TEXT NOT NULL,                    -- grp_<uuidv7>
@@ -54,29 +69,32 @@ CREATE TABLE IF NOT EXISTS members (
 
 CREATE INDEX IF NOT EXISTS idx_members_group_status ON members(group_id, status, generation);
 
--- 4. Member Images (1:N multiple images per member, Ref: ADR-0021)
+-- 5. Member Images (1:N multiple images per member, Ref: ADR-0021)
 CREATE TABLE IF NOT EXISTS member_images (
     id TEXT PRIMARY KEY,                       -- img_<uuidv7>
     member_id TEXT NOT NULL,                   -- mem_<uuidv7>
+    photo_type_id TEXT NOT NULL,               -- pht_<uuidv7>
     image_key TEXT NOT NULL UNIQUE,            -- img_<uuidv7>.webp (ADR-0008 immutable cache)
-    title TEXT NOT NULL,                       -- e.g. "13th Single 制服", "5thひな誕祭個別タオル"
     is_primary INTEGER NOT NULL DEFAULT 0,     -- 1: primary/default image, 0: variation
     display_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
-    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+    FOREIGN KEY (photo_type_id) REFERENCES photo_types(id) ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_member_images_member ON member_images(member_id, is_primary);
+CREATE INDEX IF NOT EXISTS idx_member_images_type ON member_images(photo_type_id);
 
--- 5. Master Data Versioning (Ref: ADR-0021)
+-- 6. Master Data Versioning (Ref: ADR-0021)
 CREATE TABLE IF NOT EXISTS master_versions (
     id TEXT PRIMARY KEY,                       -- 'current'
     version TEXT NOT NULL,                    -- Git commit hash or semantic version
     updated_at TEXT NOT NULL
 );
 
--- 6. Users (Google OIDC / Guest)
+
+-- 7. Users (Google OIDC / Guest)
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,                       -- usr_<uuidv7>
     google_sub TEXT UNIQUE,                    -- Google Subject ID
@@ -87,7 +105,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_at TEXT NOT NULL
 );
 
--- 7. Quiz Answer Logs
+-- 8. Quiz Answer Logs
 CREATE TABLE IF NOT EXISTS answer_logs (
     id TEXT PRIMARY KEY,                       -- ans_<uuidv7> (client-generated for idempotent batch sync)
     user_id TEXT,                              -- usr_<uuidv7>, NULL for anonymous guest

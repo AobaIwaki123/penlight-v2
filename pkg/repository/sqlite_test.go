@@ -79,8 +79,10 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 		t.Fatalf("expected 2 colors, got %d", len(colors))
 	}
 
-	// 3. Insert members and image
+	// 3. Insert photo types, members and image
 	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO photo_types (id, group_id, name, slug, display_order, created_at, updated_at)
+		VALUES ('pht_01', 'grp_01', '13th制服', '13th-uniform', 1, ?, ?);
 		INSERT INTO members (
 			id, group_id, family_name, given_name, family_name_kana, given_name_kana,
 			generation, status, left_color_id, right_color_id, ordered,
@@ -91,13 +93,21 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 			?, ?
 		);
 		INSERT INTO member_images (
-			id, member_id, image_key, title, is_primary, display_order, created_at, updated_at
+			id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at
 		) VALUES (
-			'img_01', 'mem_01', 'img_01.webp', '13th Single 制服', 1, 0, ?, ?
+			'img_01', 'mem_01', 'pht_01', 'img_01.webp', 1, 0, ?, ?
 		);
-	`, now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339))
+	`, now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339))
 	if err != nil {
 		t.Fatalf("failed to insert member and image: %v", err)
+	}
+
+	photoTypes, err := repo.ListPhotoTypes(ctx, "grp_01")
+	if err != nil {
+		t.Fatalf("ListPhotoTypes failed: %v", err)
+	}
+	if len(photoTypes) != 1 || photoTypes[0].ID != "pht_01" || photoTypes[0].Slug != "13th-uniform" {
+		t.Fatalf("unexpected photoTypes: %+v", photoTypes)
 	}
 
 	members, err := repo.ListMembers(ctx)
@@ -109,6 +119,9 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 	}
 	if members[0].PrimaryImage() == nil || members[0].PrimaryImage().ImageKey != "img_01.webp" {
 		t.Fatalf("expected primary image img_01.webp, got %+v", members[0].PrimaryImage())
+	}
+	if members[0].PrimaryImage().PhotoType == nil || members[0].PrimaryImage().PhotoType.Name != "13th制服" {
+		t.Fatalf("expected photo type for primary image, got %+v", members[0].PrimaryImage().PhotoType)
 	}
 
 
@@ -210,6 +223,15 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 		t.Fatal("expected primary image for 正源司陽子")
 	}
 
+	// Verify photo types
+	photoTypes, err := repo.ListPhotoTypes(ctx, "")
+	if err != nil {
+		t.Fatalf("ListPhotoTypes failed: %v", err)
+	}
+	if len(photoTypes) != 5 {
+		t.Fatalf("expected 5 photo types (3 Hinatazaka, 2 Sakurazaka), got %d", len(photoTypes))
+	}
+
 	// Verify member images list
 	images, err := repo.ListMemberImages(ctx, shogenji.ID)
 	if err != nil {
@@ -217,6 +239,9 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	}
 	if len(images) == 0 {
 		t.Fatal("expected at least 1 image for 正源司陽子")
+	}
+	if images[0].PhotoType == nil || images[0].PhotoType.Name == "" {
+		t.Fatalf("expected loaded PhotoType on image, got %+v", images[0].PhotoType)
 	}
 
 	// Verify master version
