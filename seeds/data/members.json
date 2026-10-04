@@ -1356,7 +1356,7 @@
     "family_name_kana": "うめざわ",
     "given_name_kana": "みなみ",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "青",
     "right_color": "水色",
     "images": [
@@ -1374,7 +1374,7 @@
     "family_name_kana": "くぼ",
     "given_name_kana": "しおり",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "水色",
     "right_color": "黄",
     "images": [
@@ -1392,7 +1392,7 @@
     "family_name_kana": "さとう",
     "given_name_kana": "かえで",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "赤",
     "right_color": "赤",
     "images": [
@@ -1410,7 +1410,7 @@
     "family_name_kana": "なかむら",
     "given_name_kana": "れの",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "青",
     "right_color": "白",
     "images": [
@@ -1428,7 +1428,7 @@
     "family_name_kana": "よしだ",
     "given_name_kana": "あやのくりすてぃー",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "ピンク",
     "right_color": "紫",
     "images": [
@@ -1446,7 +1446,7 @@
     "family_name_kana": "よだ",
     "given_name_kana": "ゆうき",
     "generation": 3,
-    "status": "graduated",
+    "status": "active",
     "left_color": "赤",
     "right_color": "緑",
     "images": [
@@ -1536,7 +1536,7 @@
     "family_name_kana": "さとう",
     "given_name_kana": "りか",
     "generation": 4,
-    "status": "graduated",
+    "status": "active",
     "left_color": "ピンク",
     "right_color": "ターコイズ",
     "images": [
@@ -1626,7 +1626,7 @@
     "family_name_kana": "まつお",
     "given_name_kana": "みゆ",
     "generation": 4,
-    "status": "graduated",
+    "status": "active",
     "left_color": "ターコイズ",
     "right_color": "白",
     "images": [
@@ -1644,7 +1644,7 @@
     "family_name_kana": "やくぼ",
     "given_name_kana": "みお",
     "generation": 4,
-    "status": "graduated",
+    "status": "active",
     "left_color": "黄",
     "right_color": "ピンク",
     "images": [

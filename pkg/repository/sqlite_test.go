@@ -198,8 +198,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListMembers failed: %v", err)
 	}
-	if len(members) != 85 {
-		t.Fatalf("expected 85 active members, got %d", len(members))
+	if len(members) != 94 {
+		t.Fatalf("expected 94 active members, got %d", len(members))
 	}
 
 	// Spot check a member

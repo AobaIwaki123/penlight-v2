@@ -254,7 +254,7 @@ export function QuizContainer() {
 
     const props = {
       target: currentMember,
-      costumeTitle: '13th Single 制服',
+      costumeTitle: currentMember?.images?.[0]?.photo_type?.name || '公式衣装',
       selectedLeftColor: selectedLeft,
       selectedRightColor: selectedRight,
       isCorrect: feedback === 'correct',
