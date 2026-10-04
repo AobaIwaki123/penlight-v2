@@ -1,0 +1,182 @@
+[
+  {
+    "group_slug": "hinatazaka46",
+    "name": "パステルブルー",
+    "hex_code": "#09B8FF",
+    "display_order": 0
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "エメラルドグリーン",
+    "hex_code": "#7AEA9F",
+    "display_order": 1
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "グリーン",
+    "hex_code": "#02BDD6",
+    "display_order": 2
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "パールグリーン",
+    "hex_code": "#72FF66",
+    "display_order": 3
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "ライトグリーン",
+    "hex_code": "#D3FF64",
+    "display_order": 4
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "イエロー",
+    "hex_code": "#FFF764",
+    "display_order": 5
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "オレンジ",
+    "hex_code": "#FFAB09",
+    "display_order": 6
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "レッド",
+    "hex_code": "#FF1818",
+    "display_order": 7
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "ホワイト",
+    "hex_code": "#F5F5F5",
+    "display_order": 8
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "サクラピンク",
+    "hex_code": "#FF9AFD",
+    "display_order": 9
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "ピンク",
+    "hex_code": "#FF18F6",
+    "display_order": 10
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "パッションピンク",
+    "hex_code": "#FF0988",
+    "display_order": 11
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "バイオレット",
+    "hex_code": "#C029DF",
+    "display_order": 12
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "パープル",
+    "hex_code": "#9462D2",
+    "display_order": 13
+  },
+  {
+    "group_slug": "hinatazaka46",
+    "name": "ブルー",
+    "hex_code": "#1D72FE",
+    "display_order": 14
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "ホワイト",
+    "hex_code": "#FFFFFF",
+    "display_order": 0
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "サクラピンク",
+    "hex_code": "#F9DDEC",
+    "display_order": 1
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "グリーン",
+    "hex_code": "#76FD4D",
+    "display_order": 2
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "イエロー",
+    "hex_code": "#FFFF54",
+    "display_order": 3
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "レッド",
+    "hex_code": "#E73323",
+    "display_order": 4
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "パステルブルー",
+    "hex_code": "#74BAE4",
+    "display_order": 5
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "パープル",
+    "hex_code": "#8E1BF9",
+    "display_order": 6
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "ピンク",
+    "hex_code": "#EA33A2",
+    "display_order": 7
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "エメラルドグリーン",
+    "hex_code": "#4BA66E",
+    "display_order": 8
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "ライトグリーン",
+    "hex_code": "#A7EA9B",
+    "display_order": 9
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "バイオレット",
+    "hex_code": "#AD24EF",
+    "display_order": 10
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "パールグリーン",
+    "hex_code": "#BEDBC3",
+    "display_order": 11
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "パッションピンク",
+    "hex_code": "#EC34F7",
+    "display_order": 12
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "オレンジ",
+    "hex_code": "#F19E38",
+    "display_order": 13
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "name": "ブルー",
+    "hex_code": "#0000F1",
+    "display_order": 14
+  }
+]

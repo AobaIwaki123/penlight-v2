@@ -145,30 +145,158 @@ func (r *SQLiteRepository) ListColors(ctx context.Context) ([]model.Color, error
 	return colors, nil
 }
 
-// ListMembers returns all non-graduated members.
+// ListPhotoTypes returns all costume/photo categories for a group (Ref: ADR-0021).
+func (r *SQLiteRepository) ListPhotoTypes(ctx context.Context, groupID model.ID) ([]model.PhotoType, error) {
+	const query = `
+		SELECT id, group_id, slug, name, display_order, created_at, updated_at
+		FROM photo_types
+		WHERE (? = '' OR group_id = ?)
+		ORDER BY display_order ASC;
+	`
+	rows, err := r.db.QueryContext(ctx, query, string(groupID), string(groupID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to query photo types: %w", err)
+	}
+	defer rows.Close()
+
+	var photoTypes []model.PhotoType
+	for rows.Next() {
+		var pt model.PhotoType
+		var createdAtStr, updatedAtStr string
+
+		if err := rows.Scan(
+			&pt.ID,
+			&pt.GroupID,
+			&pt.Slug,
+			&pt.Name,
+			&pt.DisplayOrder,
+			&createdAtStr,
+			&updatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan photo type: %w", err)
+		}
+
+		pt.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+		pt.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		photoTypes = append(photoTypes, pt)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error in photo types: %w", err)
+	}
+	return photoTypes, nil
+}
+
+// ListMembers returns all non-graduated members with their primary image.
 func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, error) {
 	const query = `
-		SELECT id, group_id, family_name, given_name, family_name_kana, given_name_kana,
-		       generation, status, left_color_id, right_color_id, ordered, image_key,
-		       joined_at, graduated_at, created_at, updated_at
-		FROM members
-		WHERE status != 'graduated'
-		ORDER BY generation ASC, family_name_kana ASC;
+		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
+		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
+		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
+		FROM members m
+		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
+		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
+		WHERE m.status != 'graduated'
+		ORDER BY m.generation ASC, m.family_name_kana ASC;
 	`
 	return r.queryMembers(ctx, query)
 }
 
-// ListMembersByGroup returns non-graduated members belonging to a specific group.
+// ListMembersByGroup returns non-graduated members belonging to a specific group with their primary image.
 func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model.ID) ([]model.Member, error) {
 	const query = `
-		SELECT id, group_id, family_name, given_name, family_name_kana, given_name_kana,
-		       generation, status, left_color_id, right_color_id, ordered, image_key,
-		       joined_at, graduated_at, created_at, updated_at
-		FROM members
-		WHERE group_id = ? AND status != 'graduated'
-		ORDER BY generation ASC, family_name_kana ASC;
+		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
+		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
+		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
+		FROM members m
+		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
+		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
+		WHERE m.group_id = ? AND m.status != 'graduated'
+		ORDER BY m.generation ASC, m.family_name_kana ASC;
 	`
 	return r.queryMembers(ctx, query, groupID)
+}
+
+// ListMemberImages returns all images associated with a member.
+func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.ID) ([]model.MemberImage, error) {
+	const query = `
+		SELECT mi.id, mi.member_id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
+		FROM member_images mi
+		JOIN photo_types pt ON mi.photo_type_id = pt.id
+		WHERE mi.member_id = ?
+		ORDER BY mi.display_order ASC, mi.created_at ASC;
+	`
+	rows, err := r.db.QueryContext(ctx, query, memberID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query member images: %w", err)
+	}
+	defer rows.Close()
+
+	var images []model.MemberImage
+	for rows.Next() {
+		var img model.MemberImage
+		var pt model.PhotoType
+		var isPrimaryInt int
+		var createdAtStr, updatedAtStr string
+		var ptCreatedAtStr, ptUpdatedAtStr string
+
+		if err := rows.Scan(
+			&img.ID,
+			&img.MemberID,
+			&img.PhotoTypeID,
+			&img.ImageKey,
+			&isPrimaryInt,
+			&img.DisplayOrder,
+			&createdAtStr,
+			&updatedAtStr,
+			&pt.ID,
+			&pt.GroupID,
+			&pt.Slug,
+			&pt.Name,
+			&pt.DisplayOrder,
+			&ptCreatedAtStr,
+			&ptUpdatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan member image: %w", err)
+		}
+
+		img.IsPrimary = isPrimaryInt == 1
+		img.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+		img.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		pt.CreatedAt, _ = time.Parse(time.RFC3339, ptCreatedAtStr)
+		pt.UpdatedAt, _ = time.Parse(time.RFC3339, ptUpdatedAtStr)
+		img.PhotoType = &pt
+
+		images = append(images, img)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error in member images: %w", err)
+	}
+	return images, nil
+}
+
+// GetMasterVersion returns the current master data synchronization version (Ref: ADR-0021).
+func (r *SQLiteRepository) GetMasterVersion(ctx context.Context) (*model.MasterVersion, error) {
+	const query = `
+		SELECT id, version, updated_at
+		FROM master_versions
+		WHERE id = 'current';
+	`
+	var mv model.MasterVersion
+	var updatedAtStr string
+	err := r.db.QueryRowContext(ctx, query).Scan(&mv.ID, &mv.Version, &updatedAtStr)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to query master version: %w", err)
+	}
+	mv.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+	return &mv, nil
 }
 
 func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args ...any) ([]model.Member, error) {
@@ -184,6 +312,10 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 		var orderedInt int
 		var joinedAtStr, graduatedAtStr sql.NullString
 		var createdAtStr, updatedAtStr string
+		var imgID, imgPhotoTypeID, imgKey, imgCreatedAtStr, imgUpdatedAtStr sql.NullString
+		var imgIsPrimary, imgDisplayOrder sql.NullInt64
+		var ptID, ptGroupID, ptSlug, ptName, ptCreatedAtStr, ptUpdatedAtStr sql.NullString
+		var ptDisplayOrder sql.NullInt64
 
 		if err := rows.Scan(
 			&m.ID,
@@ -197,11 +329,24 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 			&m.Penlight.LeftColorID,
 			&m.Penlight.RightColorID,
 			&orderedInt,
-			&m.ImageKey,
 			&joinedAtStr,
 			&graduatedAtStr,
 			&createdAtStr,
 			&updatedAtStr,
+			&imgID,
+			&imgPhotoTypeID,
+			&imgKey,
+			&imgIsPrimary,
+			&imgDisplayOrder,
+			&imgCreatedAtStr,
+			&imgUpdatedAtStr,
+			&ptID,
+			&ptGroupID,
+			&ptSlug,
+			&ptName,
+			&ptDisplayOrder,
+			&ptCreatedAtStr,
+			&ptUpdatedAtStr,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan member: %w", err)
 		}
@@ -217,6 +362,36 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 		}
 		m.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
 		m.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+
+		if imgID.Valid {
+			imgCreated, _ := time.Parse(time.RFC3339, imgCreatedAtStr.String)
+			imgUpdated, _ := time.Parse(time.RFC3339, imgUpdatedAtStr.String)
+			memberImg := model.MemberImage{
+				ID:           model.ID(imgID.String),
+				MemberID:     m.ID,
+				PhotoTypeID:  model.ID(imgPhotoTypeID.String),
+				ImageKey:     imgKey.String,
+				IsPrimary:    imgIsPrimary.Int64 == 1,
+				DisplayOrder: int(imgDisplayOrder.Int64),
+				CreatedAt:    imgCreated,
+				UpdatedAt:    imgUpdated,
+			}
+			if ptID.Valid {
+				ptCreated, _ := time.Parse(time.RFC3339, ptCreatedAtStr.String)
+				ptUpdated, _ := time.Parse(time.RFC3339, ptUpdatedAtStr.String)
+				memberImg.PhotoType = &model.PhotoType{
+					ID:           model.ID(ptID.String),
+					GroupID:      model.ID(ptGroupID.String),
+					Slug:         ptSlug.String,
+					Name:         ptName.String,
+					DisplayOrder: int(ptDisplayOrder.Int64),
+					CreatedAt:    ptCreated,
+					UpdatedAt:    ptUpdated,
+				}
+			}
+			m.Images = append(m.Images, memberImg)
+		}
+
 		members = append(members, m)
 	}
 	if err := rows.Err(); err != nil {
@@ -224,6 +399,8 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 	}
 	return members, nil
 }
+
+
 
 // InsertAnswerLog inserts an individual quiz answer record idempotently (Ref: ADR-0007).
 func (r *SQLiteRepository) InsertAnswerLog(ctx context.Context, log model.AnswerLog) error {

@@ -157,7 +157,7 @@ func main() {
 	buf.WriteString("\n")
 
 	// 2. エンティティ定義出力
-	entityOrder := []string{"GROUP", "COLOR", "MEMBER", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
+	entityOrder := []string{"GROUP", "COLOR", "PHOTO_TYPE", "MEMBER", "MEMBER_IMAGE", "MASTER_VERSION", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
 	for _, name := range entityOrder {
 		ent, ok := entities[name]
 		if !ok {
@@ -233,6 +233,8 @@ func inferTargetEntity(fkCol string) string {
 		return "COLOR"
 	case "target_member_id", "member_id":
 		return "MEMBER"
+	case "photo_type_id":
+		return "PHOTO_TYPE"
 	case "user_id":
 		return "USER"
 	case "quiz_question_id":

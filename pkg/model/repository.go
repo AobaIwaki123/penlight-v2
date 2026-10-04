@@ -9,8 +9,11 @@ type Repository interface {
 	// Master data access
 	ListGroups(ctx context.Context) ([]Group, error)
 	ListColors(ctx context.Context) ([]Color, error)
+	ListPhotoTypes(ctx context.Context, groupID ID) ([]PhotoType, error)
 	ListMembers(ctx context.Context) ([]Member, error)
 	ListMembersByGroup(ctx context.Context, groupID ID) ([]Member, error)
+	ListMemberImages(ctx context.Context, memberID ID) ([]MemberImage, error)
+	GetMasterVersion(ctx context.Context) (*MasterVersion, error)
 
 	// Answer log operations
 	InsertAnswerLog(ctx context.Context, log AnswerLog) error

@@ -27,6 +27,8 @@
 | [0018](./0018-quiz-candidate-pool-filtering-architecture.md) | クイズ出題における母集団フィルタリング設計の分離 | Accepted |
 | [0019](./0019-quiz-format-strategy-and-color-palette-architecture.md) | 解答形式 Strategy と自由回答（カラーパレット選択）設計の採用 | Proposed |
 | [0020](./0020-quiz-target-member-selection-strategy.md) | 出題対象メンバー選出アルゴリズムにおける Strategy パターン | Proposed |
+| [0021](./0021-gitops-master-data-synchronization-and-versioning-architecture.md) | GitOps マスタデータ同期アーキテクチャおよび複数画像・バージョン管理テーブルの採用 | Accepted |
+
 
 ---
 

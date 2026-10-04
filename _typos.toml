@@ -6,7 +6,9 @@ extend-exclude = [
     ".git",
     "node_modules",
     "frontend/src/types/generated.ts",
-    "assets/schema/er-diagram.mermaid"
+    "assets/schema/er-diagram.mermaid",
+    "seeds/*",
+    "data/*"
 ]
 
 [default.extend-words]
@@ -20,3 +22,5 @@ modernc = "modernc"
 litestream = "litestream"
 subagent = "subagent"
 subagents = "subagents"
+nd = "nd"
+

@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "hinatazaka46",
+    "name": "日向坂46",
+    "short_name": "日向坂",
+    "theme_color_hex": "#7CC7E8",
+    "display_order": 1
+  },
+  {
+    "slug": "sakurazaka46",
+    "name": "櫻坂46",
+    "short_name": "櫻坂",
+    "theme_color_hex": "#F19DB5",
+    "display_order": 2
+  }
+]
