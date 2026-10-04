@@ -47,7 +47,6 @@ export function QuizContainer() {
   // Current question selection state
   const [selectedLeft, setSelectedLeft] = useState<Color | undefined>();
   const [selectedRight, setSelectedRight] = useState<Color | undefined>();
-  const [confirmed, setConfirmed] = useState({ left: false, right: false });
   const [feedback, setFeedback] = useState<'idle' | 'correct' | 'wrong'>(
     'idle',
   );
@@ -84,20 +83,17 @@ export function QuizContainer() {
   const colorMap = new Map<string, Color>(colors.map((c) => [c.id, c]));
 
   // Handle color selection updates for live preview
-  // 選択色は次の問題でも保持し、各問題で左右とも選び直した時だけ送信対象とする
   const handleColorSelect = (step: 'left' | 'right', color: Color) => {
     if (step === 'left') {
       setSelectedLeft(color);
     } else {
       setSelectedRight(color);
     }
-    setConfirmed((c) => ({ ...c, [step]: true }));
   };
 
   const handleResetSelection = () => {
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
-    setConfirmed({ left: false, right: false });
   };
 
   // Handle final 2-tap answer
@@ -123,15 +119,15 @@ export function QuizContainer() {
         navigator.vibrate(50);
       }
     } else {
-      // 不正解でも選択したペンライト色は保持する (正解はフィードバックバーに表示)
       setFeedback('wrong');
     }
   };
 
-  // Move to next question (選択色は保持、確定状態のみリセット)
+  // Move to next question (次へ押下でペンライト色をリセット)
   const handleNextQuestion = () => {
     setFeedback('idle');
-    setConfirmed({ left: false, right: false });
+    setSelectedLeft(undefined);
+    setSelectedRight(undefined);
     setActiveHand('left');
 
     if (currentIndex + 1 < members.length) {
@@ -147,7 +143,6 @@ export function QuizContainer() {
     setIsFinished(false);
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
-    setConfirmed({ left: false, right: false });
     setFeedback('idle');
   };
 
@@ -300,7 +295,7 @@ export function QuizContainer() {
         justify="space-between"
         px="md"
         pt="sm"
-        pb={fillScreen ? 0 : 'sm'}
+        pb="sm"
         style={{ flexGrow: 1, minHeight: 0 }}
       >
         {/* 出題カード (選択中レイアウト) */}
@@ -339,8 +334,6 @@ export function QuizContainer() {
         colors={colors}
         selectedLeftColor={selectedLeft}
         selectedRightColor={selectedRight}
-        leftConfirmed={confirmed.left}
-        rightConfirmed={confirmed.right}
         onAnswer={handleAnswer}
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}

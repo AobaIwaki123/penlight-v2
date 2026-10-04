@@ -11,8 +11,6 @@ interface DonutRingModalProps {
   colors: Color[];
   selectedLeftColor?: Color;
   selectedRightColor?: Color;
-  leftConfirmed: boolean;
-  rightConfirmed: boolean;
   onAnswer: (input: { leftColorId: string; rightColorId: string }) => void;
   onColorSelect: (hand: 'left' | 'right', color: Color) => void;
   disabled: boolean;
@@ -25,8 +23,6 @@ export function DonutRingModal({
   colors,
   selectedLeftColor,
   selectedRightColor,
-  leftConfirmed,
-  rightConfirmed,
   onAnswer,
   onColorSelect,
   disabled,
@@ -43,27 +39,30 @@ export function DonutRingModal({
   const radius = 120; // 円環の半径 (px)
   const buttonSize = 38; // 各カラージュエルの直径 (px)
 
-  // 保持された前問の色は選択済み表示のみ。今問で左右とも選び直した時に送信する
   const handleColorClick = (color: Color) => {
     if (disabled) return;
 
     if (currentHand === 'left') {
       onColorSelect('left', color);
-      if (rightConfirmed && selectedRightColor) {
+      if (selectedRightColor) {
+        // Both colors selected -> submit and close
         onAnswer({
           leftColorId: color.id,
           rightColorId: selectedRightColor.id,
         });
         onClose();
       } else {
+        // Auto-switch focus visually to right hand
         setCurrentHand('right');
       }
     } else {
       onColorSelect('right', color);
-      if (leftConfirmed && selectedLeftColor) {
+      if (selectedLeftColor) {
+        // Both colors selected -> submit and close
         onAnswer({ leftColorId: selectedLeftColor.id, rightColorId: color.id });
         onClose();
       } else {
+        // Auto-switch focus visually to left hand
         setCurrentHand('left');
       }
     }

@@ -37,7 +37,7 @@ export function LayoutOverlay({
         flexDirection: 'column',
       }}
     >
-      {/* 写真カード (全画面または大画面 + 自然な下部グラデーション) */}
+      {/* 写真カード (自然な下部グラデーション + 角丸カード) */}
       <Paper
         radius="lg"
         shadow="md"
@@ -47,9 +47,6 @@ export function LayoutOverlay({
           height: isFullscreen ? undefined : 330,
           flexGrow: isFullscreen ? 1 : undefined,
           minHeight: isFullscreen ? 0 : undefined,
-          // 全画面時は画面の下端まで写真を敷き詰める
-          borderBottomLeftRadius: isFullscreen ? 0 : undefined,
-          borderBottomRightRadius: isFullscreen ? 0 : undefined,
           overflow: 'hidden',
           backgroundColor: '#000',
         }}
@@ -174,7 +171,7 @@ export function LayoutOverlay({
               position: 'absolute',
               left: 10,
               right: 10,
-              bottom: 'calc(10px + env(safe-area-inset-bottom))',
+              bottom: 10,
               zIndex: 20,
               display: 'flex',
               justifyContent: 'center',

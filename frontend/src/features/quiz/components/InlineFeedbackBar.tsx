@@ -67,7 +67,7 @@ export function InlineFeedbackBar({
 
         {isCorrect ? (
           <Text size="sm" fw={800} style={{ whiteSpace: 'nowrap' }}>
-            大正解！
+            正解！
           </Text>
         ) : (
           <Group gap={4} wrap="wrap" style={{ flex: 1, minWidth: 0 }}>
