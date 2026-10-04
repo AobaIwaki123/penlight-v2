@@ -88,7 +88,7 @@ func TestServer_BootstrapAndETag(t *testing.T) {
 func TestServer_ImageRedirectFallback(t *testing.T) {
 	srv, _ := setupTestServer(t)
 
-	// Test redirect for known image_key in data/image_sources.json
+	// Test redirect for known image_key in seeds/data/image_sources.json
 	req := httptest.NewRequest(http.MethodGet, "/images/img_dc063594ccd454709b6d54ad66838c76.webp", nil)
 	w := httptest.NewRecorder()
 	srv.Handler().ServeHTTP(w, req)

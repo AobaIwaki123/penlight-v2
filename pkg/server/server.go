@@ -78,12 +78,17 @@ func NewServer(cfg *config.Config) (*Server, error) {
 
 	// 3. Load image sources map for dynamic CDN redirect fallback
 	imageSources := make(map[string]string)
-	if srcBytes, err := resolveFile("data/image_sources.json"); err == nil {
-		var entries []imageSourceEntry
-		if err := json.Unmarshal(srcBytes, &entries); err == nil {
-			for _, e := range entries {
-				if e.ImageKey != "" && e.URL != "" {
-					imageSources[e.ImageKey] = e.URL
+	for _, candidate := range []string{"seeds/data/image_sources.json", "data/image_sources.json"} {
+		if srcBytes, err := resolveFile(candidate); err == nil {
+			var entries []imageSourceEntry
+			if err := json.Unmarshal(srcBytes, &entries); err == nil {
+				for _, e := range entries {
+					if e.ImageKey != "" && e.URL != "" {
+						imageSources[e.ImageKey] = e.URL
+					}
+				}
+				if len(imageSources) > 0 {
+					break
 				}
 			}
 		}
