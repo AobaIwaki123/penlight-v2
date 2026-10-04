@@ -59,9 +59,9 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Settings: presentation layout & input interface (default to classic + grid palette)
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>('classic');
-  const [inputMode, setInputMode] = useState<InputMode>('grid');
+  // Settings: presentation layout & input interface (default to overlay + donut)
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
+  const [inputMode, setInputMode] = useState<InputMode>('donut');
 
   // Filter criteria and modal state
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
