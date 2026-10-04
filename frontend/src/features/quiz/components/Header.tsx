@@ -127,18 +127,12 @@ export function Header({
           </Menu.Dropdown>
         </Menu>
 
-        {/* パレット入力方式切り替えメニュー (手元アンカー vs ドーナツ vs 15色グリッド) */}
-        <Menu shadow="md" width={200}>
+        {/* パレット入力方式切り替えメニュー (ドーナツ vs 15色グリッド) */}
+        <Menu shadow="md" width={180}>
           <Menu.Target>
             <ActionIcon
               variant="light"
-              color={
-                inputMode === 'anchor'
-                  ? 'cyan'
-                  : inputMode === 'donut'
-                    ? 'indigo'
-                    : 'gray'
-              }
+              color={inputMode === 'donut' ? 'indigo' : 'gray'}
               size="lg"
               radius="md"
               title="カラーパレット方式"
@@ -147,26 +141,14 @@ export function Header({
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Label>パレットUI (並行比較)</Menu.Label>
-            <Menu.Item
-              leftSection={
-                inputMode === 'anchor' ? (
-                  <IconCheck size={14} />
-                ) : (
-                  <Box w={14} />
-                )
-              }
-              onClick={() => onInputModeChange('anchor')}
-            >
-              手元アンカー追従型 (C案) ★
-            </Menu.Item>
+            <Menu.Label>パレットUI</Menu.Label>
             <Menu.Item
               leftSection={
                 inputMode === 'donut' ? <IconCheck size={14} /> : <Box w={14} />
               }
               onClick={() => onInputModeChange('donut')}
             >
-              洗練ドーナツモーダル
+              ドーナツサークル型 ★
             </Menu.Item>
             <Menu.Item
               leftSection={

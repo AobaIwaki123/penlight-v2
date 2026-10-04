@@ -43,26 +43,24 @@ export function PenlightStick({
           transition: 'all 0.25s ease',
         }}
       />
-      {isSelected && (
-        <Text
-          fw={700}
-          c={textColor || 'inherit'}
-          ta="center"
-          style={{
-            fontSize,
-            letterSpacing: name.length >= 7 ? '-0.04em' : '-0.01em',
-            textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
-            lineHeight: 1.15,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            maxWidth: '100%',
-            display: 'block',
-          }}
-        >
-          {name}
-        </Text>
-      )}
+      <Text
+        fw={700}
+        c={textColor || (isSelected ? 'inherit' : 'dimmed')}
+        ta="center"
+        style={{
+          fontSize,
+          letterSpacing: name.length >= 7 ? '-0.04em' : '-0.01em',
+          textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
+          lineHeight: 1.15,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          maxWidth: '100%',
+          display: 'block',
+        }}
+      >
+        {name}
+      </Text>
       {label && (
         <Text
           size="10px"

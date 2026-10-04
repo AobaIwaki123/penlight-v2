@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
 import { Header } from '@/features/quiz/components/Header';
 import { InlineFeedbackBar } from '@/features/quiz/components/InlineFeedbackBar';
-import { AnchorColorPicker } from '@/features/quiz/components/inputs/AnchorColorPicker';
 import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
@@ -32,11 +31,11 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Settings: presentation layout & input interface (デフォルトは手元アンカー型)
+  // Settings: presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
-  const [inputMode, setInputMode] = useState<InputMode>('anchor');
+  const [inputMode, setInputMode] = useState<InputMode>('donut');
 
-  // Input states
+  // Modal state for Donut Ring Input
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
   const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
 
@@ -154,9 +153,7 @@ export function QuizContainer() {
   const renderLayout = () => {
     const handleOpenInput = (hand: 'left' | 'right') => {
       setActiveHand(hand);
-      if (inputMode === 'donut') {
-        setIsDonutModalOpen(true);
-      }
+      setIsDonutModalOpen(true);
     };
 
     const props = {
@@ -166,8 +163,7 @@ export function QuizContainer() {
       selectedRightColor: selectedRight,
       isCorrect: feedback === 'correct',
       onOpenInput: handleOpenInput,
-      isFullscreen: inputMode === 'donut' || inputMode === 'anchor',
-      activeHand,
+      isFullscreen: inputMode === 'donut',
     };
 
     switch (layoutMode) {
@@ -282,29 +278,9 @@ export function QuizContainer() {
       >
         {/* 出題カード (選択中レイアウト) */}
         <Box
-          style={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: 440,
-            display: 'flex',
-            justifyContent: 'center',
-          }}
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
         >
           {renderLayout()}
-
-          {/* 右下常時表示カラーピッカー ＆ 手元ミニマルセレクター */}
-          {inputMode === 'anchor' && feedback === 'idle' && (
-            <AnchorColorPicker
-              colors={colors}
-              selectedLeftColor={selectedLeft}
-              selectedRightColor={selectedRight}
-              activeHand={activeHand}
-              onHandChange={setActiveHand}
-              onColorSelect={handleColorSelect}
-              onAnswer={handleAnswer}
-              disabled={feedback !== 'idle'}
-            />
-          )}
         </Box>
 
         {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
@@ -334,7 +310,7 @@ export function QuizContainer() {
         )}
       </Stack>
 
-      {/* 洗練ドーナツリングカラー選択モーダル (顔に被らない適正バランス ＆ 2本のミニペンライト) */}
+      {/* ドーナツリングカラー選択モーダル (完全透過 ＆ 2本のミニペンライトで左右を視覚化) */}
       <DonutRingModal
         opened={isDonutModalOpen}
         onClose={() => setIsDonutModalOpen(false)}
