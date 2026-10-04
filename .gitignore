@@ -16,10 +16,13 @@
 *.sqlite
 *.sqlite3
 
-# Frontend dependencies & export
-/frontend/node_modules/
+node_modules/
+/.next/
 /frontend/.next/
 /frontend/out/
+/frontend/test-results/
+/frontend/playwright-report/
+*.tsbuildinfo
 
 # OS specific files
 .DS_Store

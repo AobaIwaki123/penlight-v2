@@ -1,0 +1,10 @@
+{
+  "name": "penlight-v2-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm run --prefix frontend dev",
+    "build": "npm run --prefix frontend build",
+    "typecheck": "npm run --prefix frontend typecheck",
+    "knip": "npm run --prefix frontend knip"
+  }
+}
