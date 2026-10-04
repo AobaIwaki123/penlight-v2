@@ -28,5 +28,11 @@
     "slug": "4th_tour_towel",
     "name": "4th ARENA TOUR 2024 個別マフラータオル",
     "display_order": 2
+  },
+  {
+    "group_slug": "nogizaka46",
+    "slug": "artist_photo",
+    "name": "アーティスト写真",
+    "display_order": 1
   }
 ]

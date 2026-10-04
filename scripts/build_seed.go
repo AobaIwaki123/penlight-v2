@@ -223,6 +223,7 @@ func main() {
 
 	// 8. Output image_sources.json
 	imgSrcJSON, _ := json.MarshalIndent(imageSources, "", "  ")
+	imgSrcJSON = append(imgSrcJSON, '\n')
 	_ = os.WriteFile(filepath.Join("seeds", "data", "image_sources.json"), imgSrcJSON, 0o644)
 	_ = os.WriteFile(filepath.Join("data", "image_sources.json"), imgSrcJSON, 0o644)
 }

@@ -180,8 +180,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListGroups failed: %v", err)
 	}
-	if len(groups) != 2 {
-		t.Fatalf("expected 2 groups, got %d", len(groups))
+	if len(groups) != 3 {
+		t.Fatalf("expected 3 groups, got %d", len(groups))
 	}
 
 	// Verify colors
@@ -189,8 +189,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListColors failed: %v", err)
 	}
-	if len(colors) != 30 {
-		t.Fatalf("expected 30 colors (15 for Hinatazaka, 15 for Sakurazaka), got %d", len(colors))
+	if len(colors) != 41 {
+		t.Fatalf("expected 41 colors (15 for Hinatazaka, 15 for Sakurazaka, 11 for Nogizaka), got %d", len(colors))
 	}
 
 	// Verify active members (ListMembers filters out graduated members)
@@ -198,8 +198,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListMembers failed: %v", err)
 	}
-	if len(members) != 63 {
-		t.Fatalf("expected 63 active members, got %d", len(members))
+	if len(members) != 85 {
+		t.Fatalf("expected 85 active members, got %d", len(members))
 	}
 
 	// Spot check a member
@@ -228,8 +228,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListPhotoTypes failed: %v", err)
 	}
-	if len(photoTypes) != 5 {
-		t.Fatalf("expected 5 photo types (3 Hinatazaka, 2 Sakurazaka), got %d", len(photoTypes))
+	if len(photoTypes) != 6 {
+		t.Fatalf("expected 6 photo types (3 Hinatazaka, 2 Sakurazaka, 1 Nogizaka), got %d", len(photoTypes))
 	}
 
 	// Verify member images list

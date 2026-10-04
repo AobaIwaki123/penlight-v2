@@ -12,5 +12,12 @@
     "short_name": "櫻坂",
     "theme_color_hex": "#F19DB5",
     "display_order": 2
+  },
+  {
+    "slug": "nogizaka46",
+    "name": "乃木坂46",
+    "short_name": "乃木坂",
+    "theme_color_hex": "#7E2682",
+    "display_order": 3
   }
 ]
