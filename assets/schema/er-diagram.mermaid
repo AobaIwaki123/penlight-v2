@@ -53,6 +53,23 @@ erDiagram
         datetime updated_at
     }
 
+    MEMBER_IMAGE {
+        string id PK "img_... (UUID v7 surrogate key)"
+        string member_id FK "mem_... (FK)"
+        string image_key "Immutable image filename: e.g. 'img_<uuidv7>.webp'"
+        string title "e.g. '13th Single 制服', '5thひな誕祭個別タオル'"
+        boolean is_primary "true for the primary/default image"
+        int display_order
+        datetime created_at
+        datetime updated_at
+    }
+
+    MASTER_VERSION {
+        string id PK "'current'"
+        string version "Git commit hash or semantic version"
+        datetime updated_at
+    }
+
     USER {
         string id PK "usr_<uuidv7>"
         string google_sub UK "Google OIDC unique subject ID"

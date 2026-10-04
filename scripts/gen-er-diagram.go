@@ -157,7 +157,7 @@ func main() {
 	buf.WriteString("\n")
 
 	// 2. エンティティ定義出力
-	entityOrder := []string{"GROUP", "COLOR", "MEMBER", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
+	entityOrder := []string{"GROUP", "COLOR", "MEMBER", "MEMBER_IMAGE", "MASTER_VERSION", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
 	for _, name := range entityOrder {
 		ent, ok := entities[name]
 		if !ok {
