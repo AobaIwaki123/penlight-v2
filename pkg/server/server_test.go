@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/aobaiwaki/penlight-v2/pkg/config"
@@ -99,5 +100,47 @@ func TestServer_ImageRedirectFallback(t *testing.T) {
 	loc := w.Header().Get("Location")
 	if loc == "" {
 		t.Fatal("expected Location header in redirect")
+	}
+}
+
+func TestServer_EmbeddedFrontendSPA(t *testing.T) {
+	srv, _ := setupTestServer(t)
+
+	// 1. Root / should serve index.html
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	w := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 for /, got %d", w.Code)
+	}
+	if !strings.Contains(w.Header().Get("Content-Type"), "text/html") {
+		t.Fatalf("expected text/html for /, got %s", w.Header().Get("Content-Type"))
+	}
+	if !strings.Contains(w.Body.String(), "<html") && !strings.Contains(w.Body.String(), "<!DOCTYPE") {
+		t.Fatalf("expected HTML content for /, got: %s", w.Body.String())
+	}
+
+	// 2. Client-side route (SPA fallback) e.g. /quiz
+	reqSPA := httptest.NewRequest(http.MethodGet, "/quiz", nil)
+	wSPA := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wSPA, reqSPA)
+
+	if wSPA.Code != http.StatusOK {
+		t.Fatalf("expected 200 for SPA route /quiz, got %d", wSPA.Code)
+	}
+	if !strings.Contains(wSPA.Header().Get("Content-Type"), "text/html") {
+		t.Fatalf("expected text/html for /quiz fallback, got %s", wSPA.Header().Get("Content-Type"))
+	}
+
+	// 3. API route is not masked by SPA handler
+	reqAPI := httptest.NewRequest(http.MethodGet, "/api/v1/sync/bootstrap", nil)
+	wAPI := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wAPI, reqAPI)
+	if wAPI.Code != http.StatusOK {
+		t.Fatalf("expected 200 for /api/v1/sync/bootstrap, got %d", wAPI.Code)
+	}
+	if !strings.Contains(wAPI.Header().Get("Content-Type"), "application/json") {
+		t.Fatalf("expected application/json for API route, got %s", wAPI.Header().Get("Content-Type"))
 	}
 }

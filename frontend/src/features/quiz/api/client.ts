@@ -1,9 +1,18 @@
 import type { BootstrapResponse } from '@/types/generated';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.port === '3000') {
+    return 'http://localhost:8080';
+  }
+  return '';
+}
 
 export async function fetchBootstrapData(): Promise<BootstrapResponse> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/sync/bootstrap`, {
+  const baseUrl = getApiBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/sync/bootstrap`, {
     headers: {
       Accept: 'application/json',
     },
@@ -23,5 +32,6 @@ export function getImageUrl(imageKey?: string): string {
   if (imageKey.startsWith('http://') || imageKey.startsWith('https://')) {
     return imageKey;
   }
-  return `${API_BASE_URL}/images/${imageKey}`;
+  const baseUrl = getApiBaseUrl();
+  return `${baseUrl}/images/${imageKey}`;
 }

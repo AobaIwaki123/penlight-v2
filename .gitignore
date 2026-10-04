@@ -19,7 +19,8 @@
 node_modules/
 /.next/
 /frontend/.next/
-/frontend/out/
+/frontend/out/*
+!/frontend/out/.gitkeep
 /frontend/test-results/
 /frontend/playwright-report/
 *.tsbuildinfo
