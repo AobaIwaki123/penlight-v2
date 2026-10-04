@@ -167,12 +167,17 @@ export function QuizContainer() {
       selectedRightColor: selectedRight,
       isCorrect: feedback === 'correct',
       onOpenInput: handleOpenInput,
-      isFullscreen: inputMode === 'donut',
+      isFullscreen: fillScreen,
     };
 
     switch (layoutMode) {
       case 'overlay':
-        return <LayoutOverlay {...props} />;
+        return (
+          <LayoutOverlay
+            {...props}
+            footer={feedback !== 'idle' ? feedbackBar : undefined}
+          />
+        );
       case 'compact':
         return <LayoutCompact {...props} />;
       case 'classic':
@@ -231,11 +236,28 @@ export function QuizContainer() {
     );
   }
 
+  // 写真を下端まで敷き詰める全画面構成 (オーバーレイ＋ドーナツ)
+  const fillScreen = layoutMode === 'overlay' && inputMode === 'donut';
+
+  const feedbackBar = (
+    <InlineFeedbackBar
+      isCorrect={feedback === 'correct'}
+      correctLeftColor={colorMap.get(currentMember.penlight.left_color_id)}
+      correctRightColor={colorMap.get(currentMember.penlight.right_color_id)}
+      onNext={handleNextQuestion}
+    />
+  );
+
   return (
     <Container
       size="xs"
       p={0}
-      style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}
+      style={{
+        // 全画面レイアウト時は画面高にぴったり収め、写真を下端まで敷き詰める
+        ...(fillScreen ? { height: '100dvh' } : { minHeight: '100dvh' }),
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
       {/* 共通ヘッダー */}
       <Header
@@ -277,12 +299,19 @@ export function QuizContainer() {
         align="center"
         justify="space-between"
         px="md"
-        py="sm"
-        style={{ flexGrow: 1 }}
+        pt="sm"
+        pb={fillScreen ? 0 : 'sm'}
+        style={{ flexGrow: 1, minHeight: 0 }}
       >
         {/* 出題カード (選択中レイアウト) */}
         <Box
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            flex: fillScreen ? 1 : undefined,
+            minHeight: fillScreen ? 0 : undefined,
+          }}
         >
           {renderLayout()}
         </Box>
@@ -300,18 +329,7 @@ export function QuizContainer() {
         )}
 
         {/* 解答直後の 1行インラインフィードバックバー (中央を邪魔せず最下部に表示) */}
-        {feedback !== 'idle' && (
-          <InlineFeedbackBar
-            isCorrect={feedback === 'correct'}
-            correctLeftColor={colorMap.get(
-              currentMember.penlight.left_color_id,
-            )}
-            correctRightColor={colorMap.get(
-              currentMember.penlight.right_color_id,
-            )}
-            onNext={handleNextQuestion}
-          />
-        )}
+        {feedback !== 'idle' && !fillScreen && feedbackBar}
       </Stack>
 
       {/* ドーナツリングカラー選択モーダル (完全透過 ＆ 2本のミニペンライトで左右を視覚化) */}

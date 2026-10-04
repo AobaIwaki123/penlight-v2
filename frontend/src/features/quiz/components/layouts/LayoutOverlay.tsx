@@ -1,12 +1,15 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Text } from '@mantine/core';
+import type { ReactNode } from 'react';
 import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { TargetLayoutProps } from '@/features/quiz/types';
 
 interface LayoutOverlayProps extends TargetLayoutProps {
   isFullscreen?: boolean;
+  /** 写真の最下部に重ねて表示する領域 (解答フィードバックバーなど) */
+  footer?: ReactNode;
 }
 
 export function LayoutOverlay({
@@ -16,6 +19,7 @@ export function LayoutOverlay({
   selectedRightColor,
   onOpenInput,
   isFullscreen,
+  footer,
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
   const imageSrc =
@@ -27,7 +31,8 @@ export function LayoutOverlay({
       style={{
         width: '100%',
         maxWidth: 440,
-        height: isFullscreen ? 'calc(100dvh - 180px)' : undefined,
+        alignSelf: 'stretch',
+        minHeight: isFullscreen ? 0 : undefined,
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -39,8 +44,12 @@ export function LayoutOverlay({
         style={{
           position: 'relative',
           width: '100%',
-          height: isFullscreen ? '100%' : 330,
+          height: isFullscreen ? undefined : 330,
           flexGrow: isFullscreen ? 1 : undefined,
+          minHeight: isFullscreen ? 0 : undefined,
+          // 全画面時は画面の下端まで写真を敷き詰める
+          borderBottomLeftRadius: isFullscreen ? 0 : undefined,
+          borderBottomRightRadius: isFullscreen ? 0 : undefined,
           overflow: 'hidden',
           backgroundColor: '#000',
         }}
@@ -48,9 +57,13 @@ export function LayoutOverlay({
         <Image
           src={imageSrc}
           alt={`${target.family_name} ${target.given_name}`}
-          w="100%"
-          h="100%"
           fit="cover"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+          }}
         />
 
         {/* 自然な下部フェードグラデーション */}
@@ -71,7 +84,9 @@ export function LayoutOverlay({
         <Box
           style={{
             position: 'absolute',
-            bottom: 12,
+            // フッター (フィードバックバー) 表示中は、その分だけ情報を上へ持ち上げる
+            bottom: footer ? 112 : 12,
+            transition: 'bottom 0.25s ease',
             left: 16,
             right: 16,
             display: 'flex',
@@ -151,6 +166,23 @@ export function LayoutOverlay({
             </Box>
           </Group>
         </Box>
+
+        {/* 写真最下部に重ねるフッター (解答フィードバックバーなど) */}
+        {footer && (
+          <Box
+            style={{
+              position: 'absolute',
+              left: 10,
+              right: 10,
+              bottom: 'calc(10px + env(safe-area-inset-bottom))',
+              zIndex: 20,
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            {footer}
+          </Box>
+        )}
       </Paper>
     </Box>
   );
