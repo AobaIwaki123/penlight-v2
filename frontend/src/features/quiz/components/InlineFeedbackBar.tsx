@@ -149,20 +149,42 @@ export function InlineFeedbackBar({
         )}
       </Group>
 
-      {/* 右側: 次へ進むボタン */}
+      {/* 右側: 次へ進むボタン (大きく・白抜き・脈動で気付きやすく) */}
+      <style>{`
+        @keyframes nextPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.75); }
+          50% { box-shadow: 0 0 0 9px rgba(255,255,255,0); }
+        }
+        @keyframes nextNudge {
+          0%, 100% { transform: translateX(0); }
+          50% { transform: translateX(4px); }
+        }
+        @keyframes popIn {
+          from { transform: translateY(8px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `}</style>
       <Button
-        size="xs"
+        size="md"
         variant="white"
-        color="dark"
+        color={isCorrect ? 'green.9' : 'red.9'}
         radius="xl"
-        rightSection={<IconArrowRight size={14} />}
+        rightSection={
+          <IconArrowRight
+            size={20}
+            stroke={3}
+            style={{ animation: 'nextNudge 0.9s ease-in-out infinite' }}
+          />
+        }
         onClick={onNext}
         style={{
           flexShrink: 0,
-          fontWeight: 800,
-          paddingLeft: 10,
-          paddingRight: 10,
-          height: 32,
+          fontWeight: 900,
+          fontSize: 16,
+          paddingLeft: 18,
+          paddingRight: 14,
+          height: 46,
+          animation: 'nextPulse 1.4s ease-out infinite',
         }}
       >
         次へ
