@@ -528,4 +528,4 @@ VALUES ('img_b84c0981292159e3afcac4e68a61c586', 'mem_61f64dc955b55de8b3540cc265d
 
 -- Master Version (Ref: ADR-0021)
 INSERT OR REPLACE INTO master_versions (id, version, updated_at)
-VALUES ('current', '2026.10.04-1', '2026-10-04T00:00:00Z');
+VALUES ('current', '2026.10.04-2', '2026-10-04T00:00:00Z');

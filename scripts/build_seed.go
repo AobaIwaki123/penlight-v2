@@ -210,7 +210,7 @@ func main() {
 	// 6. Generate MasterVersion SQL
 	sql = append(sql, "\n-- Master Version (Ref: ADR-0021)")
 	sql = append(sql, fmt.Sprintf(
-		"INSERT OR REPLACE INTO master_versions (id, version, updated_at)\nVALUES ('current', '2026.10.04-1', '%s');",
+		"INSERT OR REPLACE INTO master_versions (id, version, updated_at)\nVALUES ('current', '2026.10.04-2', '%s');",
 		nowUTC,
 	))
 
