@@ -10,23 +10,28 @@ import {
 } from '@mantine/core';
 import {
   IconCheck,
+  IconCircleDot,
   IconColorSwatch,
   IconFilter,
   IconLayout,
   IconMoon,
   IconSun,
 } from '@tabler/icons-react';
-import type { LayoutMode } from '@/features/quiz/types';
+import type { InputMode, LayoutMode } from '@/features/quiz/types';
 
 interface HeaderProps {
   layoutMode: LayoutMode;
   onLayoutModeChange: (mode: LayoutMode) => void;
+  inputMode: InputMode;
+  onInputModeChange: (mode: InputMode) => void;
   onOpenFilter?: () => void;
 }
 
 export function Header({
   layoutMode,
   onLayoutModeChange,
+  inputMode,
+  onInputModeChange,
   onOpenFilter,
 }: HeaderProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -118,6 +123,40 @@ export function Header({
               onClick={() => onLayoutModeChange('compact')}
             >
               コンパクト操作重視
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+
+        {/* パレット入力方式切り替えメニュー (ドーナツ vs 15色グリッド) */}
+        <Menu shadow="md" width={180}>
+          <Menu.Target>
+            <ActionIcon
+              variant="light"
+              color={inputMode === 'donut' ? 'indigo' : 'gray'}
+              size="lg"
+              radius="md"
+              title="カラーパレット方式"
+            >
+              <IconCircleDot size={18} />
+            </ActionIcon>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Label>パレットUI</Menu.Label>
+            <Menu.Item
+              leftSection={
+                inputMode === 'donut' ? <IconCheck size={14} /> : <Box w={14} />
+              }
+              onClick={() => onInputModeChange('donut')}
+            >
+              ドーナツサークル型 ★
+            </Menu.Item>
+            <Menu.Item
+              leftSection={
+                inputMode === 'grid' ? <IconCheck size={14} /> : <Box w={14} />
+              }
+              onClick={() => onInputModeChange('grid')}
+            >
+              15色グリッド型
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

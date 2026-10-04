@@ -15,11 +15,12 @@ import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
 import { Header } from '@/features/quiz/components/Header';
+import { DonutRingInput } from '@/features/quiz/components/inputs/DonutRingInput';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
-import type { LayoutMode } from '@/features/quiz/types';
+import type { InputMode, LayoutMode } from '@/features/quiz/types';
 import type { Color, Member } from '@/types/generated';
 
 export function QuizContainer() {
@@ -29,8 +30,9 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Settings
+  // Settings: presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
+  const [inputMode, setInputMode] = useState<InputMode>('donut');
 
   // Session state
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -221,6 +223,8 @@ export function QuizContainer() {
       <Header
         layoutMode={layoutMode}
         onLayoutModeChange={setLayoutMode}
+        inputMode={inputMode}
+        onInputModeChange={setInputMode}
         onOpenFilter={() => {}}
       />
 
@@ -285,15 +289,26 @@ export function QuizContainer() {
           </Box>
         )}
 
-        {/* 解答インターフェース (新版 15色パレット) */}
-        <PaletteGridInput
-          target={currentMember}
-          colors={colors}
-          onAnswer={handleAnswer}
-          disabled={feedback !== 'idle'}
-          onColorSelect={handleColorSelect}
-          onResetSelection={handleResetSelection}
-        />
+        {/* 解答インターフェース (プラグイン切り替え: ドーナツ vs グリッド) */}
+        {inputMode === 'donut' ? (
+          <DonutRingInput
+            target={currentMember}
+            colors={colors}
+            onAnswer={handleAnswer}
+            disabled={feedback !== 'idle'}
+            onColorSelect={handleColorSelect}
+            onResetSelection={handleResetSelection}
+          />
+        ) : (
+          <PaletteGridInput
+            target={currentMember}
+            colors={colors}
+            onAnswer={handleAnswer}
+            disabled={feedback !== 'idle'}
+            onColorSelect={handleColorSelect}
+            onResetSelection={handleResetSelection}
+          />
+        )}
       </Stack>
 
       {/* 結果発表モーダル */}
