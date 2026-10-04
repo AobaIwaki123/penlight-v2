@@ -3,10 +3,13 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'deploy/**'
+      - '**.md'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -50,3 +53,19 @@ jobs:
             ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.sha_short }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Update deployment manifest with immutable SHA tag
+        run: |
+          sed -i "s|image: .*/penlight-v2:.*|image: ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.sha_short }}|g" deploy/deployment.yaml
+
+      - name: Commit and push deployment manifest update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add deploy/deployment.yaml
+          if git diff --staged --quiet; then
+            echo "No manifest changes to commit."
+          else
+            git commit -m "chore(deploy): update deployment image to ${{ steps.meta.outputs.sha_short }} [skip ci]"
+            git push origin main
+          fi
