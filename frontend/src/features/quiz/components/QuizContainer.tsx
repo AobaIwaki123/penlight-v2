@@ -14,6 +14,10 @@ import {
 import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
+import {
+  FilterModal,
+  type QuizFilterCriteria,
+} from '@/features/quiz/components/FilterModal';
 import { Header } from '@/features/quiz/components/Header';
 import { InlineFeedbackBar } from '@/features/quiz/components/InlineFeedbackBar';
 import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
@@ -22,10 +26,34 @@ import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic'
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
-import type { Color, Member } from '@/types/generated';
+import type { Color, Group, Member } from '@/types/generated';
+
+function filterAndShuffleMembers(
+  sourceMembers: Member[],
+  filter: QuizFilterCriteria,
+): Member[] {
+  const filtered = sourceMembers.filter((m) => {
+    if (m.group_id !== filter.groupId) return false;
+    if (!filter.includeGraduated && m.status !== 'active') return false;
+    if (!m.penlight?.left_color_id || !m.penlight?.right_color_id) return false;
+    return filter.generations.includes(m.generation);
+  });
+  // Shuffle array using Fisher-Yates
+  const shuffled = [...filtered];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export function QuizContainer() {
   // Master data from backend API
+  const [allGroups, setAllGroups] = useState<Group[]>([]);
+  const [allMembers, setAllMembers] = useState<Member[]>([]);
+  const [allColors, setAllColors] = useState<Color[]>([]);
+
+  // Active quiz pool and colors
   const [members, setMembers] = useState<Member[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +62,14 @@ export function QuizContainer() {
   // Settings: presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
+
+  // Filter criteria and modal state
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filterCriteria, setFilterCriteria] = useState<QuizFilterCriteria>({
+    groupId: '',
+    generations: [],
+    includeGraduated: false,
+  });
 
   // Modal state for Donut Ring Input
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
@@ -54,22 +90,54 @@ export function QuizContainer() {
   useEffect(() => {
     fetchBootstrapData()
       .then((data) => {
-        // Filter active members with penlight configuration
-        const activeMembers = (data.members || []).filter(
-          (m: Member) => m.status === 'active' && m.penlight?.left_color_id,
-        );
-        // Default to Hinatazaka46 members if available, or all active
-        const hinata = activeMembers.filter(
-          (m: Member) => m.group_id === 'grp_e6722901acc15ce2af3dacee3a83840c',
-        );
-        setMembers(hinata.length > 0 ? hinata : activeMembers);
+        const groups = data.groups || [];
+        const rawMembers = data.members || [];
+        const rawColors = data.colors || [];
 
-        // Filter colors for the chosen group
-        const groupColors = (data.colors || []).filter(
-          (c: Color) => c.group_id === 'grp_e6722901acc15ce2af3dacee3a83840c',
+        setAllGroups(groups);
+        setAllMembers(rawMembers);
+        setAllColors(rawColors);
+
+        // Default to Hinatazaka46 if available, or first group
+        const defaultGroup =
+          groups.find((g) => g.slug === 'hinatazaka46') || groups[0];
+        const defaultGroupId = defaultGroup ? defaultGroup.id : '';
+
+        // Extract generations for default group
+        const groupMembers = rawMembers.filter(
+          (m) => m.group_id === defaultGroupId,
+        );
+        const gens = Array.from(
+          new Set(groupMembers.map((m) => m.generation)),
+        ).sort((a, b) => a - b);
+
+        const initialCriteria: QuizFilterCriteria = {
+          groupId: defaultGroupId,
+          generations: gens,
+          includeGraduated: false,
+        };
+        setFilterCriteria(initialCriteria);
+
+        const initialMembers = filterAndShuffleMembers(
+          rawMembers,
+          initialCriteria,
+        );
+        setMembers(
+          initialMembers.length > 0
+            ? initialMembers
+            : rawMembers.filter(
+                (m) =>
+                  m.status === 'active' &&
+                  m.penlight?.left_color_id &&
+                  m.penlight?.right_color_id,
+              ),
+        );
+
+        const groupColors = rawColors.filter(
+          (c) => c.group_id === defaultGroupId,
         );
         setColors(
-          groupColors.length > 0 ? groupColors : data.colors.slice(0, 15),
+          groupColors.length > 0 ? groupColors : rawColors.slice(0, 15),
         );
         setIsLoading(false);
       })
@@ -81,6 +149,26 @@ export function QuizContainer() {
 
   const currentMember = members[currentIndex] || members[0];
   const colorMap = new Map<string, Color>(colors.map((c) => [c.id, c]));
+  const currentGroup = allGroups.find((g) => g.id === filterCriteria.groupId);
+
+  // Handle filter submission: rebuild deck and reset quiz progress
+  const handleApplyFilter = (newCriteria: QuizFilterCriteria) => {
+    setFilterCriteria(newCriteria);
+    const filtered = filterAndShuffleMembers(allMembers, newCriteria);
+    setMembers(filtered);
+
+    const groupColors = allColors.filter(
+      (c) => c.group_id === newCriteria.groupId,
+    );
+    setColors(groupColors.length > 0 ? groupColors : allColors.slice(0, 15));
+
+    setCurrentIndex(0);
+    setScore(0);
+    setIsFinished(false);
+    setSelectedLeft(undefined);
+    setSelectedRight(undefined);
+    setFeedback('idle');
+  };
 
   // Handle color selection updates for live preview
   const handleColorSelect = (step: 'left' | 'right', color: Color) => {
@@ -138,6 +226,15 @@ export function QuizContainer() {
   };
 
   const handleRestart = () => {
+    // Reshuffle current member pool for next round
+    setMembers((prev) => {
+      const reshuffled = [...prev];
+      for (let i = reshuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [reshuffled[i], reshuffled[j]] = [reshuffled[j], reshuffled[i]];
+      }
+      return reshuffled;
+    });
     setCurrentIndex(0);
     setScore(0);
     setIsFinished(false);
@@ -260,7 +357,8 @@ export function QuizContainer() {
         onLayoutModeChange={setLayoutMode}
         inputMode={inputMode}
         onInputModeChange={setInputMode}
-        onOpenFilter={() => {}}
+        onOpenFilter={() => setIsFilterModalOpen(true)}
+        groupThemeColor={currentGroup?.theme_color_hex}
       />
 
       {/* 進行プログレスバー */}
@@ -338,6 +436,16 @@ export function QuizContainer() {
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}
         initialHand={activeHand}
+      />
+
+      {/* 絞り込みフィルターモーダル */}
+      <FilterModal
+        opened={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        groups={allGroups}
+        allMembers={allMembers}
+        currentFilter={filterCriteria}
+        onApply={handleApplyFilter}
       />
 
       {/* 結果発表モーダル */}

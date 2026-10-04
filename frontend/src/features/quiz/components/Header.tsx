@@ -25,6 +25,7 @@ interface HeaderProps {
   inputMode: InputMode;
   onInputModeChange: (mode: InputMode) => void;
   onOpenFilter?: () => void;
+  groupThemeColor?: string;
 }
 
 export function Header({
@@ -33,6 +34,7 @@ export function Header({
   inputMode,
   onInputModeChange,
   onOpenFilter,
+  groupThemeColor,
 }: HeaderProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === 'dark';
@@ -57,7 +59,7 @@ export function Header({
             width: 28,
             height: 28,
             borderRadius: 6,
-            backgroundColor: '#7CC7E8',
+            backgroundColor: groupThemeColor || '#7CC7E8',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
