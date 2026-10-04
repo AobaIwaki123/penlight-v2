@@ -16,11 +16,15 @@ export function LayoutOverlay({
   selectedRightColor,
   onOpenInput,
   isFullscreen,
+  activeHand = 'left',
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
   const imageSrc =
     getImageUrl(primaryImg?.image_key) ||
     'https://placehold.co/400x500/7cc7e8/ffffff?text=Penlight+Quiz';
+
+  const isLeftActive = activeHand === 'left';
+  const isRightActive = activeHand === 'right';
 
   return (
     <Box
@@ -53,7 +57,7 @@ export function LayoutOverlay({
           fit="cover"
         />
 
-        {/* 左上隅: 左ペンライト (タップでカラー選択) */}
+        {/* 左上隅: 左ペンライト (選択中なら青く発光オーラ！) */}
         <Box
           role="button"
           tabIndex={0}
@@ -65,33 +69,31 @@ export function LayoutOverlay({
             left: 14,
             zIndex: 10,
             cursor: 'pointer',
-            backgroundColor: 'rgba(0, 0, 0, 0.45)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: 16,
-            padding: '6px 10px',
-            border: '1.5px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.08)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+            backgroundColor: isLeftActive
+              ? 'rgba(0, 0, 0, 0.45)'
+              : 'rgba(0, 0, 0, 0.15)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 999,
+            padding: '6px 6px',
+            border: isLeftActive
+              ? '2px solid #339af0'
+              : '1.5px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: isLeftActive
+              ? '0 0 20px rgba(51, 154, 240, 0.8), inset 0 0 10px rgba(51, 154, 240, 0.3)'
+              : '0 4px 12px rgba(0,0,0,0.15)',
+            transform: isLeftActive ? 'scale(1.08)' : 'scale(1)',
+            transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
           }}
         >
           <PenlightStick
             color={selectedLeftColor}
-            label="左手"
-            height={60}
-            width={24}
+            height={56}
+            width={22}
             textColor="#ffffff"
           />
         </Box>
 
-        {/* 右上隅: 右ペンライト (タップでカラー選択) */}
+        {/* 右上隅: 右ペンライト (選択中ならオレンジに発光オーラ！) */}
         <Box
           role="button"
           tabIndex={0}
@@ -103,27 +105,25 @@ export function LayoutOverlay({
             right: 14,
             zIndex: 10,
             cursor: 'pointer',
-            backgroundColor: 'rgba(0, 0, 0, 0.45)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: 16,
-            padding: '6px 10px',
-            border: '1.5px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.08)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+            backgroundColor: isRightActive
+              ? 'rgba(0, 0, 0, 0.45)'
+              : 'rgba(0, 0, 0, 0.15)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 999,
+            padding: '6px 6px',
+            border: isRightActive
+              ? '2px solid #ff922b'
+              : '1.5px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: isRightActive
+              ? '0 0 20px rgba(255, 146, 43, 0.8), inset 0 0 10px rgba(255, 146, 43, 0.3)'
+              : '0 4px 12px rgba(0,0,0,0.15)',
+            transform: isRightActive ? 'scale(1.08)' : 'scale(1)',
+            transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
           }}
         >
           <PenlightStick
             color={selectedRightColor}
-            label="右手"
-            height={60}
+            height={58}
             width={24}
             textColor="#ffffff"
           />

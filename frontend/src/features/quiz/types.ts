@@ -8,7 +8,7 @@ export interface TargetLayoutProps {
   selectedRightColor?: Color;
   isCorrect?: boolean;
   onOpenInput?: (hand: 'left' | 'right') => void;
-  isInputActive?: boolean;
+  activeHand?: 'left' | 'right';
 }
 
 // AnswerInputProps is the pluggable interface for answer input components.

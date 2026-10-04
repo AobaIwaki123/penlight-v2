@@ -38,7 +38,6 @@ export function QuizContainer() {
 
   // Input states
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
-  const [isAnchorPickerOpen, setIsAnchorPickerOpen] = useState(false);
   const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
 
   // Session state
@@ -155,9 +154,7 @@ export function QuizContainer() {
   const renderLayout = () => {
     const handleOpenInput = (hand: 'left' | 'right') => {
       setActiveHand(hand);
-      if (inputMode === 'anchor') {
-        setIsAnchorPickerOpen(true);
-      } else {
+      if (inputMode === 'donut') {
         setIsDonutModalOpen(true);
       }
     };
@@ -170,7 +167,7 @@ export function QuizContainer() {
       isCorrect: feedback === 'correct',
       onOpenInput: handleOpenInput,
       isFullscreen: inputMode === 'donut' || inputMode === 'anchor',
-      isInputActive: isDonutModalOpen || isAnchorPickerOpen,
+      activeHand,
     };
 
     switch (layoutMode) {
@@ -285,9 +282,29 @@ export function QuizContainer() {
       >
         {/* 出題カード (選択中レイアウト) */}
         <Box
-          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: 440,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
         >
           {renderLayout()}
+
+          {/* 右下常時表示カラーピッカー ＆ 手元ミニマルセレクター */}
+          {inputMode === 'anchor' && feedback === 'idle' && (
+            <AnchorColorPicker
+              colors={colors}
+              selectedLeftColor={selectedLeft}
+              selectedRightColor={selectedRight}
+              activeHand={activeHand}
+              onHandChange={setActiveHand}
+              onColorSelect={handleColorSelect}
+              onAnswer={handleAnswer}
+              disabled={feedback !== 'idle'}
+            />
+          )}
         </Box>
 
         {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
@@ -316,19 +333,6 @@ export function QuizContainer() {
           />
         )}
       </Stack>
-
-      {/* 手元アンカー追従型カラーピッカー (C案: ペンライト直上展開・顔に一切干渉ゼロ) */}
-      <AnchorColorPicker
-        opened={isAnchorPickerOpen}
-        onClose={() => setIsAnchorPickerOpen(false)}
-        colors={colors}
-        selectedLeftColor={selectedLeft}
-        selectedRightColor={selectedRight}
-        activeHand={activeHand}
-        onColorSelect={handleColorSelect}
-        onAnswer={handleAnswer}
-        disabled={feedback !== 'idle'}
-      />
 
       {/* 洗練ドーナツリングカラー選択モーダル (顔に被らない適正バランス ＆ 2本のミニペンライト) */}
       <DonutRingModal
