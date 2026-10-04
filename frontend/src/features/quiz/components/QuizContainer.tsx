@@ -59,7 +59,7 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Settings: presentation layout & input interface
+  // Settings: presentation layout & input interface (default to overlay + donut)
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
 
