@@ -16,7 +16,6 @@ export function LayoutOverlay({
   selectedRightColor,
   onOpenInput,
   isFullscreen,
-  isInputActive,
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
   const imageSrc =
@@ -54,6 +53,82 @@ export function LayoutOverlay({
           fit="cover"
         />
 
+        {/* 左上隅: 左ペンライト (タップでカラー選択) */}
+        <Box
+          role="button"
+          tabIndex={0}
+          onClick={() => onOpenInput?.('left')}
+          title="タップして左手の色を選択"
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: 14,
+            zIndex: 10,
+            cursor: 'pointer',
+            backgroundColor: 'rgba(0, 0, 0, 0.45)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 16,
+            padding: '6px 10px',
+            border: '1.5px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.08)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+          }}
+        >
+          <PenlightStick
+            color={selectedLeftColor}
+            label="左手"
+            height={60}
+            width={24}
+            textColor="#ffffff"
+          />
+        </Box>
+
+        {/* 右上隅: 右ペンライト (タップでカラー選択) */}
+        <Box
+          role="button"
+          tabIndex={0}
+          onClick={() => onOpenInput?.('right')}
+          title="タップして右手の色を選択"
+          style={{
+            position: 'absolute',
+            top: 14,
+            right: 14,
+            zIndex: 10,
+            cursor: 'pointer',
+            backgroundColor: 'rgba(0, 0, 0, 0.45)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 16,
+            padding: '6px 10px',
+            border: '1.5px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.08)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+          }}
+        >
+          <PenlightStick
+            color={selectedRightColor}
+            label="右手"
+            height={60}
+            width={24}
+            textColor="#ffffff"
+          />
+        </Box>
+
         {/* 自然な下部フェードグラデーション */}
         <Box
           style={{
@@ -61,103 +136,37 @@ export function LayoutOverlay({
             bottom: 0,
             left: 0,
             right: 0,
-            height: '55%',
+            height: '45%',
             background:
-              'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%)',
+              'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
             pointerEvents: 'none',
           }}
         />
 
-        {/* オーバーレイ情報 (メンバー名・衣装・光るペンライト) */}
+        {/* 下部オーバーレイ情報 (メンバー名・期生・衣装) */}
         <Box
           style={{
             position: 'absolute',
-            bottom: 12,
-            left: 16,
-            right: 16,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
+            bottom: 16,
+            left: 20,
+            right: 20,
+            color: '#fff',
+            textShadow: '0 2px 4px rgba(0,0,0,0.6)',
           }}
         >
-          {/* 左側: メンバー名と衣装 */}
-          <Box
-            style={{ color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.6)' }}
-          >
-            <Group gap={8} align="center" mb={2}>
-              <Text size="xl" fw={800} c="white">
-                {target.family_name} {target.given_name}
-              </Text>
-              <Badge size="sm" color="orange" variant="filled">
-                {target.generation}期生
-              </Badge>
-            </Group>
-            {costumeTitle && (
-              <Text size="xs" c="gray.3">
-                {costumeTitle}
-              </Text>
-            )}
-          </Box>
-
-          {/* 右側: 写真に重なる2本の光るペンライト (タップでカラー選択モーダル展開) */}
-          <Group
-            gap={16}
-            align="flex-end"
-            style={{
-              opacity: isInputActive ? 0.2 : 1,
-              transition: 'opacity 0.2s ease',
-            }}
-          >
-            <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => onOpenInput?.('left')}
-              title="タップして左手の色を選択"
-              style={{
-                cursor: 'pointer',
-                transition: 'transform 0.15s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <PenlightStick
-                color={selectedLeftColor}
-                label="左 (タップ)"
-                height={isFullscreen ? 84 : 70}
-                width={isFullscreen ? 32 : 28}
-                textColor="#ffffff"
-              />
-            </Box>
-
-            <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => onOpenInput?.('right')}
-              title="タップして右手の色を選択"
-              style={{
-                cursor: 'pointer',
-                transition: 'transform 0.15s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <PenlightStick
-                color={selectedRightColor}
-                label="右 (タップ)"
-                height={isFullscreen ? 84 : 70}
-                width={isFullscreen ? 32 : 28}
-                textColor="#ffffff"
-              />
-            </Box>
+          <Group gap={8} align="center" mb={4}>
+            <Text size="xl" fw={800} c="white">
+              {target.family_name} {target.given_name}
+            </Text>
+            <Badge size="sm" color="orange" variant="filled">
+              {target.generation}期生
+            </Badge>
           </Group>
+          {costumeTitle && (
+            <Text size="xs" c="gray.3">
+              {costumeTitle}
+            </Text>
+          )}
         </Box>
       </Paper>
     </Box>
