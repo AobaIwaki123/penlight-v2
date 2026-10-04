@@ -191,6 +191,7 @@ export type Prefix = string;
 export const PrefixGroup: Prefix = "grp"; // Group: grp_<uuidv7>
 export const PrefixColor: Prefix = "col"; // Color: col_<uuidv7>
 export const PrefixMember: Prefix = "mem"; // Member: mem_<uuidv7>
+export const PrefixImage: Prefix = "img"; // Member Image: img_<uuidv7>
 export const PrefixQuiz: Prefix = "quiz"; // Quiz Question: quiz_<uuidv7>
 export const PrefixUser: Prefix = "usr"; // User: usr_<uuidv7>
 export const PrefixAnswer: Prefix = "ans"; // Answer Log: ans_<uuidv7>
@@ -200,6 +201,18 @@ export const PrefixAnswer: Prefix = "ans"; // Answer Log: ans_<uuidv7>
  * time-sortable, globally unique surrogate keys.
  */
 export type ID = string;
+
+//////////
+// source: master_version.go
+
+/**
+ * MasterVersion tracks the current master data synchronization version (Ref: ADR-0021).
+ */
+export interface MasterVersion {
+  id: string; // "current"
+  version: string; // Git commit hash or semantic version
+  updated_at: string;
+}
 
 //////////
 // source: member.go
@@ -220,6 +233,19 @@ export interface PenlightPair {
   ordered: boolean; // true if position matters, false if symmetric
 }
 /**
+ * MemberImage represents an image asset associated with a member (Ref: ADR-0021).
+ */
+export interface MemberImage {
+  id: ID; // img_... (UUID v7 surrogate key)
+  member_id: ID; // mem_... (FK)
+  image_key: string; // Immutable image filename: e.g. "img_<uuidv7>.webp"
+  title: string; // e.g. "13th Single 制服", "5thひな誕祭個別タオル"
+  is_primary: boolean; // true for the primary/default image
+  display_order: number /* int */;
+  created_at: string;
+  updated_at: string;
+}
+/**
  * Member represents an idol member.
  * Natural keys (names) are never used as identifiers to prevent collisions on homonyms or name changes.
  */
@@ -233,7 +259,7 @@ export interface Member {
   generation: number /* int */; // e.g. 1 (1期生)
   status: MemberStatus; // active, graduated, hiatus
   penlight: PenlightPair; // Assigned penlight colors
-  image_key: string; // Immutable image filename: e.g. "mem_<uuidv7>.webp"
+  images?: MemberImage[]; // Associated images (1:N, Ref: ADR-0021)
   joined_at?: string; // Optional joining date
   graduated_at?: string; // Optional graduation date
   created_at: string;

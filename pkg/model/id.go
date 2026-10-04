@@ -7,6 +7,7 @@ const (
 	PrefixGroup  Prefix = "grp"  // Group: grp_<uuidv7>
 	PrefixColor  Prefix = "col"  // Color: col_<uuidv7>
 	PrefixMember Prefix = "mem"  // Member: mem_<uuidv7>
+	PrefixImage  Prefix = "img"  // Member Image: img_<uuidv7>
 	PrefixQuiz   Prefix = "quiz" // Quiz Question: quiz_<uuidv7>
 	PrefixUser   Prefix = "usr"  // User: usr_<uuidv7>
 	PrefixAnswer Prefix = "ans"  // Answer Log: ans_<uuidv7>

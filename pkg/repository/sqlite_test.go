@@ -79,20 +79,25 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 		t.Fatalf("expected 2 colors, got %d", len(colors))
 	}
 
-	// 3. Insert members
+	// 3. Insert members and image
 	_, err = repo.DB().ExecContext(ctx, `
 		INSERT INTO members (
 			id, group_id, family_name, given_name, family_name_kana, given_name_kana,
-			generation, status, left_color_id, right_color_id, ordered, image_key,
+			generation, status, left_color_id, right_color_id, ordered,
 			created_at, updated_at
 		) VALUES (
 			'mem_01', 'grp_01', '正源司', '陽子', 'しょうげんじ', 'ようこ',
-			4, 'active', 'col_01', 'col_02', 0, 'mem_01.webp',
+			4, 'active', 'col_01', 'col_02', 0,
 			?, ?
 		);
-	`, now.Format(time.RFC3339), now.Format(time.RFC3339))
+		INSERT INTO member_images (
+			id, member_id, image_key, title, is_primary, display_order, created_at, updated_at
+		) VALUES (
+			'img_01', 'mem_01', 'img_01.webp', '13th Single 制服', 1, 0, ?, ?
+		);
+	`, now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339))
 	if err != nil {
-		t.Fatalf("failed to insert member: %v", err)
+		t.Fatalf("failed to insert member and image: %v", err)
 	}
 
 	members, err := repo.ListMembers(ctx)
@@ -102,6 +107,10 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 	if len(members) != 1 || members[0].FamilyName != "正源司" || members[0].Penlight.LeftColorID != "col_01" {
 		t.Fatalf("unexpected members: %+v", members)
 	}
+	if members[0].PrimaryImage() == nil || members[0].PrimaryImage().ImageKey != "img_01.webp" {
+		t.Fatalf("expected primary image img_01.webp, got %+v", members[0].PrimaryImage())
+	}
+
 
 	// 4. Insert AnswerLog (idempotent)
 	log := model.AnswerLog{
@@ -197,5 +206,27 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if shogenji.Penlight.LeftColorID == "" || shogenji.Penlight.RightColorID == "" {
 		t.Fatalf("missing colors for 正源司陽子: %+v", shogenji.Penlight)
 	}
+	if shogenji.PrimaryImage() == nil {
+		t.Fatal("expected primary image for 正源司陽子")
+	}
+
+	// Verify member images list
+	images, err := repo.ListMemberImages(ctx, shogenji.ID)
+	if err != nil {
+		t.Fatalf("ListMemberImages failed: %v", err)
+	}
+	if len(images) == 0 {
+		t.Fatal("expected at least 1 image for 正源司陽子")
+	}
+
+	// Verify master version
+	mv, err := repo.GetMasterVersion(ctx)
+	if err != nil {
+		t.Fatalf("GetMasterVersion failed: %v", err)
+	}
+	if mv == nil || mv.Version == "" {
+		t.Fatalf("expected valid master version, got %+v", mv)
+	}
 }
+
 

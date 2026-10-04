@@ -11,6 +11,7 @@ erDiagram
     GROUP ||--o{ MEMBER : "group_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
+    MEMBER ||--o{ MEMBER_IMAGE : "member_id"
     MEMBER ||--o{ QUIZ_QUESTION : "target_member_id"
     MEMBER ||--o{ SUBMIT_ANSWER_REQUEST : "target_member_id"
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
@@ -50,7 +51,7 @@ erDiagram
         int generation "e.g. 1 (1期生)"
         string status "active, graduated, hiatus"
         string penlight "Assigned penlight colors"
-        string image_key "Immutable image filename: e.g. 'mem_<uuidv7>.webp'"
+        string images "Associated images (1:N, Ref: ADR-0021)"
         datetime joined_at "Optional joining date"
         datetime graduated_at "Optional graduation date"
         datetime created_at

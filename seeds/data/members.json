@@ -9,7 +9,18 @@
     "status": "active",
     "left_color": "エメラルドグリーン",
     "right_color": "レッド",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/400_320_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_15.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -21,7 +32,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/e2d/cd9b08205df9b479d76e1e6be9a70-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/e2d/cd9b08205df9b479d76e1e6be9a70-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -33,7 +50,13 @@
     "status": "graduated",
     "left_color": "オレンジ",
     "right_color": "オレンジ",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_12.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_12.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -45,7 +68,18 @@
     "status": "graduated",
     "left_color": "パステルブルー",
     "right_color": "パープル",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/4f1/2d700f34ba47f7c556c4f9b0080b5/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/4f1/2d700f34ba47f7c556c4f9b0080b5/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_03.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -57,7 +91,18 @@
     "status": "graduated",
     "left_color": "イエロー",
     "right_color": "イエロー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/0df/18fcfe112bdc514260a599f15ca6d/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/0df/18fcfe112bdc514260a599f15ca6d/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_04.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -69,7 +114,13 @@
     "status": "active",
     "left_color": "エメラルドグリーン",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/d51/52c019274111cb3b916a0f8aac3b8-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/d51/52c019274111cb3b916a0f8aac3b8-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -81,7 +132,13 @@
     "status": "graduated",
     "left_color": "ブルー",
     "right_color": "ブルー",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_01_01.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_01_01.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -93,7 +150,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "ホワイト",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/c9d/87011522b663e9b274bacf7644c16-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/c9d/87011522b663e9b274bacf7644c16-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -105,7 +168,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "ピンク",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/bfb/e0ddea499c10c4aaf5d3c4a4524f1-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/bfb/e0ddea499c10c4aaf5d3c4a4524f1-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -117,7 +186,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "レッド",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/de6/51f1b2474317dbf1f8883964d91f6-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/de6/51f1b2474317dbf1f8883964d91f6-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -129,7 +204,18 @@
     "status": "active",
     "left_color": "バイオレット",
     "right_color": "レッド",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/fa2/dbc520dc2a261472c591987a0a3ae/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/fa2/dbc520dc2a261472c591987a0a3ae/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_27.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -141,7 +227,18 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "パープル",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/42f/2e3b0b500456d48a46514eceb343d/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/42f/2e3b0b500456d48a46514eceb343d/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_11.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -153,7 +250,18 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "バイオレット",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/985/072c23fa8e0ac974f353d51d6d566/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/985/072c23fa8e0ac974f353d51d6d566/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_10_01.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -165,7 +273,18 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "ブルー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/7af/4b0f4d4f5c906d391afea8edc8d25/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/7af/4b0f4d4f5c906d391afea8edc8d25/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_20.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -177,7 +296,18 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/f25/16be8f588b8407199f992e5721915/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/f25/16be8f588b8407199f992e5721915/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_28.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -189,7 +319,18 @@
     "status": "active",
     "left_color": "パールグリーン",
     "right_color": "イエロー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/400_320_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_18.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -201,7 +342,18 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "オレンジ",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/1de/576523c0628298356025a2193ecb0/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/1de/576523c0628298356025a2193ecb0/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_24.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -213,7 +365,18 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "イエロー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/c86/d4f17e3172581f7855fd835f89f90/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/c86/d4f17e3172581f7855fd835f89f90/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_25.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -225,7 +388,13 @@
     "status": "graduated",
     "left_color": "サクラピンク",
     "right_color": "サクラピンク",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_07.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_07.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -237,7 +406,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "ホワイト",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/389/6768010684b4668881ef3651c1732-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/389/6768010684b4668881ef3651c1732-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -249,7 +424,18 @@
     "status": "active",
     "left_color": "パールグリーン",
     "right_color": "サクラピンク",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/9c5/87d50e7853595aaefc3d14ab80749/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/9c5/87d50e7853595aaefc3d14ab80749/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_14.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -261,7 +447,18 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "ブルー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/400_320_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_17.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -273,7 +470,13 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "レッド",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_22_01.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_22_01.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -285,7 +488,18 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "サクラピンク",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/45b/c47ef916e2e0bf5e49a0144179153/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/45b/c47ef916e2e0bf5e49a0144179153/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_09.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -297,7 +511,18 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "ピンク",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/b00/62d7047d19b84cc1b2922e011e2bf/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/b00/62d7047d19b84cc1b2922e011e2bf/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_21.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -309,7 +534,13 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "ホワイト",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/249/c9216245dc6e1bb429ca60ef175bb/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/249/c9216245dc6e1bb429ca60ef175bb/800_800_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -321,7 +552,13 @@
     "status": "graduated",
     "left_color": "ホワイト",
     "right_color": "オレンジ",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_13.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_13.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -333,7 +570,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "パステルブルー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/37a/d13677487443abce1aac730b8e2c4-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/37a/d13677487443abce1aac730b8e2c4-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -345,7 +588,18 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "オレンジ",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/b56/49ce8fef3670b03d97ed6b4212486/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/b56/49ce8fef3670b03d97ed6b4212486/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_19.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -357,7 +611,18 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "レッド",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/66d/c4f27cba509510a6f48c23a9ece1c/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/66d/c4f27cba509510a6f48c23a9ece1c/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_23.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -369,7 +634,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "レッド",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/55e/587c555a3dcfc93e8eb67473e0a6e-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/55e/587c555a3dcfc93e8eb67473e0a6e-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -381,7 +652,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "ブルー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/e39/7a5d6767ae33af1a7319529c461b5/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/e39/7a5d6767ae33af1a7319529c461b5/800_800_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -393,7 +670,18 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "イエロー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/e3d/10e0ec44b93be391c4ab7f7e3cf0b/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/e3d/10e0ec44b93be391c4ab7f7e3cf0b/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_08.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -405,7 +693,13 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "イエロー",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/399/71117b1d7bafbd32e4f8b7421517b-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/399/71117b1d7bafbd32e4f8b7421517b-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -417,7 +711,13 @@
     "status": "graduated",
     "left_color": "ホワイト",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_06.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_06.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -429,7 +729,18 @@
     "status": "graduated",
     "left_color": "ホワイト",
     "right_color": "ピンク",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/ccb/7cc864c9f0c54e8d7cc27c88cd6a1/800_800_102400.jpg"
+    "images": [
+      {
+        "title": "13th Single 制服",
+        "url": "https://cdn.hinatazaka46.com/images/14/ccb/7cc864c9f0c54e8d7cc27c88cd6a1/800_800_102400.jpg",
+        "is_primary": true
+      },
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_05.jpg",
+        "is_primary": false
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -441,7 +752,13 @@
     "status": "active",
     "left_color": "グリーン",
     "right_color": "パープル",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_16.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_16.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -453,7 +770,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "オレンジ",
-    "image_url": "https://cdn.hinatazaka46.com/images/14/2d0/201d8f3005ee07574c8ce7db5cb16-03.jpg"
+    "images": [
+      {
+        "title": "5期生 新メンバー",
+        "url": "https://cdn.hinatazaka46.com/images/14/2d0/201d8f3005ee07574c8ce7db5cb16-03.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "hinatazaka46",
@@ -465,7 +788,13 @@
     "status": "graduated",
     "left_color": "ホワイト",
     "right_color": "ホワイト",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_02.jpg"
+    "images": [
+      {
+        "title": "5回目のひな誕祭 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_02.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -477,7 +806,13 @@
     "status": "active",
     "left_color": "ピンク",
     "right_color": "ピンク",
-    "image_url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -489,7 +824,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "バイオレット",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_nakagawa_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_nakagawa_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -501,7 +842,13 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -513,7 +860,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "パステルブルー",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_sato_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_sato_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -525,7 +878,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "レッド",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_katsumata_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_katsumata_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -537,7 +896,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -549,7 +914,13 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "オレンジ",
-    "image_url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -561,7 +932,13 @@
     "status": "active",
     "left_color": "バイオレット",
     "right_color": "バイオレット",
-    "image_url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -573,7 +950,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "パステルブルー",
-    "image_url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -585,7 +968,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "ピンク",
-    "image_url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -597,7 +986,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "オレンジ",
-    "image_url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -609,7 +1004,13 @@
     "status": "graduated",
     "left_color": "ホワイト",
     "right_color": "サクラピンク",
-    "image_url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -621,7 +1022,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "サクラピンク",
-    "image_url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -633,7 +1040,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "パステルブルー",
-    "image_url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -645,7 +1058,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "パステルブルー",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamakawa_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamakawa_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -657,7 +1076,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "バイオレット",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamada_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamada_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -669,7 +1094,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "グリーン",
-    "image_url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -681,7 +1112,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "パールグリーン",
-    "image_url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -693,7 +1130,13 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -705,7 +1148,13 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -717,7 +1166,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_matsumoto_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_matsumoto_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -729,7 +1184,13 @@
     "status": "active",
     "left_color": "グリーン",
     "right_color": "イエロー",
-    "image_url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -741,7 +1202,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -753,7 +1220,13 @@
     "status": "active",
     "left_color": "パッションピンク",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -765,7 +1238,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "エメラルドグリーン",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_asai_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_asai_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -777,7 +1256,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "パステルブルー",
-    "image_url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -789,7 +1274,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "ブルー",
-    "image_url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -801,7 +1292,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "パッションピンク",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_meguro_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_meguro_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -813,7 +1310,13 @@
     "status": "active",
     "left_color": "グリーン",
     "right_color": "ピンク",
-    "image_url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -825,7 +1328,13 @@
     "status": "active",
     "left_color": "エメラルドグリーン",
     "right_color": "オレンジ",
-    "image_url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_inaguna_bgFGJ38s_00.jpg"
+    "images": [
+      {
+        "title": "4th ARENA TOUR 2024 個別マフラータオル",
+        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_inaguna_bgFGJ38s_00.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -837,7 +1346,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "バイオレット",
-    "image_url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -849,7 +1364,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "バイオレット",
-    "image_url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -861,7 +1382,13 @@
     "status": "active",
     "left_color": "パープル",
     "right_color": "パープル",
-    "image_url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "sakurazaka46",
@@ -873,6 +1400,12 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "バイオレット",
-    "image_url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/400_320_102400.jpg"
+    "images": [
+      {
+        "title": "2nd Album アー写",
+        "url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/400_320_102400.jpg",
+        "is_primary": true
+      }
+    ]
   }
 ]

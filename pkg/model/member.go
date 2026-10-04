@@ -21,24 +21,50 @@ type PenlightPair struct {
 	Ordered      bool `json:"ordered"`        // true if position matters, false if symmetric
 }
 
+// MemberImage represents an image asset associated with a member (Ref: ADR-0021).
+type MemberImage struct {
+	ID           ID        `json:"id"`            // img_... (UUID v7 surrogate key)
+	MemberID     ID        `json:"member_id"`     // mem_... (FK)
+	ImageKey     string    `json:"image_key"`     // Immutable image filename: e.g. "img_<uuidv7>.webp"
+	Title        string    `json:"title"`         // e.g. "13th Single 制服", "5thひな誕祭個別タオル"
+	IsPrimary    bool      `json:"is_primary"`    // true for the primary/default image
+	DisplayOrder int       `json:"display_order"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
 // Member represents an idol member.
 // Natural keys (names) are never used as identifiers to prevent collisions on homonyms or name changes.
 type Member struct {
-	ID             ID           `json:"id"`                    // mem_... (UUID v7 immutable surrogate key)
-	GroupID        ID           `json:"group_id"`              // grp_...
-	FamilyName     string       `json:"family_name"`           // e.g. "加藤"
-	GivenName      string       `json:"given_name"`            // e.g. "史帆"
-	FamilyNameKana string       `json:"family_name_kana"`      // e.g. "かとう"
-	GivenNameKana  string       `json:"given_name_kana"`       // e.g. "しほ"
-	Generation     int          `json:"generation"`            // e.g. 1 (1期生)
-	Status         MemberStatus `json:"status"`                // active, graduated, hiatus
-	Penlight       PenlightPair `json:"penlight"`              // Assigned penlight colors
-	ImageKey       string       `json:"image_key"`             // Immutable image filename: e.g. "mem_<uuidv7>.webp"
-	JoinedAt       *time.Time   `json:"joined_at,omitempty"`   // Optional joining date
-	GraduatedAt    *time.Time   `json:"graduated_at,omitempty"`// Optional graduation date
-	CreatedAt      time.Time    `json:"created_at"`
-	UpdatedAt      time.Time    `json:"updated_at"`
+	ID             ID            `json:"id"`                     // mem_... (UUID v7 immutable surrogate key)
+	GroupID        ID            `json:"group_id"`               // grp_...
+	FamilyName     string        `json:"family_name"`            // e.g. "加藤"
+	GivenName      string        `json:"given_name"`             // e.g. "史帆"
+	FamilyNameKana string        `json:"family_name_kana"`       // e.g. "かとう"
+	GivenNameKana  string        `json:"given_name_kana"`        // e.g. "しほ"
+	Generation     int           `json:"generation"`             // e.g. 1 (1期生)
+	Status         MemberStatus  `json:"status"`                 // active, graduated, hiatus
+	Penlight       PenlightPair  `json:"penlight"`               // Assigned penlight colors
+	Images         []MemberImage `json:"images,omitempty"`       // Associated images (1:N, Ref: ADR-0021)
+	JoinedAt       *time.Time    `json:"joined_at,omitempty"`    // Optional joining date
+	GraduatedAt    *time.Time    `json:"graduated_at,omitempty"` // Optional graduation date
+	CreatedAt      time.Time     `json:"created_at"`
+	UpdatedAt      time.Time     `json:"updated_at"`
 }
+
+// PrimaryImage returns the primary image if loaded, or nil.
+func (m Member) PrimaryImage() *MemberImage {
+	for i := range m.Images {
+		if m.Images[i].IsPrimary {
+			return &m.Images[i]
+		}
+	}
+	if len(m.Images) > 0 {
+		return &m.Images[0]
+	}
+	return nil
+}
+
 
 // FullName returns the kanji name formatted as "姓 名".
 func (m Member) FullName() string {
