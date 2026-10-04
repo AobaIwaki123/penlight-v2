@@ -11,7 +11,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build Go single binary
-FROM golang:1.24-alpine AS backend-builder
+FROM golang:1.26-alpine AS backend-builder
 WORKDIR /app
 
 RUN apk add --no-cache git
@@ -33,7 +33,7 @@ COPY --from=frontend-builder /app/frontend/out ./frontend/out
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /app/server ./cmd/server
 
 # Stage 3: Minimal secure production runtime
-FROM alpine:3.21 AS runner
+FROM alpine:3.24 AS runner
 WORKDIR /app
 
 RUN apk add --no-cache ca-certificates tzdata \
