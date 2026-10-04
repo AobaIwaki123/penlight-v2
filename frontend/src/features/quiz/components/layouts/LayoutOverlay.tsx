@@ -16,6 +16,7 @@ export function LayoutOverlay({
   selectedRightColor,
   onOpenInput,
   isFullscreen,
+  isInputActive,
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
   const imageSrc =
@@ -99,7 +100,14 @@ export function LayoutOverlay({
           </Box>
 
           {/* 右側: 写真に重なる2本の光るペンライト (タップでカラー選択モーダル展開) */}
-          <Group gap={16} align="flex-end">
+          <Group
+            gap={16}
+            align="flex-end"
+            style={{
+              opacity: isInputActive ? 0.2 : 1,
+              transition: 'opacity 0.2s ease',
+            }}
+          >
             <Box
               role="button"
               tabIndex={0}

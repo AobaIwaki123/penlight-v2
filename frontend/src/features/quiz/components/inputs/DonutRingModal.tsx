@@ -31,8 +31,8 @@ export function DonutRingModal({
   const [currentHand, setCurrentHand] = useState<'left' | 'right'>(initialHand);
   const [hoveredColor, setHoveredColor] = useState<Color | null>(null);
 
-  const radius = 120; // 円環の半径 (px)
-  const buttonSize = 38; // 各カラージュエルの直径 (px)
+  const radius = 105; // 240pxクラスのスリムな円環半径
+  const buttonSize = 34; // 押しやすく適度なカラージュエル径
 
   const handleColorClick = (color: Color) => {
     if (disabled) return;
@@ -76,7 +76,7 @@ export function DonutRingModal({
       size="auto"
       padding={0}
       overlayProps={{
-        backgroundOpacity: 0.35,
+        backgroundOpacity: 0.4,
         blur: 0, // 推しの写真をぼかさず、くっきり透かす
       }}
       styles={{
@@ -85,8 +85,8 @@ export function DonutRingModal({
           boxShadow: 'none',
           border: 'none',
           overflow: 'visible',
-          // 画面中央から下方（胸元・お腹位置）へしっかりシフトして、顔（目・鼻・口）を100%完全にクリアにする
-          transform: 'translateY(135px)',
+          // 顔に被らない適正な高さ（胸元）に心地よく展開
+          transform: 'translateY(45px)',
         },
         body: {
           padding: 0,
@@ -98,8 +98,8 @@ export function DonutRingModal({
       <Box
         style={{
           position: 'relative',
-          width: radius * 2 + buttonSize + 32,
-          height: radius * 2 + buttonSize + 32,
+          width: radius * 2 + buttonSize + 24,
+          height: radius * 2 + buttonSize + 24,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -123,17 +123,17 @@ export function DonutRingModal({
           radius="50%"
           shadow="lg"
           style={{
-            width: 154,
-            height: 154,
+            width: 136,
+            height: 136,
             borderRadius: '50%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            padding: '6px 8px',
+            padding: '4px 6px',
             zIndex: 2,
-            backgroundColor: 'rgba(0, 0, 0, 0.72)',
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
             backdropFilter: 'blur(8px)',
             border: '2px solid rgba(255,255,255,0.25)',
             transition: 'all 0.2s ease',

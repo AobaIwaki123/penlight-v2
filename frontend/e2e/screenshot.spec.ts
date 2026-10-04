@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 const ARTIFACT_DIR =
   '/Users/aobaiwaki/.gemini/antigravity-cli/brain/8ecc8ee2-c710-4933-8609-831f179266c5';
 
-test('capture transparent donut with visual penlights and bottom single-line feedback bar', async ({
+test('capture anchor picker, balanced donut modal, and luminous feedback bar', async ({
   page,
 }) => {
   // Go to quiz page
@@ -12,47 +12,60 @@ test('capture transparent donut with visual penlights and bottom single-line fee
 
   // Wait for loading to finish and question to appear
   await page.waitForSelector('text=13th Single 制服', { timeout: 10000 });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(800);
 
-  // 1. Open Donut Modal by clicking left penlight on top of photo
+  // 1. [C案: 手元アンカー追従型] 写真右下の左ペンライトをタップ
   await page.locator('div[title="タップして左手の色を選択"]').click();
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(500);
 
-  // Capture: Downward shifted Donut Ring (Face completely clear above!)
+  // Capture: Anchor Color Picker floating right above the penlight! Face 100% unobstructed!
   await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-transparent-donut.png'),
+    path: path.join(ARTIFACT_DIR, 'screenshot-anchor-picker.png'),
     fullPage: false,
   });
 
-  // 2. Click longest color: エメラルドグリーン -> Verify NO text wrapping occurred!
+  // 2. Select longest color: エメラルドグリーン
   const emeraldBtn = page.locator(
     'div[role="button"][aria-label="エメラルドグリーン"]',
   );
   await emeraldBtn.click();
   await page.waitForTimeout(500);
 
-  // Verify Emerald Green text has no wrap bug and is single line
-  const textElem = page.locator('text=エメラルドグリーン').first();
-  await expect(textElem).toBeVisible();
+  // 3. Select second color: レッド -> triggers answer submission
+  const redBtn = page.locator('div[role="button"][aria-label="レッド"]');
+  await redBtn.click();
+  await page.waitForTimeout(800);
 
-  // Capture: Step 2 with Emerald Green selected
-  await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-transparent-donut-step2.png'),
-    fullPage: false,
-  });
-
-  // 3. Click second color (e.g. レッド) -> Modal closes, feedback appears
-  const redColorBtn = page.locator('div[role="button"][aria-label="レッド"]');
-  await redColorBtn.click();
-  await page.waitForTimeout(1000);
-
-  // Verify Inline Feedback Bar is visible with Next button
+  // Verify Luminous Feedback Bar appears
   const nextBtn = page.getByRole('button', { name: '次へ' });
   await expect(nextBtn).toBeVisible({ timeout: 5000 });
 
-  // Capture: Inline Feedback Bar comfortably within viewport (zero cutoff!)
+  // Capture: Luminous Feedback Bar with glowing twin pills!
   await page.screenshot({
-    path: path.join(ARTIFACT_DIR, 'screenshot-minimal-inline-feedback.png'),
+    path: path.join(ARTIFACT_DIR, 'screenshot-luminous-feedback.png'),
+    fullPage: false,
+  });
+
+  // Advance to next question
+  await nextBtn.click();
+  await page.waitForTimeout(800);
+
+  // 4. Switch input mode to "洗練ドーナツモーダル" via header menu
+  const paletteMenuBtn = page.locator('button[title="カラーパレット方式"]');
+  await paletteMenuBtn.click();
+  await page.waitForTimeout(400);
+
+  const donutMenuItem = page.locator('text=洗練ドーナツモーダル');
+  await donutMenuItem.click();
+  await page.waitForTimeout(500);
+
+  // 5. Open balanced donut modal
+  await page.locator('div[title="タップして左手の色を選択"]').click();
+  await page.waitForTimeout(600);
+
+  // Capture: Balanced Donut Modal (slimmer, face clear, background sticks faded)
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, 'screenshot-balanced-donut.png'),
     fullPage: false,
   });
 });

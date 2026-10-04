@@ -82,62 +82,73 @@ export function InlineFeedbackBar({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 4,
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  padding: '3px 7px',
-                  borderRadius: 8,
+                  gap: 5,
+                  backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                  border: `1.5px solid ${correctLeftColor.hex_code}`,
+                  boxShadow: `0 0 10px ${correctLeftColor.hex_code}88`,
+                  padding: '3px 8px',
+                  borderRadius: 16,
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
                 }}
               >
                 <Box
                   style={{
-                    width: 8,
-                    height: 8,
+                    width: 10,
+                    height: 10,
                     borderRadius: '50%',
                     backgroundColor: correctLeftColor.hex_code,
-                    border: '1px solid rgba(255,255,255,0.9)',
+                    boxShadow: `0 0 6px ${correctLeftColor.hex_code}`,
                     flexShrink: 0,
                   }}
                 />
                 <Text
                   size="11px"
-                  fw={700}
+                  fw={800}
+                  c="#ffffff"
                   style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
                 >
                   {correctLeftColor.name}
                 </Text>
               </Box>
             )}
-            <Text size="xs" fw={700} style={{ flexShrink: 0 }}>
-              ×
+            <Text
+              size="xs"
+              fw={900}
+              c="rgba(255,255,255,0.7)"
+              style={{ flexShrink: 0 }}
+            >
+              +
             </Text>
             {correctRightColor && (
               <Box
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 4,
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  padding: '3px 7px',
-                  borderRadius: 8,
+                  gap: 5,
+                  backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                  border: `1.5px solid ${correctRightColor.hex_code}`,
+                  boxShadow: `0 0 10px ${correctRightColor.hex_code}88`,
+                  padding: '3px 8px',
+                  borderRadius: 16,
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
                 }}
               >
                 <Box
                   style={{
-                    width: 8,
-                    height: 8,
+                    width: 10,
+                    height: 10,
                     borderRadius: '50%',
                     backgroundColor: correctRightColor.hex_code,
-                    border: '1px solid rgba(255,255,255,0.9)',
+                    boxShadow: `0 0 6px ${correctRightColor.hex_code}`,
                     flexShrink: 0,
                   }}
                 />
                 <Text
                   size="11px"
-                  fw={700}
+                  fw={800}
+                  c="#ffffff"
                   style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
                 >
                   {correctRightColor.name}

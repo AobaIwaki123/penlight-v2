@@ -8,6 +8,7 @@ export interface TargetLayoutProps {
   selectedRightColor?: Color;
   isCorrect?: boolean;
   onOpenInput?: (hand: 'left' | 'right') => void;
+  isInputActive?: boolean;
 }
 
 // AnswerInputProps is the pluggable interface for answer input components.
@@ -22,4 +23,4 @@ export interface AnswerInputProps {
 export type LayoutMode = 'classic' | 'overlay' | 'compact';
 
 // InputMode represents the pluggable color selection UI style.
-export type InputMode = 'grid' | 'donut' | 'dots' | 'sheet';
+export type InputMode = 'anchor' | 'donut' | 'grid' | 'dots' | 'sheet';
