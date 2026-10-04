@@ -228,8 +228,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListPhotoTypes failed: %v", err)
 	}
-	if len(photoTypes) != 6 {
-		t.Fatalf("expected 6 photo types (3 Hinatazaka, 2 Sakurazaka, 1 Nogizaka), got %d", len(photoTypes))
+	if len(photoTypes) != 8 {
+		t.Fatalf("expected 8 photo types (4 Hinatazaka, 3 Sakurazaka, 1 Nogizaka), got %d", len(photoTypes))
 	}
 
 	// Verify member images list
