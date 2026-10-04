@@ -168,7 +168,11 @@ func (s *Server) spaHandler(assets fs.FS) http.HandlerFunc {
 		// 2. SPA Fallback: serve index.html for client-side routing
 		indexFile, err := assets.Open("index.html")
 		if err != nil {
-			http.NotFound(w, r)
+			// Fallback when frontend static export is not yet built (e.g. clean checkout before npm run build)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-cache")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Penlight v2</title></head><body><div id=\"root\">Penlight v2 (Frontend not built yet. Run npm run build)</div></body></html>"))
 			return
 		}
 		defer indexFile.Close()
