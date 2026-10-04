@@ -1,0 +1,15 @@
+.git
+.github
+.agents
+adr
+docs
+data
+*.db*
+*.sqlite*
+coverage.out
+frontend/.next
+frontend/out
+frontend/node_modules
+node_modules
+deploy
+scripts

@@ -75,93 +75,106 @@ export function Header({
 
       {/* 右: レイアウト切替、フィルター、ダークモード切替 */}
       <Group gap={6}>
-        {/* レイアウト切り替えメニュー (クラシック vs オーバーレイ vs コンパクト) */}
-        <Menu shadow="md" width={180}>
-          <Menu.Target>
-            <ActionIcon
-              variant="light"
-              color="gray"
-              size="lg"
-              radius="md"
-              title="レイアウト変更"
-            >
-              <IconLayout size={18} />
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Label>出題レイアウト</Menu.Label>
-            <Menu.Item
-              leftSection={
-                layoutMode === 'overlay' ? (
-                  <IconCheck size={14} />
-                ) : (
-                  <Box w={14} />
-                )
-              }
-              onClick={() => onLayoutModeChange('overlay')}
-            >
-              オーバーレイ没入型 ★
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                layoutMode === 'classic' ? (
-                  <IconCheck size={14} />
-                ) : (
-                  <Box w={14} />
-                )
-              }
-              onClick={() => onLayoutModeChange('classic')}
-            >
-              旧版クラシック (縦並び)
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                layoutMode === 'compact' ? (
-                  <IconCheck size={14} />
-                ) : (
-                  <Box w={14} />
-                )
-              }
-              onClick={() => onLayoutModeChange('compact')}
-            >
-              コンパクト操作重視
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        {/* 開発・検証時のみ表示するデバッグ・切り替えメニュー */}
+        {process.env.NODE_ENV !== 'production' && (
+          <>
+            {/* レイアウト切り替えメニュー (クラシック vs オーバーレイ vs コンパクト) */}
+            <Menu shadow="md" width={180}>
+              <Menu.Target>
+                <ActionIcon
+                  variant="light"
+                  color="gray"
+                  size="lg"
+                  radius="md"
+                  title="レイアウト変更 (開発用)"
+                >
+                  <IconLayout size={18} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>出題レイアウト (Dev)</Menu.Label>
+                <Menu.Item
+                  leftSection={
+                    layoutMode === 'overlay' ? (
+                      <IconCheck size={14} />
+                    ) : (
+                      <Box w={14} />
+                    )
+                  }
+                  onClick={() => onLayoutModeChange('overlay')}
+                >
+                  オーバーレイ没入型 ★
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={
+                    layoutMode === 'classic' ? (
+                      <IconCheck size={14} />
+                    ) : (
+                      <Box w={14} />
+                    )
+                  }
+                  onClick={() => onLayoutModeChange('classic')}
+                >
+                  旧版クラシック (縦並び)
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={
+                    layoutMode === 'compact' ? (
+                      <IconCheck size={14} />
+                    ) : (
+                      <Box w={14} />
+                    )
+                  }
+                  onClick={() => onLayoutModeChange('compact')}
+                >
+                  コンパクト操作重視
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
 
-        {/* パレット入力方式切り替えメニュー (ドーナツ vs 15色グリッド) */}
-        <Menu shadow="md" width={180}>
-          <Menu.Target>
-            <ActionIcon
-              variant="light"
-              color={inputMode === 'donut' ? 'indigo' : 'gray'}
-              size="lg"
-              radius="md"
-              title="カラーパレット方式"
-            >
-              <IconCircleDot size={18} />
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Label>パレットUI</Menu.Label>
-            <Menu.Item
-              leftSection={
-                inputMode === 'donut' ? <IconCheck size={14} /> : <Box w={14} />
-              }
-              onClick={() => onInputModeChange('donut')}
-            >
-              ドーナツサークル型 ★
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                inputMode === 'grid' ? <IconCheck size={14} /> : <Box w={14} />
-              }
-              onClick={() => onInputModeChange('grid')}
-            >
-              15色グリッド型
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+            {/* パレット入力方式切り替えメニュー (ドーナツ vs 15色グリッド) */}
+            <Menu shadow="md" width={180}>
+              <Menu.Target>
+                <ActionIcon
+                  variant="light"
+                  color={inputMode === 'donut' ? 'indigo' : 'gray'}
+                  size="lg"
+                  radius="md"
+                  title="カラーパレット方式 (開発用)"
+                >
+                  <IconCircleDot size={18} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>パレットUI (Dev)</Menu.Label>
+                <Menu.Item
+                  leftSection={
+                    inputMode === 'donut' ? (
+                      <IconCheck size={14} />
+                    ) : (
+                      <Box w={14} />
+                    )
+                  }
+                  onClick={() => onInputModeChange('donut')}
+                >
+                  ドーナツサークル型 ★
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={
+                    inputMode === 'grid' ? (
+                      <IconCheck size={14} />
+                    ) : (
+                      <Box w={14} />
+                    )
+                  }
+                  onClick={() => onInputModeChange('grid')}
+                >
+                  15色グリッド型
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </>
+        )}
 
         {/* フィルターボタン (旧版準拠) */}
         <ActionIcon
