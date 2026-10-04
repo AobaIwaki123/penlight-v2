@@ -48,9 +48,10 @@ kubectl get application penlight -n argocd
    - ローカル全検証を実施: `./scripts/verify-all.sh --stage`
 2. **PR 作成 & マージ**:
    - GitHub 上で PR を作成し、CI がパスしたことを確認して `main` へマージ。
-3. **自動ビルド & デプロイ同期**:
-   - GitHub Actions (`.github/workflows/deploy.yml`) が起動し、GHCR へ最新コンテナを自動 push。
-   - ArgoCD が `main` の変更を検知し、クラスタへ自動同期（ゼロダウンタイム反映）。
+3. **自動ビルド & イミュータブルタグ反映 (Pod 再作成トリガー)**:
+   - GitHub Actions (`.github/workflows/deploy.yml`) が GHCR へイメージ（`:latest` および `:${sha_short}`）を build & push。
+   - 同ワークフロー内で `deploy/deployment.yaml` のイメージタグを最新のコミットハッシュ（`:${sha_short}`）に自動書き換えして `main` へコミット＆push（`[skip ci]`）。
+   - ArgoCD がマニフェストの差分を検知して自動同期（Sync）を実行し、Kubernetes の Deployment コントローラーが PodSpec のイメージ変更を検知して Pod を自動再作成（Recreate）して新イメージを確実に pull する。
 
 ---
 
