@@ -14,8 +14,8 @@ import {
 import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
-import { FeedbackModal } from '@/features/quiz/components/FeedbackModal';
 import { Header } from '@/features/quiz/components/Header';
+import { InlineFeedbackBar } from '@/features/quiz/components/InlineFeedbackBar';
 import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
@@ -121,10 +121,13 @@ export function QuizContainer() {
       }
     } else {
       setFeedback('wrong');
+      // 不正解時は、写真上のペンライトを正解の光にシュッと切り替えて点灯！
+      setSelectedLeft(colorMap.get(correctL));
+      setSelectedRight(colorMap.get(correctR));
     }
   };
 
-  // Move to next question from FeedbackModal
+  // Move to next question
   const handleNextQuestion = () => {
     setFeedback('idle');
     setSelectedLeft(undefined);
@@ -281,7 +284,7 @@ export function QuizContainer() {
         </Box>
 
         {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
-        {inputMode === 'grid' && (
+        {inputMode === 'grid' && feedback === 'idle' && (
           <PaletteGridInput
             target={currentMember}
             colors={colors}
@@ -291,9 +294,23 @@ export function QuizContainer() {
             onResetSelection={handleResetSelection}
           />
         )}
+
+        {/* 解答直後の 1行インラインフィードバックバー (中央を邪魔せず最下部に表示) */}
+        {feedback !== 'idle' && (
+          <InlineFeedbackBar
+            isCorrect={feedback === 'correct'}
+            correctLeftColor={colorMap.get(
+              currentMember.penlight.left_color_id,
+            )}
+            correctRightColor={colorMap.get(
+              currentMember.penlight.right_color_id,
+            )}
+            onNext={handleNextQuestion}
+          />
+        )}
       </Stack>
 
-      {/* ドーナツリングカラー選択モーダル (ペンライトタップ時に写真の上にオーバーレイ出現) */}
+      {/* ドーナツリングカラー選択モーダル (完全透過 ＆ 2本のミニペンライトで左右を視覚化) */}
       <DonutRingModal
         opened={isDonutModalOpen}
         onClose={() => setIsDonutModalOpen(false)}
@@ -304,17 +321,6 @@ export function QuizContainer() {
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}
         initialHand={activeHand}
-      />
-
-      {/* 回答正誤判定モーダル (あなたの回答 vs 正解のカラー 比較カード) */}
-      <FeedbackModal
-        opened={feedback !== 'idle'}
-        isCorrect={feedback === 'correct'}
-        userLeftColor={selectedLeft}
-        userRightColor={selectedRight}
-        correctLeftColor={colorMap.get(currentMember.penlight.left_color_id)}
-        correctRightColor={colorMap.get(currentMember.penlight.right_color_id)}
-        onNext={handleNextQuestion}
       />
 
       {/* 結果発表モーダル */}

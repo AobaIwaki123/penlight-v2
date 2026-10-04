@@ -1,14 +1,8 @@
 'use client';
 
-import {
-  Badge,
-  Box,
-  Modal,
-  Paper,
-  SegmentedControl,
-  Text,
-} from '@mantine/core';
+import { Box, Group, Modal, Paper, Text } from '@mantine/core';
 import { useState } from 'react';
+import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { Color } from '@/types/generated';
 
 interface DonutRingModalProps {
@@ -37,7 +31,7 @@ export function DonutRingModal({
   const [currentHand, setCurrentHand] = useState<'left' | 'right'>(initialHand);
   const [hoveredColor, setHoveredColor] = useState<Color | null>(null);
 
-  const radius = 114; // 円環の半径 (px)
+  const radius = 120; // 円環の半径 (px)
   const buttonSize = 38; // 各カラージュエルの直径 (px)
 
   const handleColorClick = (color: Color) => {
@@ -45,25 +39,25 @@ export function DonutRingModal({
 
     if (currentHand === 'left') {
       onColorSelect('left', color);
-      // If right hand is already selected, submit answer and close
       if (selectedRightColor) {
+        // Both colors selected -> submit and close
         onAnswer({
           leftColorId: color.id,
           rightColorId: selectedRightColor.id,
         });
         onClose();
       } else {
-        // Automatically advance to right hand
+        // Auto-switch focus visually to right hand
         setCurrentHand('right');
       }
     } else {
       onColorSelect('right', color);
-      // If left hand is already selected, submit answer and close
       if (selectedLeftColor) {
+        // Both colors selected -> submit and close
         onAnswer({ leftColorId: selectedLeftColor.id, rightColorId: color.id });
         onClose();
       } else {
-        // Automatically switch to left hand
+        // Auto-switch focus visually to left hand
         setCurrentHand('left');
       }
     }
@@ -78,177 +72,197 @@ export function DonutRingModal({
       opened={opened}
       onClose={onClose}
       centered
-      withCloseButton={true}
+      withCloseButton={false}
       size="auto"
-      radius="xl"
-      padding="md"
-      title={
-        <Text size="sm" fw={700}>
-          ペンライトカラー選択
-        </Text>
-      }
+      padding={0}
       overlayProps={{
-        backgroundOpacity: 0.65,
-        blur: 5,
+        backgroundOpacity: 0.35,
+        blur: 0, // 推しの写真をぼかさず、くっきり透かす
       }}
       styles={{
         content: {
-          backgroundColor: 'var(--mantine-color-body)',
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+          border: 'none',
+          overflow: 'visible',
+        },
+        body: {
+          padding: 0,
+          backgroundColor: 'transparent',
+          overflow: 'visible',
         },
       }}
     >
       <Box
         style={{
+          position: 'relative',
+          width: radius * 2 + buttonSize + 32,
+          height: radius * 2 + buttonSize + 32,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
-          gap: 12,
-          padding: '4px 0',
+          justifyContent: 'center',
         }}
       >
-        {/* 左手 / 右手 の切り替えタブ */}
-        <SegmentedControl
-          value={currentHand}
-          onChange={(val) => setCurrentHand(val as 'left' | 'right')}
-          data={[
-            {
-              label: selectedLeftColor
-                ? `左手: ${selectedLeftColor.name}`
-                : '👈 1本目 (左手)',
-              value: 'left',
-            },
-            {
-              label: selectedRightColor
-                ? `右手: ${selectedRightColor.name}`
-                : '👉 2本目 (右手)',
-              value: 'right',
-            },
-          ]}
-          color="blue"
-          size="xs"
-          radius="xl"
-        />
-
-        {/* ドーナツリング本体 */}
+        {/* 背景の光彩ガイドリング */}
         <Box
           style={{
-            position: 'relative',
-            width: radius * 2 + buttonSize + 16,
-            height: radius * 2 + buttonSize + 16,
+            position: 'absolute',
+            width: radius * 2,
+            height: radius * 2,
+            borderRadius: '50%',
+            border: '1.5px dashed rgba(255,255,255,0.4)',
+            boxShadow: '0 0 20px rgba(0,0,0,0.3)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* ドーナツ中央の空洞: 2本のミニペンライトで左右を視覚化！ */}
+        <Paper
+          radius="50%"
+          shadow="lg"
+          style={{
+            width: 140,
+            height: 140,
+            borderRadius: '50%',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            textAlign: 'center',
+            padding: 8,
+            zIndex: 2,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(8px)',
+            border: '2px solid rgba(255,255,255,0.2)',
+            transition: 'all 0.2s ease',
           }}
         >
-          {/* 背景の光彩リング */}
-          <Box
-            style={{
-              position: 'absolute',
-              width: radius * 2,
-              height: radius * 2,
-              borderRadius: '50%',
-              border: '1px dashed var(--mantine-color-default-border)',
-              pointerEvents: 'none',
-            }}
-          />
-
-          {/* ドーナツ中央の空洞: 選択状態 & 色名表示エリア */}
-          <Paper
-            radius="50%"
-            shadow="sm"
-            withBorder
-            style={{
-              width: 125,
-              height: 125,
-              borderRadius: '50%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              padding: 8,
-              zIndex: 2,
-              backgroundColor: 'var(--mantine-color-body)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            <Badge
-              size="xs"
-              variant="filled"
-              color={currentHand === 'left' ? 'blue' : 'orange'}
-              mb={4}
-            >
-              {currentHand === 'left' ? '左手の色' : '右手の色'}
-            </Badge>
-
-            <Text
-              size="sm"
-              fw={700}
-              c={displayColor ? 'inherit' : 'dimmed'}
+          {/* 視覚的ペンライト2本並び */}
+          <Group gap={16} justify="center" align="center">
+            {/* 左ペンライト */}
+            <Box
+              role="button"
+              tabIndex={0}
+              onClick={() => setCurrentHand('left')}
               style={{
-                lineHeight: 1.2,
-                minHeight: 20,
-                maxWidth: 105,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                padding: '4px 6px',
+                borderRadius: 8,
+                backgroundColor:
+                  currentHand === 'left'
+                    ? 'rgba(34, 139, 230, 0.35)'
+                    : 'transparent',
+                border:
+                  currentHand === 'left'
+                    ? '2px solid #339af0'
+                    : '1px solid transparent',
+                transform:
+                  currentHand === 'left' ? 'scale(1.1)' : 'scale(0.95)',
+                transition: 'all 0.15s ease',
               }}
             >
-              {displayColor ? displayColor.name : '色をタップ'}
-            </Text>
-
-            <Text size="10px" c="dimmed" mt={4}>
-              {currentHand === 'left'
-                ? 'タップして左手を決定'
-                : 'タップして右手を決定'}
-            </Text>
-          </Paper>
-
-          {/* 円周上に配置された 15 個のカラージュエル */}
-          {colors.map((color, index) => {
-            const total = colors.length;
-            const angle = (2 * Math.PI * index) / total - Math.PI / 2;
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-
-            const isSelected = activeColor?.id === color.id;
-            const isHovered = hoveredColor?.id === color.id;
-
-            return (
-              <Box
-                key={color.id}
-                role="button"
-                tabIndex={0}
-                aria-label={color.name}
-                onClick={() => handleColorClick(color)}
-                onMouseEnter={() => setHoveredColor(color)}
-                onMouseLeave={() => setHoveredColor(null)}
-                style={{
-                  position: 'absolute',
-                  left: `calc(50% + ${x}px - ${buttonSize / 2}px)`,
-                  top: `calc(50% + ${y}px - ${buttonSize / 2}px)`,
-                  width: buttonSize,
-                  height: buttonSize,
-                  borderRadius: '50%',
-                  backgroundColor: color.hex_code,
-                  border: isSelected
-                    ? '3px solid #228be6'
-                    : '2px solid rgba(255,255,255,0.85)',
-                  boxShadow: isSelected
-                    ? '0 0 12px #228be6, 0 2px 6px rgba(0,0,0,0.3)'
-                    : isHovered
-                      ? `0 0 10px ${color.hex_code}, 0 2px 5px rgba(0,0,0,0.2)`
-                      : '0 2px 4px rgba(0,0,0,0.15)',
-                  transform:
-                    isSelected || isHovered ? 'scale(1.2)' : 'scale(1)',
-                  transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  cursor: disabled ? 'not-allowed' : 'pointer',
-                  zIndex: isSelected || isHovered ? 5 : 1,
-                }}
+              <PenlightStick
+                color={selectedLeftColor}
+                label="左"
+                height={48}
+                width={20}
+                textColor="#ffffff"
               />
-            );
-          })}
-        </Box>
+            </Box>
+
+            {/* 右ペンライト */}
+            <Box
+              role="button"
+              tabIndex={0}
+              onClick={() => setCurrentHand('right')}
+              style={{
+                cursor: 'pointer',
+                padding: '4px 6px',
+                borderRadius: 8,
+                backgroundColor:
+                  currentHand === 'right'
+                    ? 'rgba(253, 126, 20, 0.35)'
+                    : 'transparent',
+                border:
+                  currentHand === 'right'
+                    ? '2px solid #ff922b'
+                    : '1px solid transparent',
+                transform:
+                  currentHand === 'right' ? 'scale(1.1)' : 'scale(0.95)',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <PenlightStick
+                color={selectedRightColor}
+                label="右"
+                height={48}
+                width={20}
+                textColor="#ffffff"
+              />
+            </Box>
+          </Group>
+
+          {/* 選択中の色名（文字はこれだけ） */}
+          <Text
+            size="11px"
+            fw={700}
+            c={displayColor ? 'white' : 'gray.4'}
+            mt={4}
+            style={{
+              textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+              maxWidth: 120,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {displayColor ? displayColor.name : '色をタップ'}
+          </Text>
+        </Paper>
+
+        {/* 円周上に浮かぶ 15 個のカラージュエル */}
+        {colors.map((color, index) => {
+          const total = colors.length;
+          const angle = (2 * Math.PI * index) / total - Math.PI / 2;
+          const x = radius * Math.cos(angle);
+          const y = radius * Math.sin(angle);
+
+          const isSelected = activeColor?.id === color.id;
+          const isHovered = hoveredColor?.id === color.id;
+
+          return (
+            <Box
+              key={color.id}
+              role="button"
+              tabIndex={0}
+              aria-label={color.name}
+              onClick={() => handleColorClick(color)}
+              onMouseEnter={() => setHoveredColor(color)}
+              onMouseLeave={() => setHoveredColor(null)}
+              style={{
+                position: 'absolute',
+                left: `calc(50% + ${x}px - ${buttonSize / 2}px)`,
+                top: `calc(50% + ${y}px - ${buttonSize / 2}px)`,
+                width: buttonSize,
+                height: buttonSize,
+                borderRadius: '50%',
+                backgroundColor: color.hex_code,
+                border: isSelected
+                  ? '3px solid #ffffff'
+                  : '2px solid rgba(255,255,255,0.7)',
+                boxShadow: isSelected
+                  ? '0 0 16px #ffffff, 0 4px 10px rgba(0,0,0,0.5)'
+                  : isHovered
+                    ? `0 0 12px ${color.hex_code}, 0 2px 6px rgba(0,0,0,0.4)`
+                    : '0 2px 6px rgba(0,0,0,0.3)',
+                transform: isSelected || isHovered ? 'scale(1.22)' : 'scale(1)',
+                transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                cursor: disabled ? 'not-allowed' : 'pointer',
+                zIndex: isSelected || isHovered ? 5 : 1,
+              }}
+            />
+          );
+        })}
       </Box>
     </Modal>
   );
