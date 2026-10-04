@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Button, Group, Text } from '@mantine/core';
+import { Box, Button, Group, Text } from '@mantine/core';
 import { IconArrowRight, IconCheck, IconX } from '@tabler/icons-react';
 import type { Color } from '@/types/generated';
 
@@ -20,32 +20,37 @@ export function InlineFeedbackBar({
   return (
     <Box
       py={8}
-      px="md"
+      px={10}
       style={{
         width: '100%',
         maxWidth: 440,
-        borderRadius: 12,
+        borderRadius: 14,
         backgroundColor: isCorrect
-          ? 'rgba(43, 138, 62, 0.92)'
-          : 'rgba(201, 42, 42, 0.92)',
+          ? 'rgba(43, 138, 62, 0.95)'
+          : 'rgba(201, 42, 42, 0.95)',
         color: '#ffffff',
-        backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(12px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 8,
-        boxShadow: '0 4px 14px rgba(0, 0, 0, 0.25)',
-        animation: 'popIn 0.2s ease',
+        gap: 6,
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
+        animation: 'popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        flexShrink: 0,
       }}
     >
       {/* 左側: 正誤アイコン ＋ 正解色 */}
-      <Group gap={8} wrap="nowrap" style={{ overflow: 'hidden' }}>
+      <Group
+        gap={6}
+        wrap="nowrap"
+        style={{ overflow: 'hidden', flexShrink: 1 }}
+      >
         <Box
           style={{
-            width: 26,
-            height: 26,
+            width: 28,
+            height: 28,
             borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -64,62 +69,80 @@ export function InlineFeedbackBar({
             大正解！
           </Text>
         ) : (
-          <Group gap={6} wrap="nowrap" style={{ overflow: 'hidden' }}>
-            <Text size="xs" fw={700} style={{ whiteSpace: 'nowrap' }}>
+          <Group gap={4} wrap="nowrap" style={{ overflow: 'hidden' }}>
+            <Text
+              size="xs"
+              fw={700}
+              style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+            >
               正解:
             </Text>
             {correctLeftColor && (
-              <Badge
-                size="sm"
-                variant="filled"
-                color="dark"
+              <Box
                 style={{
-                  backgroundColor: 'rgba(0,0,0,0.4)',
-                  paddingLeft: 4,
-                  paddingRight: 8,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  padding: '3px 7px',
+                  borderRadius: 8,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}
-                leftSection={
-                  <Box
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: '50%',
-                      backgroundColor: correctLeftColor.hex_code,
-                      border: '1px solid rgba(255,255,255,0.8)',
-                    }}
-                  />
-                }
               >
-                {correctLeftColor.name}
-              </Badge>
+                <Box
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: correctLeftColor.hex_code,
+                    border: '1px solid rgba(255,255,255,0.9)',
+                    flexShrink: 0,
+                  }}
+                />
+                <Text
+                  size="11px"
+                  fw={700}
+                  style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
+                >
+                  {correctLeftColor.name}
+                </Text>
+              </Box>
             )}
-            <Text size="xs" fw={700}>
+            <Text size="xs" fw={700} style={{ flexShrink: 0 }}>
               ×
             </Text>
             {correctRightColor && (
-              <Badge
-                size="sm"
-                variant="filled"
-                color="dark"
+              <Box
                 style={{
-                  backgroundColor: 'rgba(0,0,0,0.4)',
-                  paddingLeft: 4,
-                  paddingRight: 8,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  padding: '3px 7px',
+                  borderRadius: 8,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}
-                leftSection={
-                  <Box
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: '50%',
-                      backgroundColor: correctRightColor.hex_code,
-                      border: '1px solid rgba(255,255,255,0.8)',
-                    }}
-                  />
-                }
               >
-                {correctRightColor.name}
-              </Badge>
+                <Box
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: correctRightColor.hex_code,
+                    border: '1px solid rgba(255,255,255,0.9)',
+                    flexShrink: 0,
+                  }}
+                />
+                <Text
+                  size="11px"
+                  fw={700}
+                  style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
+                >
+                  {correctRightColor.name}
+                </Text>
+              </Box>
             )}
           </Group>
         )}
@@ -133,7 +156,13 @@ export function InlineFeedbackBar({
         radius="xl"
         rightSection={<IconArrowRight size={14} />}
         onClick={onNext}
-        style={{ flexShrink: 0, fontWeight: 700 }}
+        style={{
+          flexShrink: 0,
+          fontWeight: 800,
+          paddingLeft: 10,
+          paddingRight: 10,
+          height: 32,
+        }}
       >
         次へ
       </Button>

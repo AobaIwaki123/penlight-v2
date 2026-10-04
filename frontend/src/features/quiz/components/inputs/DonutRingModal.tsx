@@ -85,6 +85,8 @@ export function DonutRingModal({
           boxShadow: 'none',
           border: 'none',
           overflow: 'visible',
+          // 画面中央から下方（胸元・お腹位置）へしっかりシフトして、顔（目・鼻・口）を100%完全にクリアにする
+          transform: 'translateY(135px)',
         },
         body: {
           padding: 0,
@@ -121,24 +123,24 @@ export function DonutRingModal({
           radius="50%"
           shadow="lg"
           style={{
-            width: 140,
-            height: 140,
+            width: 154,
+            height: 154,
             borderRadius: '50%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            padding: 8,
+            padding: '6px 8px',
             zIndex: 2,
-            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backgroundColor: 'rgba(0, 0, 0, 0.72)',
             backdropFilter: 'blur(8px)',
-            border: '2px solid rgba(255,255,255,0.2)',
+            border: '2px solid rgba(255,255,255,0.25)',
             transition: 'all 0.2s ease',
           }}
         >
-          {/* 視覚的ペンライト2本並び */}
-          <Group gap={16} justify="center" align="center">
+          {/* 視覚的ペンライト2本並び (横並びを厳守 wrap="nowrap") */}
+          <Group gap={12} justify="center" align="center" wrap="nowrap">
             {/* 左ペンライト */}
             <Box
               role="button"
@@ -150,21 +152,21 @@ export function DonutRingModal({
                 borderRadius: 8,
                 backgroundColor:
                   currentHand === 'left'
-                    ? 'rgba(34, 139, 230, 0.35)'
+                    ? 'rgba(34, 139, 230, 0.45)'
                     : 'transparent',
                 border:
                   currentHand === 'left'
                     ? '2px solid #339af0'
                     : '1px solid transparent',
                 transform:
-                  currentHand === 'left' ? 'scale(1.1)' : 'scale(0.95)',
+                  currentHand === 'left' ? 'scale(1.1)' : 'scale(0.92)',
                 transition: 'all 0.15s ease',
               }}
             >
               <PenlightStick
                 color={selectedLeftColor}
                 label="左"
-                height={48}
+                height={46}
                 width={20}
                 textColor="#ffffff"
               />
@@ -181,39 +183,41 @@ export function DonutRingModal({
                 borderRadius: 8,
                 backgroundColor:
                   currentHand === 'right'
-                    ? 'rgba(253, 126, 20, 0.35)'
+                    ? 'rgba(253, 126, 20, 0.45)'
                     : 'transparent',
                 border:
                   currentHand === 'right'
                     ? '2px solid #ff922b'
                     : '1px solid transparent',
                 transform:
-                  currentHand === 'right' ? 'scale(1.1)' : 'scale(0.95)',
+                  currentHand === 'right' ? 'scale(1.1)' : 'scale(0.92)',
                 transition: 'all 0.15s ease',
               }}
             >
               <PenlightStick
                 color={selectedRightColor}
                 label="右"
-                height={48}
+                height={46}
                 width={20}
                 textColor="#ffffff"
               />
             </Box>
           </Group>
 
-          {/* 選択中の色名（文字はこれだけ） */}
+          {/* 選択中/ホバー中の色名 (1行固定・文字数に合わせた動的サイズ) */}
           <Text
-            size="11px"
             fw={700}
             c={displayColor ? 'white' : 'gray.4'}
             mt={4}
             style={{
+              fontSize: (displayColor?.name.length || 0) >= 7 ? '10px' : '11px',
               textShadow: '0 1px 3px rgba(0,0,0,0.8)',
-              maxWidth: 120,
+              maxWidth: 124,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              letterSpacing:
+                (displayColor?.name.length || 0) >= 7 ? '-0.03em' : 'normal',
             }}
           >
             {displayColor ? displayColor.name : '色をタップ'}

@@ -27,7 +27,7 @@ export function LayoutOverlay({
       style={{
         width: '100%',
         maxWidth: 440,
-        height: isFullscreen ? 'calc(100dvh - 125px)' : undefined,
+        height: isFullscreen ? 'calc(100dvh - 180px)' : undefined,
         display: 'flex',
         flexDirection: 'column',
       }}

@@ -22,8 +22,12 @@ export function PenlightStick({
   const name = color?.name || '未選択';
   const isSelected = Boolean(color);
 
+  // 文字数に応じた動的フォントサイズ調整 (最大文字数「エメラルドグリーン」等でも1行に収める)
+  const fontSize =
+    name.length >= 7 ? '9px' : name.length >= 5 ? '10px' : '11px';
+
   return (
-    <Stack gap={2} align="center">
+    <Stack gap={2} align="center" style={{ minWidth: 44, maxWidth: 84 }}>
       <Box
         style={{
           width,
@@ -40,13 +44,19 @@ export function PenlightStick({
         }}
       />
       <Text
-        size="xs"
-        fw={600}
+        fw={700}
         c={textColor || (isSelected ? 'inherit' : 'dimmed')}
         ta="center"
         style={{
+          fontSize,
+          letterSpacing: name.length >= 7 ? '-0.04em' : '-0.01em',
           textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
-          lineHeight: 1.2,
+          lineHeight: 1.15,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          maxWidth: '100%',
+          display: 'block',
         }}
       >
         {name}
@@ -58,6 +68,7 @@ export function PenlightStick({
           style={{
             textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
             lineHeight: 1.1,
+            whiteSpace: 'nowrap',
           }}
         >
           {label}
