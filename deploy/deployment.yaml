@@ -17,6 +17,11 @@ spec:
       labels:
         app: penlight
     spec:
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: penlight
           image: ghcr.io/aobaiwaki123/penlight-v2:1b0da2f
