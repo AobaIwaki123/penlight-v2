@@ -29,6 +29,8 @@
 | [0020](./0020-quiz-target-member-selection-strategy.md) | 出題対象メンバー選出におけるブレンドデッキ戦略の採用 | Accepted |
 | [0021](./0021-gitops-master-data-synchronization-and-versioning-architecture.md) | GitOps マスタデータ同期アーキテクチャおよび複数画像・バージョン管理テーブルの採用 | Accepted |
 | [0022](./0022-pluggable-quiz-ui-and-presentation-layout-architecture.md) | プラガブル解答インターフェースおよび表示レイアウト共存アーキテクチャの採用 | Accepted |
+| [0023](./0023-master-data-sync-guarantee-and-verification.md) | マスタデータ差分同期保証および整合性機械検証スクリプトの採用 | Accepted |
+| [0024](./0024-photo-metadata-human-in-the-loop-architecture.md) | 写真メタデータ（衣装・シングル種別）の人間参加型（HITL）策定プロセスの採用 | Accepted |
 
 
 ---

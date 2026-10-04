@@ -62,12 +62,14 @@ func TestADR0018_Compliance_FilterRules(t *testing.T) {
 		t.Fatalf("failed to list groups: %v", err)
 	}
 
-	var hinataID, sakuraID model.ID
+	var hinataID, sakuraID, nogiID model.ID
 	for _, g := range groups {
 		if g.Slug == "hinatazaka46" {
 			hinataID = g.ID
 		} else if g.Slug == "sakurazaka46" {
 			sakuraID = g.ID
+		} else if g.Slug == "nogizaka46" {
+			nogiID = g.ID
 		}
 	}
 
@@ -80,18 +82,27 @@ func TestADR0018_Compliance_FilterRules(t *testing.T) {
 		if err != nil {
 			t.Fatalf("FilterMembers sakura failed: %v", err)
 		}
-
-		if len(filteredHinata) == 0 || len(filteredSakura) == 0 {
-			t.Fatal("expected members for both groups")
+		filteredNogi, err := quiz.FilterMembers(members, model.QuizFilter{GroupID: &nogiID})
+		if err != nil {
+			t.Fatalf("FilterMembers nogi failed: %v", err)
 		}
-		if len(filteredHinata)+len(filteredSakura) != len(members) {
-			t.Fatalf("sum of groups (%d+%d) does not match total active members (%d)",
-				len(filteredHinata), len(filteredSakura), len(members))
+
+		if len(filteredHinata) == 0 || len(filteredSakura) == 0 || len(filteredNogi) == 0 {
+			t.Fatal("expected members for all three groups")
+		}
+		if len(filteredHinata)+len(filteredSakura)+len(filteredNogi) != len(members) {
+			t.Fatalf("sum of groups (%d+%d+%d) does not match total active members (%d)",
+				len(filteredHinata), len(filteredSakura), len(filteredNogi), len(members))
 		}
 
 		for _, m := range filteredHinata {
 			if m.GroupID != hinataID {
 				t.Fatalf("expected group %s, got %s for member %s", hinataID, m.GroupID, m.ID)
+			}
+		}
+		for _, m := range filteredNogi {
+			if m.GroupID != nogiID {
+				t.Fatalf("expected group %s, got %s for member %s", nogiID, m.GroupID, m.ID)
 			}
 		}
 	})

@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/aobaiwaki/penlight-v2/pkg/config"
@@ -20,6 +21,7 @@ import (
 type Server struct {
 	cfg          *config.Config
 	repo         *repository.SQLiteRepository
+	imageMu      sync.RWMutex
 	imageSources map[string]string // image_key -> official CDN URL
 	mux          *http.ServeMux
 }
@@ -59,11 +61,11 @@ func NewServer(cfg *config.Config) (*Server, error) {
 		return nil, fmt.Errorf("failed to execute migration: %w", err)
 	}
 
-	// 2. Check if seed data needs to be populated
-	var groupCount int
-	_ = repo.DB().QueryRow("SELECT COUNT(*) FROM groups;").Scan(&groupCount)
-	if groupCount == 0 {
-		log.Println("Database is empty, loading seeds/seed.sql...")
+	// 2. Check if seed data needs to be populated or synchronized (Ref: ADR-0021)
+	var currentVersion string
+	_ = repo.DB().QueryRow("SELECT version FROM master_versions WHERE id = 'current';").Scan(&currentVersion)
+	if currentVersion != model.CurrentMasterVersion {
+		log.Printf("Master data update detected (current: %q, target: %q), syncing seeds/seed.sql...", currentVersion, model.CurrentMasterVersion)
 		seedSQL, err := resolveFile("seeds/seed.sql")
 		if err != nil {
 			log.Printf("Warning: failed to read seeds/seed.sql: %v", err)
@@ -71,7 +73,7 @@ func NewServer(cfg *config.Config) (*Server, error) {
 			if _, err := repo.DB().Exec(string(seedSQL)); err != nil {
 				log.Printf("Warning: failed to execute seeds/seed.sql: %v", err)
 			} else {
-				log.Println("Seed data successfully loaded into SQLite.")
+				log.Println("Seed data successfully synced into SQLite.")
 			}
 		}
 	}
@@ -189,6 +191,40 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(resp)
 }
 
+func (s *Server) getImageSourceURL(key string) (string, bool) {
+	s.imageMu.RLock()
+	url, ok := s.imageSources[key]
+	s.imageMu.RUnlock()
+	if ok {
+		return url, true
+	}
+
+	// Dynamic reload from disk if missing in memory (e.g. seed data added while running)
+	s.imageMu.Lock()
+	defer s.imageMu.Unlock()
+	if url, ok := s.imageSources[key]; ok {
+		return url, true
+	}
+
+	for _, candidate := range []string{"seeds/data/image_sources.json", "data/image_sources.json"} {
+		if srcBytes, err := resolveFile(candidate); err == nil {
+			var entries []imageSourceEntry
+			if err := json.Unmarshal(srcBytes, &entries); err == nil {
+				for _, e := range entries {
+					if e.ImageKey != "" && e.URL != "" {
+						s.imageSources[e.ImageKey] = e.URL
+					}
+				}
+				if len(s.imageSources) > 0 {
+					break
+				}
+			}
+		}
+	}
+	url, ok = s.imageSources[key]
+	return url, ok
+}
+
 func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 	key := strings.TrimPrefix(r.URL.Path, "/images/")
 	if key == "" {
@@ -204,8 +240,8 @@ func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 2. Fallback: redirect to official CDN URL from image_sources.json
-	if cdnURL, ok := s.imageSources[key]; ok {
+	// 2. Fallback: redirect to official CDN URL from image_sources.json (with dynamic reload)
+	if cdnURL, ok := s.getImageSourceURL(key); ok {
 		w.Header().Set("Cache-Control", "public, max-age=86400")
 		http.Redirect(w, r, cdnURL, http.StatusFound)
 		return

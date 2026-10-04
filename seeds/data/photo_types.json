@@ -18,6 +18,12 @@
     "display_order": 3
   },
   {
+    "group_slug": "hinatazaka46",
+    "slug": "18th_single",
+    "name": "18th Single 制服",
+    "display_order": 4
+  },
+  {
     "group_slug": "sakurazaka46",
     "slug": "2nd_album",
     "name": "2nd Album アー写",
@@ -28,5 +34,17 @@
     "slug": "4th_tour_towel",
     "name": "4th ARENA TOUR 2024 個別マフラータオル",
     "display_order": 2
+  },
+  {
+    "group_slug": "sakurazaka46",
+    "slug": "16th_single",
+    "name": "16th Single アー写",
+    "display_order": 3
+  },
+  {
+    "group_slug": "nogizaka46",
+    "slug": "42nd_single",
+    "name": "42nd Single アー写",
+    "display_order": 1
   }
 ]

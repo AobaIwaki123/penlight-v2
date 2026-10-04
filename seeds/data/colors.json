@@ -178,5 +178,71 @@
     "name": "ブルー",
     "hex_code": "#0000F1",
     "display_order": 14
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "ホワイト",
+    "hex_code": "#FFFFFF",
+    "display_order": 0
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "オレンジ",
+    "hex_code": "#FF8C00",
+    "display_order": 1
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "ブルー",
+    "hex_code": "#0000FF",
+    "display_order": 2
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "イエロー",
+    "hex_code": "#FFFF00",
+    "display_order": 3
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "パープル",
+    "hex_code": "#800080",
+    "display_order": 4
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "グリーン",
+    "hex_code": "#008000",
+    "display_order": 5
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "ピンク",
+    "hex_code": "#FFC0CB",
+    "display_order": 6
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "レッド",
+    "hex_code": "#FF0000",
+    "display_order": 7
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "水色",
+    "hex_code": "#00BFFF",
+    "display_order": 8
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "ライトグリーン",
+    "hex_code": "#7FFF00",
+    "display_order": 9
+  },
+  {
+    "group_slug": "nogizaka46",
+    "name": "ターコイズ",
+    "hex_code": "#40E0D0",
+    "display_order": 10
   }
 ]

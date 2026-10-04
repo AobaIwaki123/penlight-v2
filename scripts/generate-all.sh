@@ -7,10 +7,13 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-echo "=== [1/3] Generating ER Diagram from Go AST ==="
+echo "=== [1/4] Rebuilding Master Seed SQL from seeds/data/ ==="
+go run scripts/build_seed.go
+
+echo "=== [2/4] Generating ER Diagram from Go AST ==="
 go run scripts/gen-er-diagram.go
 
-echo "=== [2/3] Generating TypeScript Types via tygo ==="
+echo "=== [3/4] Generating TypeScript Types via tygo ==="
 TYGO_BIN="$(which tygo 2>/dev/null || true)"
 if [ -z "$TYGO_BIN" ]; then
     GOPATH_TYGO="$(go env GOPATH)/bin/tygo"
@@ -26,7 +29,7 @@ else
     go run github.com/gzuidhof/tygo@latest generate
 fi
 
-echo "=== [3/3] Running Go Static Analysis and Tests ==="
+echo "=== [4/4] Running Go Static Analysis and Tests ==="
 go vet ./...
 go test ./...
 

@@ -11,14 +11,9 @@
     "right_color": "レッド",
     "images": [
       {
-        "url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/400_320_102400.jpg",
+        "url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_15.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -52,9 +47,9 @@
     "right_color": "オレンジ",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_12.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
+        "photo_type_slug": "13th_single",
+        "url": "https://cdn.hinatazaka46.com/images/14/4a0/9896ff77e7b70bfc73418fd9f1043.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -73,11 +68,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/4f1/2d700f34ba47f7c556c4f9b0080b5/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_03.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -96,11 +86,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/0df/18fcfe112bdc514260a599f15ca6d/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_04.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -209,11 +194,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/fa2/dbc520dc2a261472c591987a0a3ae/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_27.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -232,11 +212,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/42f/2e3b0b500456d48a46514eceb343d/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_11.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -255,11 +230,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/985/072c23fa8e0ac974f353d51d6d566/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_10_01.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -278,11 +248,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/7af/4b0f4d4f5c906d391afea8edc8d25/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_20.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -301,11 +266,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/f25/16be8f588b8407199f992e5721915/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_28.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -321,14 +281,9 @@
     "right_color": "イエロー",
     "images": [
       {
-        "url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/400_320_102400.jpg",
+        "url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_18.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -347,11 +302,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/1de/576523c0628298356025a2193ecb0/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_24.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -370,11 +320,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/c86/d4f17e3172581f7855fd835f89f90/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_25.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -429,11 +374,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/9c5/87d50e7853595aaefc3d14ab80749/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_14.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -449,14 +389,9 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/400_320_102400.jpg",
+        "url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_17.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -472,9 +407,9 @@
     "right_color": "レッド",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_22_01.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
+        "photo_type_slug": "18th_single",
+        "url": "https://cdn.hinatazaka46.com/images/14/33e/3501014613a628c5697c13f7c2204/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -493,11 +428,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/45b/c47ef916e2e0bf5e49a0144179153/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_09.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -516,11 +446,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/b00/62d7047d19b84cc1b2922e011e2bf/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_21.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -593,11 +518,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/b56/49ce8fef3670b03d97ed6b4212486/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_19.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -616,11 +536,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/66d/c4f27cba509510a6f48c23a9ece1c/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_23.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -675,11 +590,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/e3d/10e0ec44b93be391c4ab7f7e3cf0b/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_08.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -734,11 +644,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/ccb/7cc864c9f0c54e8d7cc27c88cd6a1/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      },
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_05.jpg",
-        "is_primary": false,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -754,9 +659,9 @@
     "right_color": "パープル",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_16.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
+        "photo_type_slug": "18th_single",
+        "url": "https://cdn.hinatazaka46.com/images/14/f4c/3dcd3d6bd29da9a6a7cbaf072e278/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -808,7 +713,7 @@
     "right_color": "ピンク",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -826,9 +731,9 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_nakagawa_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/6e2/6dd28e9796fbf681a1ff873cc2093/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -844,7 +749,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -862,9 +767,9 @@
     "right_color": "パステルブルー",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_sato_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/067/b19bbf4fd6c6ae45fb1730b859d02/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -880,9 +785,9 @@
     "right_color": "レッド",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_katsumata_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/6b1/2d37577da0937e121d6cd9d5fe89d/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -898,7 +803,7 @@
     "right_color": "エメラルドグリーン",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -916,7 +821,7 @@
     "right_color": "オレンジ",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -934,7 +839,7 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -952,7 +857,7 @@
     "right_color": "パステルブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -970,7 +875,7 @@
     "right_color": "ピンク",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -988,7 +893,7 @@
     "right_color": "オレンジ",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1006,7 +911,7 @@
     "right_color": "サクラピンク",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1024,7 +929,7 @@
     "right_color": "サクラピンク",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1042,7 +947,7 @@
     "right_color": "パステルブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1060,9 +965,9 @@
     "right_color": "パステルブルー",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamakawa_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/1dc/e66ab7b6427674ef51699a7e65117/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1078,9 +983,9 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamada_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/8a5/1d6030c25a86927625295ca528458/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1096,7 +1001,7 @@
     "right_color": "グリーン",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1114,7 +1019,7 @@
     "right_color": "パールグリーン",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1132,7 +1037,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1150,7 +1055,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1168,9 +1073,9 @@
     "right_color": "エメラルドグリーン",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_matsumoto_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/67a/41b41e50ef98ec4b9332cb2a78695/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1186,7 +1091,7 @@
     "right_color": "イエロー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1204,7 +1109,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1222,7 +1127,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1240,9 +1145,9 @@
     "right_color": "エメラルドグリーン",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_asai_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/d06/e45c5b93cc109e5c8cdd118b0d04d/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1258,7 +1163,7 @@
     "right_color": "パステルブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1276,7 +1181,7 @@
     "right_color": "ブルー",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1294,9 +1199,9 @@
     "right_color": "パッションピンク",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_meguro_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/fa4/1584c23f5577bb13c751292d7fe5f/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1312,7 +1217,7 @@
     "right_color": "ピンク",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1330,9 +1235,9 @@
     "right_color": "オレンジ",
     "images": [
       {
-        "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_inaguna_bgFGJ38s_00.jpg",
-        "is_primary": true,
-        "photo_type_slug": "4th_tour_towel"
+        "photo_type_slug": "16th_single",
+        "url": "https://sakurazaka46.com/images/14/7c9/86cebbd9dbb0bf692804cc1e2f33e/800_800_102400.jpg",
+        "is_primary": true
       }
     ]
   },
@@ -1348,7 +1253,7 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1366,7 +1271,7 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1384,7 +1289,7 @@
     "right_color": "パープル",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
       }
@@ -1402,9 +1307,567 @@
     "right_color": "バイオレット",
     "images": [
       {
-        "url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/400_320_102400.jpg",
+        "url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "2nd_album"
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "伊藤",
+    "given_name": "理々杏",
+    "family_name_kana": "いとう",
+    "given_name_kana": "りりあ",
+    "generation": 3,
+    "status": "active",
+    "left_color": "パープル",
+    "right_color": "レッド",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/1d1/b0f71982a410acda6e979d41cfb51.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "岩本",
+    "given_name": "蓮加",
+    "family_name_kana": "いわもと",
+    "given_name_kana": "れんか",
+    "generation": 3,
+    "status": "active",
+    "left_color": "ピンク",
+    "right_color": "レッド",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/4a8/fa2fc4b3c75b9568ce9adbc16d4bd.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "梅澤",
+    "given_name": "美波",
+    "family_name_kana": "うめざわ",
+    "given_name_kana": "みなみ",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "ブルー",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/8c7/646b36a936a7b4502c3020bbc090a.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "久保",
+    "given_name": "史緒里",
+    "family_name_kana": "くぼ",
+    "given_name_kana": "しおり",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "水色",
+    "right_color": "イエロー",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/445/60cae08cc551e45e9d8aa008f871c.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "佐藤",
+    "given_name": "楓",
+    "family_name_kana": "さとう",
+    "given_name_kana": "かえで",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "レッド",
+    "right_color": "レッド",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/e40/6de034c40c0de70e8d83ccc8b6531.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "中村",
+    "given_name": "麗乃",
+    "family_name_kana": "なかむら",
+    "given_name_kana": "れの",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "ブルー",
+    "right_color": "ホワイト",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/a5a/ef48c50cbc388b3ef036fc8a04c1b.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "吉田",
+    "given_name": "綾乃クリスティー",
+    "family_name_kana": "よしだ",
+    "given_name_kana": "あやのくりすてぃー",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "ピンク",
+    "right_color": "パープル",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/7ae/b1038e6c3ecb60b9941b6aed7c276.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "与田",
+    "given_name": "祐希",
+    "family_name_kana": "よだ",
+    "given_name_kana": "ゆうき",
+    "generation": 3,
+    "status": "graduated",
+    "left_color": "レッド",
+    "right_color": "グリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/9db/4feadc18570db2c6e4c90999f8e20.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "遠藤",
+    "given_name": "さくら",
+    "family_name_kana": "えんどう",
+    "given_name_kana": "さくら",
+    "generation": 4,
+    "status": "active",
+    "left_color": "ホワイト",
+    "right_color": "ピンク",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/d90/5ca63b14dde51e680517af2216408.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "賀喜",
+    "given_name": "遥香",
+    "family_name_kana": "かき",
+    "given_name_kana": "はるか",
+    "generation": 4,
+    "status": "active",
+    "left_color": "オレンジ",
+    "right_color": "グリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/9e1/b4f576fdc288cc8cc68320f657a5d.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "金川",
+    "given_name": "紗耶",
+    "family_name_kana": "かながわ",
+    "given_name_kana": "さや",
+    "generation": 4,
+    "status": "active",
+    "left_color": "レッド",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/880/87280a20095abdde1ffcd122d8d42.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "黒見",
+    "given_name": "明香",
+    "family_name_kana": "くろみ",
+    "given_name_kana": "はるか",
+    "generation": 4,
+    "status": "active",
+    "left_color": "パープル",
+    "right_color": "グリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/143/57bc0bef04a325148a8a7c62541e1.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "佐藤",
+    "given_name": "璃果",
+    "family_name_kana": "さとう",
+    "given_name_kana": "りか",
+    "generation": 4,
+    "status": "graduated",
+    "left_color": "ピンク",
+    "right_color": "ターコイズ",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/d5c/22cbd1c9536b89d66fb470e34f51e.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "柴田",
+    "given_name": "柚菜",
+    "family_name_kana": "しばた",
+    "given_name_kana": "ゆな",
+    "generation": 4,
+    "status": "active",
+    "left_color": "ブルー",
+    "right_color": "ライトグリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/6d8/4643f09fc585a92576513888606c2.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "田村",
+    "given_name": "真佑",
+    "family_name_kana": "たむら",
+    "given_name_kana": "まゆ",
+    "generation": 4,
+    "status": "active",
+    "left_color": "パープル",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/de5/915861e02d78a55180a5d58ea5c80.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "筒井",
+    "given_name": "あやめ",
+    "family_name_kana": "つつい",
+    "given_name_kana": "あやめ",
+    "generation": 4,
+    "status": "active",
+    "left_color": "パープル",
+    "right_color": "パープル",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/9db/414579921f85d8dd289e573c96dc3.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "林",
+    "given_name": "瑠奈",
+    "family_name_kana": "はやし",
+    "given_name_kana": "るな",
+    "generation": 4,
+    "status": "active",
+    "left_color": "ピンク",
+    "right_color": "ピンク",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/cb1/f34ad14ecbf7be125b2f2f243f841.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "松尾",
+    "given_name": "美佑",
+    "family_name_kana": "まつお",
+    "given_name_kana": "みゆ",
+    "generation": 4,
+    "status": "graduated",
+    "left_color": "ターコイズ",
+    "right_color": "ホワイト",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/3bd/51a432d9b74ca8b45bbc0e07d34df.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "矢久保",
+    "given_name": "美緒",
+    "family_name_kana": "やくぼ",
+    "given_name_kana": "みお",
+    "generation": 4,
+    "status": "graduated",
+    "left_color": "イエロー",
+    "right_color": "ピンク",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/c7c/c19487b659717498f8ed992b08fce.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "弓木",
+    "given_name": "奈於",
+    "family_name_kana": "ゆみき",
+    "given_name_kana": "なお",
+    "generation": 4,
+    "status": "active",
+    "left_color": "レッド",
+    "right_color": "ライトグリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/f75/2ec1740de010cde723653a4794af2.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "五百城",
+    "given_name": "茉央",
+    "family_name_kana": "いおき",
+    "given_name_kana": "まお",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ターコイズ",
+    "right_color": "ブルー",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/ec1/9c670b4ade367a2f551f26eef4450.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "池田",
+    "given_name": "瑛紗",
+    "family_name_kana": "いけだ",
+    "given_name_kana": "てれさ",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ホワイト",
+    "right_color": "グリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/3cd/248094368f7aab375f1900195098a.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "一ノ瀬",
+    "given_name": "美空",
+    "family_name_kana": "いちのせ",
+    "given_name_kana": "みく",
+    "generation": 5,
+    "status": "active",
+    "left_color": "水色",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/d21/1d87f2203680137df7346b7551ed0.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "井上",
+    "given_name": "和",
+    "family_name_kana": "いのうえ",
+    "given_name_kana": "なぎ",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ホワイト",
+    "right_color": "レッド",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/540/61c907a38e56dced12a57ab544fd3.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "岡本",
+    "given_name": "姫奈",
+    "family_name_kana": "おかもと",
+    "given_name_kana": "ひな",
+    "generation": 5,
+    "status": "active",
+    "left_color": "パープル",
+    "right_color": "ブルー",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/0b4/6e7b29737ae59929b3b5d54901df9.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "小川",
+    "given_name": "彩",
+    "family_name_kana": "おがわ",
+    "given_name_kana": "あや",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ホワイト",
+    "right_color": "ホワイト",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/e8f/d4b6b2c5802a42f04de0b62f4ab7f.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "奥田",
+    "given_name": "いろは",
+    "family_name_kana": "おくだ",
+    "given_name_kana": "いろは",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ピンク",
+    "right_color": "ライトグリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/c2f/3eeaa463de1b7c93ce62b62270ec8.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "川﨑",
+    "given_name": "桜",
+    "family_name_kana": "かわさき",
+    "given_name_kana": "さくら",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ピンク",
+    "right_color": "グリーン",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/b4e/2a4faecdf5e257fa5e8aae4672f82.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "菅原",
+    "given_name": "咲月",
+    "family_name_kana": "すがわら",
+    "given_name_kana": "さつき",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ピンク",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/c09/dfacda505809637c8214da8a8432f.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "冨里",
+    "given_name": "奈央",
+    "family_name_kana": "とみさと",
+    "given_name_kana": "なお",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ターコイズ",
+    "right_color": "ターコイズ",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/e27/66bd6c894d1a96288bb9dfaf8809f.jpg",
+        "is_primary": true
+      }
+    ]
+  },
+  {
+    "group_slug": "nogizaka46",
+    "family_name": "中西",
+    "given_name": "アルノ",
+    "family_name_kana": "なかにし",
+    "given_name_kana": "あるの",
+    "generation": 5,
+    "status": "active",
+    "left_color": "ターコイズ",
+    "right_color": "水色",
+    "images": [
+      {
+        "photo_type_slug": "42nd_single",
+        "url": "https://www.nogizaka46.com/images/46/605/fde6153cac131c43a2e8e0ac0bfcb.jpg",
+        "is_primary": true
       }
     ]
   }

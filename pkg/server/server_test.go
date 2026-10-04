@@ -89,7 +89,7 @@ func TestServer_ImageRedirectFallback(t *testing.T) {
 	srv, _ := setupTestServer(t)
 
 	// Test redirect for known image_key in seeds/data/image_sources.json
-	req := httptest.NewRequest(http.MethodGet, "/images/img_dc063594ccd454709b6d54ad66838c76.webp", nil)
+	req := httptest.NewRequest(http.MethodGet, "/images/img_455e72f40ae75d5281943b482e2d2a95.webp", nil)
 	w := httptest.NewRecorder()
 	srv.Handler().ServeHTTP(w, req)
 

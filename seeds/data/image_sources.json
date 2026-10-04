@@ -1,21 +1,12 @@
 [
   {
-    "image_id": "img_dc063594ccd454709b6d54ad66838c76",
+    "image_id": "img_455e72f40ae75d5281943b482e2d2a95",
     "member_id": "mem_7dfb7abe142b516d914cb16b4b1526c5",
     "name": "上村ひなの",
     "group": "hinatazaka46",
     "photo_type_slug": "13th_single",
-    "url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/400_320_102400.jpg",
-    "dest_key": "img_dc063594ccd454709b6d54ad66838c76.webp"
-  },
-  {
-    "image_id": "img_2bbea8559fd25c9bb6fb6dc560916693",
-    "member_id": "mem_7dfb7abe142b516d914cb16b4b1526c5",
-    "name": "上村ひなの",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_15.jpg",
-    "dest_key": "img_2bbea8559fd25c9bb6fb6dc560916693.webp"
+    "url": "https://cdn.hinatazaka46.com/images/14/9de/8d4bfed193adf56953f7aa3625760/800_800_102400.jpg",
+    "dest_key": "img_455e72f40ae75d5281943b482e2d2a95.webp"
   },
   {
     "image_id": "img_847a20ba1ae45b5390e2696db99c6dc4",
@@ -27,13 +18,13 @@
     "dest_key": "img_847a20ba1ae45b5390e2696db99c6dc4.webp"
   },
   {
-    "image_id": "img_96c2d679fda452c9bbb9a860d361eae1",
+    "image_id": "img_d42e599b224c5b34be0b263dd7d9a31f",
     "member_id": "mem_79623099c3c35bd69b2f88b24d3dad38",
     "name": "丹生明里",
     "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_12.jpg",
-    "dest_key": "img_96c2d679fda452c9bbb9a860d361eae1.webp"
+    "photo_type_slug": "13th_single",
+    "url": "https://cdn.hinatazaka46.com/images/14/4a0/9896ff77e7b70bfc73418fd9f1043.jpg",
+    "dest_key": "img_d42e599b224c5b34be0b263dd7d9a31f.webp"
   },
   {
     "image_id": "img_e47daec5db0751699f8281ae61064f91",
@@ -45,15 +36,6 @@
     "dest_key": "img_e47daec5db0751699f8281ae61064f91.webp"
   },
   {
-    "image_id": "img_b7f8c802c8895bdcbbb998a841c0b09d",
-    "member_id": "mem_8fc76fc0b89951cc9fe0b4d28e2dac0c",
-    "name": "佐々木久美",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_03.jpg",
-    "dest_key": "img_b7f8c802c8895bdcbbb998a841c0b09d.webp"
-  },
-  {
     "image_id": "img_6a9df76f45085e43bc913335920a2a75",
     "member_id": "mem_aefffdf4f6905c66b5a11158cbf4a242",
     "name": "佐々木美玲",
@@ -61,15 +43,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/0df/18fcfe112bdc514260a599f15ca6d/800_800_102400.jpg",
     "dest_key": "img_6a9df76f45085e43bc913335920a2a75.webp"
-  },
-  {
-    "image_id": "img_4c61b16e1f8f518cae2bcfb698c6c7dd",
-    "member_id": "mem_aefffdf4f6905c66b5a11158cbf4a242",
-    "name": "佐々木美玲",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_04.jpg",
-    "dest_key": "img_4c61b16e1f8f518cae2bcfb698c6c7dd.webp"
   },
   {
     "image_id": "img_e6486950dcb352f9997964c948c63ecc",
@@ -126,15 +99,6 @@
     "dest_key": "img_e1f74b2f2dd956ed9f48e66baf3daaf3.webp"
   },
   {
-    "image_id": "img_11b5418732615cbda2a656a941491cd4",
-    "member_id": "mem_da56e038da335909bceca8f1ff77a539",
-    "name": "宮地すみれ",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_27.jpg",
-    "dest_key": "img_11b5418732615cbda2a656a941491cd4.webp"
-  },
-  {
     "image_id": "img_128124ef289051d8ac0d1c431d7e8b76",
     "member_id": "mem_be84efb349505cdb96ea0f3de6bdea07",
     "name": "富田鈴花",
@@ -142,15 +106,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/42f/2e3b0b500456d48a46514eceb343d/800_800_102400.jpg",
     "dest_key": "img_128124ef289051d8ac0d1c431d7e8b76.webp"
-  },
-  {
-    "image_id": "img_c7f65a3bd09a570f9489debdb79e783d",
-    "member_id": "mem_be84efb349505cdb96ea0f3de6bdea07",
-    "name": "富田鈴花",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_11.jpg",
-    "dest_key": "img_c7f65a3bd09a570f9489debdb79e783d.webp"
   },
   {
     "image_id": "img_11e5867149a653f08e2ea1deb2eea0b0",
@@ -162,15 +117,6 @@
     "dest_key": "img_11e5867149a653f08e2ea1deb2eea0b0.webp"
   },
   {
-    "image_id": "img_bf5135ee783d5b778b3bc9ac4670405a",
-    "member_id": "mem_3ce56f5368fc51ccbcaff43ba2678e14",
-    "name": "小坂菜緒",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_10_01.jpg",
-    "dest_key": "img_bf5135ee783d5b778b3bc9ac4670405a.webp"
-  },
-  {
     "image_id": "img_eea5304d2ad35697a3e2e39934217659",
     "member_id": "mem_ee9252bc92565c8987249c1705d54b81",
     "name": "小西夏菜実",
@@ -178,15 +124,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/7af/4b0f4d4f5c906d391afea8edc8d25/800_800_102400.jpg",
     "dest_key": "img_eea5304d2ad35697a3e2e39934217659.webp"
-  },
-  {
-    "image_id": "img_7a5a64b23ae75add8f4b4e94c055d516",
-    "member_id": "mem_ee9252bc92565c8987249c1705d54b81",
-    "name": "小西夏菜実",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_20.jpg",
-    "dest_key": "img_7a5a64b23ae75add8f4b4e94c055d516.webp"
   },
   {
     "image_id": "img_db042695dedf575ea063fbd48741313c",
@@ -198,31 +135,13 @@
     "dest_key": "img_db042695dedf575ea063fbd48741313c.webp"
   },
   {
-    "image_id": "img_8e9aa3dad4be5f0a9eedf1a9df160305",
-    "member_id": "mem_affb4bacb0d75f3cae144021cc179d3d",
-    "name": "山下葉留花",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_28.jpg",
-    "dest_key": "img_8e9aa3dad4be5f0a9eedf1a9df160305.webp"
-  },
-  {
-    "image_id": "img_3a80562263a95d1f8246584438adc004",
+    "image_id": "img_37980d46169659d3ae82240a2ffc66ea",
     "member_id": "mem_f4226763e6c9552a9c387d92c0fdfe30",
     "name": "山口陽世",
     "group": "hinatazaka46",
     "photo_type_slug": "13th_single",
-    "url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/400_320_102400.jpg",
-    "dest_key": "img_3a80562263a95d1f8246584438adc004.webp"
-  },
-  {
-    "image_id": "img_83b34dc93b9b5d4d9108475197782c85",
-    "member_id": "mem_f4226763e6c9552a9c387d92c0fdfe30",
-    "name": "山口陽世",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_18.jpg",
-    "dest_key": "img_83b34dc93b9b5d4d9108475197782c85.webp"
+    "url": "https://cdn.hinatazaka46.com/images/14/ebc/846dca80d22fbdb2dbf42f24ff5d9/800_800_102400.jpg",
+    "dest_key": "img_37980d46169659d3ae82240a2ffc66ea.webp"
   },
   {
     "image_id": "img_1398ae5d5a0b5e2eb1083da28f26b261",
@@ -234,15 +153,6 @@
     "dest_key": "img_1398ae5d5a0b5e2eb1083da28f26b261.webp"
   },
   {
-    "image_id": "img_fa170e2121f15782bbb1c871bade0751",
-    "member_id": "mem_c72c2fb7bb7d5bd897c9062cb17176fb",
-    "name": "平尾帆夏",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_24.jpg",
-    "dest_key": "img_fa170e2121f15782bbb1c871bade0751.webp"
-  },
-  {
     "image_id": "img_09e30eaf7303566a8a5bf2eeefddf048",
     "member_id": "mem_bc4804c468b25fa89cc1e568e76203eb",
     "name": "平岡海月",
@@ -250,15 +160,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/c86/d4f17e3172581f7855fd835f89f90/800_800_102400.jpg",
     "dest_key": "img_09e30eaf7303566a8a5bf2eeefddf048.webp"
-  },
-  {
-    "image_id": "img_1ac692a61b9550b49dcbb9b416b13be4",
-    "member_id": "mem_bc4804c468b25fa89cc1e568e76203eb",
-    "name": "平岡海月",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_25.jpg",
-    "dest_key": "img_1ac692a61b9550b49dcbb9b416b13be4.webp"
   },
   {
     "image_id": "img_fc8eb2503f4c52b280195c77c1573d5e",
@@ -288,40 +189,22 @@
     "dest_key": "img_5e8b4187ced354978b711d8145fd8110.webp"
   },
   {
-    "image_id": "img_8f21f47f141557798df4a064b5e54366",
-    "member_id": "mem_002a63d1dd7556b788df1ca67347dffc",
-    "name": "松田好花",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_14.jpg",
-    "dest_key": "img_8f21f47f141557798df4a064b5e54366.webp"
-  },
-  {
-    "image_id": "img_03cd25a8c657587eb2f6a1b1c3d0f735",
+    "image_id": "img_df0b3d407f9551609493c198bad21f7a",
     "member_id": "mem_5ec3d7cd9b5352b5b485607d96c791f1",
     "name": "森本茉莉",
     "group": "hinatazaka46",
     "photo_type_slug": "13th_single",
-    "url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/400_320_102400.jpg",
-    "dest_key": "img_03cd25a8c657587eb2f6a1b1c3d0f735.webp"
+    "url": "https://cdn.hinatazaka46.com/images/14/65f/6ca2ac061bcda8026fb0a5aa9c804/800_800_102400.jpg",
+    "dest_key": "img_df0b3d407f9551609493c198bad21f7a.webp"
   },
   {
-    "image_id": "img_6dbb50257d8857549327a3fbd5d35553",
-    "member_id": "mem_5ec3d7cd9b5352b5b485607d96c791f1",
-    "name": "森本茉莉",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_17.jpg",
-    "dest_key": "img_6dbb50257d8857549327a3fbd5d35553.webp"
-  },
-  {
-    "image_id": "img_8d91a21dda67578abf99c1fc542f626a",
+    "image_id": "img_9cd38926169f54a1a2d69ee7e9ad818c",
     "member_id": "mem_93989e0003815378bcef9beab6a6417b",
     "name": "正源司陽子",
     "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_22_01.jpg",
-    "dest_key": "img_8d91a21dda67578abf99c1fc542f626a.webp"
+    "photo_type_slug": "18th_single",
+    "url": "https://cdn.hinatazaka46.com/images/14/33e/3501014613a628c5697c13f7c2204/800_800_102400.jpg",
+    "dest_key": "img_9cd38926169f54a1a2d69ee7e9ad818c.webp"
   },
   {
     "image_id": "img_4de5514473695e94aac8c781f3ef5b43",
@@ -333,15 +216,6 @@
     "dest_key": "img_4de5514473695e94aac8c781f3ef5b43.webp"
   },
   {
-    "image_id": "img_3b20506ce9b05568a1dee6cf00283a16",
-    "member_id": "mem_dbedef91333c5dbe958d62c5c9f1e95d",
-    "name": "河田陽菜",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_09.jpg",
-    "dest_key": "img_3b20506ce9b05568a1dee6cf00283a16.webp"
-  },
-  {
     "image_id": "img_b2dae00b19145f469ba1d377dc99fa6d",
     "member_id": "mem_ed3cee789f825b3d91c043676602d58e",
     "name": "清水理央",
@@ -349,15 +223,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/b00/62d7047d19b84cc1b2922e011e2bf/800_800_102400.jpg",
     "dest_key": "img_b2dae00b19145f469ba1d377dc99fa6d.webp"
-  },
-  {
-    "image_id": "img_2df95b7ad28853fdad80c695d820f199",
-    "member_id": "mem_ed3cee789f825b3d91c043676602d58e",
-    "name": "清水理央",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_21.jpg",
-    "dest_key": "img_2df95b7ad28853fdad80c695d820f199.webp"
   },
   {
     "image_id": "img_6659f3c82b235fd79bdaf33a2451a858",
@@ -396,15 +261,6 @@
     "dest_key": "img_fad119dad25a51e7acfcdf1a743fe338.webp"
   },
   {
-    "image_id": "img_b45ae3cdbcc752a492e0834502f2e80d",
-    "member_id": "mem_f6d14207570e54ceb95a464dae0d760c",
-    "name": "石塚瑶季",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_19.jpg",
-    "dest_key": "img_b45ae3cdbcc752a492e0834502f2e80d.webp"
-  },
-  {
     "image_id": "img_007aea2773945aa0b3f616a3a04c869d",
     "member_id": "mem_46ba7524619856c58dd99f91ce69b6a5",
     "name": "竹内希来里",
@@ -412,15 +268,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/66d/c4f27cba509510a6f48c23a9ece1c/800_800_102400.jpg",
     "dest_key": "img_007aea2773945aa0b3f616a3a04c869d.webp"
-  },
-  {
-    "image_id": "img_6e6b8758336a5d97aea8cb6ede41d612",
-    "member_id": "mem_46ba7524619856c58dd99f91ce69b6a5",
-    "name": "竹内希来里",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_23.jpg",
-    "dest_key": "img_6e6b8758336a5d97aea8cb6ede41d612.webp"
   },
   {
     "image_id": "img_8c601e09dba25407bd557a20e5c7a956",
@@ -450,15 +297,6 @@
     "dest_key": "img_07aee6bc12f9580dab5a12418264df3f.webp"
   },
   {
-    "image_id": "img_b50a0d94755f5b52b12fcc458a4445e6",
-    "member_id": "mem_9fbea31ccf92550aa5da325c17d09c64",
-    "name": "金村美玖",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_08.jpg",
-    "dest_key": "img_b50a0d94755f5b52b12fcc458a4445e6.webp"
-  },
-  {
     "image_id": "img_564a605068585d72bcdb3608d7e7a1e2",
     "member_id": "mem_e8a3cef052b15f28a23b5a6eb84dc99d",
     "name": "高井俐香",
@@ -486,22 +324,13 @@
     "dest_key": "img_590214468c4c5cf198afeb3d453b50e6.webp"
   },
   {
-    "image_id": "img_d7fe014f255f5f36b0d11093c71f115e",
-    "member_id": "mem_6c4b735992ef5962bf0b3aff3369675e",
-    "name": "高瀬愛奈",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_05.jpg",
-    "dest_key": "img_d7fe014f255f5f36b0d11093c71f115e.webp"
-  },
-  {
-    "image_id": "img_c19ab9d6a92e5391bc4e6e58a07d0062",
+    "image_id": "img_57b9bb4ae04a5a9d89fdc119b2620e31",
     "member_id": "mem_2bfae489f3d855a29a6f892a5ddbe65a",
     "name": "髙橋未来虹",
     "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_16.jpg",
-    "dest_key": "img_c19ab9d6a92e5391bc4e6e58a07d0062.webp"
+    "photo_type_slug": "18th_single",
+    "url": "https://cdn.hinatazaka46.com/images/14/f4c/3dcd3d6bd29da9a6a7cbaf072e278/800_800_102400.jpg",
+    "dest_key": "img_57b9bb4ae04a5a9d89fdc119b2620e31.webp"
   },
   {
     "image_id": "img_eb3e8032a1e55308b9f8f8e3bdc8a336",
@@ -522,309 +351,588 @@
     "dest_key": "img_70d464ba4e765cf5880c7b98c4cdb7fc.webp"
   },
   {
-    "image_id": "img_d759070645f85e7a9978708bbf578242",
+    "image_id": "img_79fb832d845a571ea74eb1e93ae73f29",
     "member_id": "mem_7550f1fb98455b3d908d3e1438d08cbb",
     "name": "中嶋優月",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/400_320_102400.jpg",
-    "dest_key": "img_d759070645f85e7a9978708bbf578242.webp"
+    "url": "https://sakurazaka46.com/images/14/305/3846e01e4077974f2928d5a9d493a/800_800_102400.jpg",
+    "dest_key": "img_79fb832d845a571ea74eb1e93ae73f29.webp"
   },
   {
-    "image_id": "img_87c1973487625091bdca1e6883ab1710",
+    "image_id": "img_9a738c9f4bed5c119697df6ecada2118",
     "member_id": "mem_d38196cf0669533c9955bb5cbaffa794",
     "name": "中川智尋",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_nakagawa_bgFGJ38s_00.jpg",
-    "dest_key": "img_87c1973487625091bdca1e6883ab1710.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/6e2/6dd28e9796fbf681a1ff873cc2093/800_800_102400.jpg",
+    "dest_key": "img_9a738c9f4bed5c119697df6ecada2118.webp"
   },
   {
-    "image_id": "img_b44bedeef7705f839749e96ecf6c41ea",
+    "image_id": "img_51053d00961e5c608db9c50e77f17b9a",
     "member_id": "mem_77120098dfd1559bb76b0ac075274c71",
     "name": "井上梨名",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/400_320_102400.jpg",
-    "dest_key": "img_b44bedeef7705f839749e96ecf6c41ea.webp"
+    "url": "https://sakurazaka46.com/images/14/b97/01548cdfed445d27e1b81c509d3ca/800_800_102400.jpg",
+    "dest_key": "img_51053d00961e5c608db9c50e77f17b9a.webp"
   },
   {
-    "image_id": "img_dd4739a5c9a85f44b966255c5d5f92fe",
+    "image_id": "img_2244b2278fb558118c3474f622999e1e",
     "member_id": "mem_8d052fe65505563697db724e25831609",
     "name": "佐藤愛桜",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_sato_bgFGJ38s_00.jpg",
-    "dest_key": "img_dd4739a5c9a85f44b966255c5d5f92fe.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/067/b19bbf4fd6c6ae45fb1730b859d02/800_800_102400.jpg",
+    "dest_key": "img_2244b2278fb558118c3474f622999e1e.webp"
   },
   {
-    "image_id": "img_26fadd31f4c65b1189a15a504233d863",
+    "image_id": "img_1343d055447c54818b4ca63acd624b05",
     "member_id": "mem_c60767d6b3995b9cbec82db107c45e77",
     "name": "勝又春",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_katsumata_bgFGJ38s_00.jpg",
-    "dest_key": "img_26fadd31f4c65b1189a15a504233d863.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/6b1/2d37577da0937e121d6cd9d5fe89d/800_800_102400.jpg",
+    "dest_key": "img_1343d055447c54818b4ca63acd624b05.webp"
   },
   {
-    "image_id": "img_541a5ebf110e50e4b22e1e7257618a82",
+    "image_id": "img_8e752b142e0f5dabb33f8dcba9d4000c",
     "member_id": "mem_0123417027f2515792cea1b774422504",
     "name": "向井純葉",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/400_320_102400.jpg",
-    "dest_key": "img_541a5ebf110e50e4b22e1e7257618a82.webp"
+    "url": "https://sakurazaka46.com/images/14/668/9d2337249931b46d6f0047697acc0/800_800_102400.jpg",
+    "dest_key": "img_8e752b142e0f5dabb33f8dcba9d4000c.webp"
   },
   {
-    "image_id": "img_4eb373567b525f4db2bd8ffafaca86e6",
+    "image_id": "img_2bf30fee745d5c53823ff16a97b39fb3",
     "member_id": "mem_17f94a6f6a4f55ddb12ef3e937951061",
     "name": "増本綺良",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/400_320_102400.jpg",
-    "dest_key": "img_4eb373567b525f4db2bd8ffafaca86e6.webp"
+    "url": "https://sakurazaka46.com/images/14/60a/12a903ce73024bc56cefccc10d1c6/800_800_102400.jpg",
+    "dest_key": "img_2bf30fee745d5c53823ff16a97b39fb3.webp"
   },
   {
-    "image_id": "img_f38f54988427583e8f3832bff317ce6d",
+    "image_id": "img_a7095c3e5a9654899ab7ca3ee726032e",
     "member_id": "mem_fab118ced9865acd981e663ed8ceb7c9",
     "name": "大園玲",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/400_320_102400.jpg",
-    "dest_key": "img_f38f54988427583e8f3832bff317ce6d.webp"
+    "url": "https://sakurazaka46.com/images/14/dd0/e4040df7a833502849887b01c2481/800_800_102400.jpg",
+    "dest_key": "img_a7095c3e5a9654899ab7ca3ee726032e.webp"
   },
   {
-    "image_id": "img_32866403cd7550509cc0995f3cf43fb2",
+    "image_id": "img_7a5d9c12b3375361b2bf6497cf0840e0",
     "member_id": "mem_2d809d417aaf5fed96486a56c24879be",
     "name": "大沼晶保",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/400_320_102400.jpg",
-    "dest_key": "img_32866403cd7550509cc0995f3cf43fb2.webp"
+    "url": "https://sakurazaka46.com/images/14/638/4823d7a2d5a085f31a7211152161c/800_800_102400.jpg",
+    "dest_key": "img_7a5d9c12b3375361b2bf6497cf0840e0.webp"
   },
   {
-    "image_id": "img_5244d6e03c925e528bb6a2ae3f781f58",
+    "image_id": "img_53833025202854d29f5bff297b91d617",
     "member_id": "mem_0691924b45ba537eb8a739a52122a040",
     "name": "守屋麗奈",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/400_320_102400.jpg",
-    "dest_key": "img_5244d6e03c925e528bb6a2ae3f781f58.webp"
+    "url": "https://sakurazaka46.com/images/14/47f/5c212f6dd451b88c0b518847c7de1/800_800_102400.jpg",
+    "dest_key": "img_53833025202854d29f5bff297b91d617.webp"
   },
   {
-    "image_id": "img_02e13dff52d05b0b98f19ba07d9f3b27",
+    "image_id": "img_211a6c71e9af536298e1dc894c23ebe5",
     "member_id": "mem_30c987b03bf75afab9b676f2f5d7d761",
     "name": "小島凪紗",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/400_320_102400.jpg",
-    "dest_key": "img_02e13dff52d05b0b98f19ba07d9f3b27.webp"
+    "url": "https://sakurazaka46.com/images/14/ea5/a2067241562a73164d6dbee181f64/800_800_102400.jpg",
+    "dest_key": "img_211a6c71e9af536298e1dc894c23ebe5.webp"
   },
   {
-    "image_id": "img_9cf748e54902571192d09b93407b5e42",
+    "image_id": "img_1e99e94bd1295be68fc713b800a42919",
     "member_id": "mem_1e5f31505fcf562598eb6835d9cb7017",
     "name": "小池美波",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/400_320_102400.jpg",
-    "dest_key": "img_9cf748e54902571192d09b93407b5e42.webp"
+    "url": "https://sakurazaka46.com/images/14/0a7/36cba3a16a5ab3c852e93d16d7fd8/800_800_102400.jpg",
+    "dest_key": "img_1e99e94bd1295be68fc713b800a42919.webp"
   },
   {
-    "image_id": "img_f9f7da736e7d53a3a8d8e7550ea76d55",
+    "image_id": "img_4be90f0be129579daf8e9d987af14a03",
     "member_id": "mem_18f81f86103e530c83029797f5ddef53",
     "name": "小田倉麗奈",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/400_320_102400.jpg",
-    "dest_key": "img_f9f7da736e7d53a3a8d8e7550ea76d55.webp"
+    "url": "https://sakurazaka46.com/images/14/30a/1eea34a0a14cca3b964274a2fd293/800_800_102400.jpg",
+    "dest_key": "img_4be90f0be129579daf8e9d987af14a03.webp"
   },
   {
-    "image_id": "img_b502fca6369753b9b66f255567ab7b46",
+    "image_id": "img_d31accff20855c53ae58176a6d4d6f7a",
     "member_id": "mem_cbf48a1ef0ba55838b20daec8ac4a584",
     "name": "山下瞳月",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/400_320_102400.jpg",
-    "dest_key": "img_b502fca6369753b9b66f255567ab7b46.webp"
+    "url": "https://sakurazaka46.com/images/14/c27/3155629978e5217e08b038c1803c7/800_800_102400.jpg",
+    "dest_key": "img_d31accff20855c53ae58176a6d4d6f7a.webp"
   },
   {
-    "image_id": "img_4f2100b4dba35c94a1f089defbfd7129",
+    "image_id": "img_abdf2137ef83576cbda9885ac76f2110",
     "member_id": "mem_27a7aab4d3d75ccda67f8d3a9537be63",
     "name": "山川宇衣",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamakawa_bgFGJ38s_00.jpg",
-    "dest_key": "img_4f2100b4dba35c94a1f089defbfd7129.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/1dc/e66ab7b6427674ef51699a7e65117/800_800_102400.jpg",
+    "dest_key": "img_abdf2137ef83576cbda9885ac76f2110.webp"
   },
   {
-    "image_id": "img_1099ac1663b4527ebf6f8dc4a7f9e330",
+    "image_id": "img_92580a8a37285fb58a55c47e7e6d835c",
     "member_id": "mem_a5ff8617344859cc83f0283976298c25",
     "name": "山田桃実",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_yamada_bgFGJ38s_00.jpg",
-    "dest_key": "img_1099ac1663b4527ebf6f8dc4a7f9e330.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/8a5/1d6030c25a86927625295ca528458/800_800_102400.jpg",
+    "dest_key": "img_92580a8a37285fb58a55c47e7e6d835c.webp"
   },
   {
-    "image_id": "img_0620b8de365e5549a986a746506f6960",
+    "image_id": "img_13b028aafe2057ed8fa99707b5e2cf3a",
     "member_id": "mem_4682dd06532d525eada319118369d3a1",
     "name": "山﨑天",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/400_320_102400.jpg",
-    "dest_key": "img_0620b8de365e5549a986a746506f6960.webp"
+    "url": "https://sakurazaka46.com/images/14/398/66f252b808e4b36c59552c5f1be7b/800_800_102400.jpg",
+    "dest_key": "img_13b028aafe2057ed8fa99707b5e2cf3a.webp"
   },
   {
-    "image_id": "img_1e8de4f19f86520a8ae1bcf58bd0b88b",
+    "image_id": "img_23ee82ba2b7756a483e679055505b335",
     "member_id": "mem_832e5906aa2350ccac5dfa4d9cf80c6e",
     "name": "幸阪茉里乃",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/400_320_102400.jpg",
-    "dest_key": "img_1e8de4f19f86520a8ae1bcf58bd0b88b.webp"
+    "url": "https://sakurazaka46.com/images/14/74e/cd261cc8260dc0c24933d5f28aa83/800_800_102400.jpg",
+    "dest_key": "img_23ee82ba2b7756a483e679055505b335.webp"
   },
   {
-    "image_id": "img_dc04450ac9f25c0188b6dddbc7576802",
+    "image_id": "img_c5afacf251385b9da5c170d8d10a6cd2",
     "member_id": "mem_a18f6a3db23358e3bc926a160cde54e9",
     "name": "村井優",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/400_320_102400.jpg",
-    "dest_key": "img_dc04450ac9f25c0188b6dddbc7576802.webp"
+    "url": "https://sakurazaka46.com/images/14/5be/d5369723f14d253628045189ca18a/800_800_102400.jpg",
+    "dest_key": "img_c5afacf251385b9da5c170d8d10a6cd2.webp"
   },
   {
-    "image_id": "img_721603e5c98e5b0cb562791547301797",
+    "image_id": "img_805998d4052759cf924daee7a09ff042",
     "member_id": "mem_72fcd84ec1545dd4b22c1a3feae5343d",
     "name": "村山美羽",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/400_320_102400.jpg",
-    "dest_key": "img_721603e5c98e5b0cb562791547301797.webp"
+    "url": "https://sakurazaka46.com/images/14/75f/ef8914e663c5e0d4c7331839a7859/800_800_102400.jpg",
+    "dest_key": "img_805998d4052759cf924daee7a09ff042.webp"
   },
   {
-    "image_id": "img_6061fdee3c955623867dc12593996133",
+    "image_id": "img_d939f11dfd9c5aac81b939441ceb9587",
     "member_id": "mem_22ece5b62004540eb1070bd9f76817a6",
     "name": "松本和子",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_matsumoto_bgFGJ38s_00.jpg",
-    "dest_key": "img_6061fdee3c955623867dc12593996133.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/67a/41b41e50ef98ec4b9332cb2a78695/800_800_102400.jpg",
+    "dest_key": "img_d939f11dfd9c5aac81b939441ceb9587.webp"
   },
   {
-    "image_id": "img_a55becdcb5f453daa8a1710b2ad22dc0",
+    "image_id": "img_1a98968441d0518bb125a872da53848f",
     "member_id": "mem_ad244c328d655784b06e124a84502c20",
     "name": "松田里奈",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/400_320_102400.jpg",
-    "dest_key": "img_a55becdcb5f453daa8a1710b2ad22dc0.webp"
+    "url": "https://sakurazaka46.com/images/14/96b/f7d2b0f5be2c4f7f450f4d780baa9/800_800_102400.jpg",
+    "dest_key": "img_1a98968441d0518bb125a872da53848f.webp"
   },
   {
-    "image_id": "img_ee50d0075d4750119c16dc9917cf8079",
+    "image_id": "img_a0a7a8df5fd755f8a25c2c8042d1e299",
     "member_id": "mem_02371e75dd1a54329cf6529e614f323f",
     "name": "森田ひかる",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/400_320_102400.jpg",
-    "dest_key": "img_ee50d0075d4750119c16dc9917cf8079.webp"
+    "url": "https://sakurazaka46.com/images/14/ba4/c78aae506102498a4dca4f7e62c0f/800_800_102400.jpg",
+    "dest_key": "img_a0a7a8df5fd755f8a25c2c8042d1e299.webp"
   },
   {
-    "image_id": "img_657d85c0b9ce5dd2b454de39711de786",
+    "image_id": "img_5f26a2dd6976518eaca08f4187540c69",
     "member_id": "mem_ef141612bb7050259ad94fbe98990b93",
     "name": "武元唯衣",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
-    "dest_key": "img_657d85c0b9ce5dd2b454de39711de786.webp"
+    "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/800_800_102400.jpg",
+    "dest_key": "img_5f26a2dd6976518eaca08f4187540c69.webp"
   },
   {
-    "image_id": "img_593c80572bab53b6bcf4b60c6522da79",
+    "image_id": "img_9bec0c8b4c165bee82f9c33787730425",
     "member_id": "mem_652418691e795202b9f2aff5fae6477b",
     "name": "浅井恋乃未",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_asai_bgFGJ38s_00.jpg",
-    "dest_key": "img_593c80572bab53b6bcf4b60c6522da79.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/d06/e45c5b93cc109e5c8cdd118b0d04d/800_800_102400.jpg",
+    "dest_key": "img_9bec0c8b4c165bee82f9c33787730425.webp"
   },
   {
-    "image_id": "img_6a9225e7684e5a0fbb7f778ee2dea7d9",
+    "image_id": "img_7639803534265aad90c1e00b00eee2cb",
     "member_id": "mem_9b900e3d9a815ea6a154d92799d08430",
     "name": "田村保乃",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/400_320_102400.jpg",
-    "dest_key": "img_6a9225e7684e5a0fbb7f778ee2dea7d9.webp"
+    "url": "https://sakurazaka46.com/images/14/3db/007e06da55d69f76d6f3c40813750/800_800_102400.jpg",
+    "dest_key": "img_7639803534265aad90c1e00b00eee2cb.webp"
   },
   {
-    "image_id": "img_fc750bfbd8b15afb9a3bb8be814515a3",
+    "image_id": "img_c375e30dc3e457bea1993b4bafdccc24",
     "member_id": "mem_564ba06a76b3502fbb951399a5c5d24e",
     "name": "的野美青",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/400_320_102400.jpg",
-    "dest_key": "img_fc750bfbd8b15afb9a3bb8be814515a3.webp"
+    "url": "https://sakurazaka46.com/images/14/f2d/f313140e0ada7e91bf4cd5dd7032b/800_800_102400.jpg",
+    "dest_key": "img_c375e30dc3e457bea1993b4bafdccc24.webp"
   },
   {
-    "image_id": "img_5216adf7edab5432856e190820665315",
+    "image_id": "img_f42676ee14765390b1522e7e0683a054",
     "member_id": "mem_f25d8752867a51e6b29c26170a1ddafd",
     "name": "目黒陽色",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_meguro_bgFGJ38s_00.jpg",
-    "dest_key": "img_5216adf7edab5432856e190820665315.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/fa4/1584c23f5577bb13c751292d7fe5f/800_800_102400.jpg",
+    "dest_key": "img_f42676ee14765390b1522e7e0683a054.webp"
   },
   {
-    "image_id": "img_b6faf6856ab85be3a543d88de0e68639",
+    "image_id": "img_48a9dd7e66475e8681726fdeaef3c348",
     "member_id": "mem_d2a98fc47bd751ffb69f02300e05f9fc",
     "name": "石森璃花",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/400_320_102400.jpg",
-    "dest_key": "img_b6faf6856ab85be3a543d88de0e68639.webp"
+    "url": "https://sakurazaka46.com/images/14/0e0/f291ad11efc92c847666fd5d87ebf/800_800_102400.jpg",
+    "dest_key": "img_48a9dd7e66475e8681726fdeaef3c348.webp"
   },
   {
-    "image_id": "img_22d56b3319515904aad302654da18573",
+    "image_id": "img_9f405a8b75f15f7dadeb00cbf5f996b5",
     "member_id": "mem_eb9f507b74235d9ab3e1759a400becbb",
     "name": "稲熊ひな",
     "group": "sakurazaka46",
-    "photo_type_slug": "4th_tour_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/SKZ_4showcase_towl_inaguna_bgFGJ38s_00.jpg",
-    "dest_key": "img_22d56b3319515904aad302654da18573.webp"
+    "photo_type_slug": "16th_single",
+    "url": "https://sakurazaka46.com/images/14/7c9/86cebbd9dbb0bf692804cc1e2f33e/800_800_102400.jpg",
+    "dest_key": "img_9f405a8b75f15f7dadeb00cbf5f996b5.webp"
   },
   {
-    "image_id": "img_05d7562ebadb58a7a546dd17e91cb17b",
+    "image_id": "img_2c49eb8c0d62509380fdf68375903ce1",
     "member_id": "mem_e21c08bd18f45171bb92edaa956ba233",
     "name": "藤吉夏鈴",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/400_320_102400.jpg",
-    "dest_key": "img_05d7562ebadb58a7a546dd17e91cb17b.webp"
+    "url": "https://sakurazaka46.com/images/14/e45/bb1b1bdbd842c7f1e865baca6248d/800_800_102400.jpg",
+    "dest_key": "img_2c49eb8c0d62509380fdf68375903ce1.webp"
   },
   {
-    "image_id": "img_017b099363a852c288111dce37991caf",
+    "image_id": "img_fc60c6b7ed515bfcaae3496b6050667a",
     "member_id": "mem_eecdf2042be9513bb8de51c027a463a3",
     "name": "谷口愛季",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/400_320_102400.jpg",
-    "dest_key": "img_017b099363a852c288111dce37991caf.webp"
+    "url": "https://sakurazaka46.com/images/14/dd7/cffa4c2684d85b58015a646e52f02/800_800_102400.jpg",
+    "dest_key": "img_fc60c6b7ed515bfcaae3496b6050667a.webp"
   },
   {
-    "image_id": "img_1b0b667db96756f78143f3f4b8e5c081",
+    "image_id": "img_bfd0bb5f370e5c20a0b8c0cae0ef44e3",
     "member_id": "mem_4de21332af30544e87c1d89bc21d01e1",
     "name": "遠藤光莉",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/400_320_102400.jpg",
-    "dest_key": "img_1b0b667db96756f78143f3f4b8e5c081.webp"
+    "url": "https://sakurazaka46.com/images/14/f88/2717323d41cfd2b334aeb4beeefbd/800_800_102400.jpg",
+    "dest_key": "img_bfd0bb5f370e5c20a0b8c0cae0ef44e3.webp"
   },
   {
-    "image_id": "img_5a451440701c5ceb8ffba1887f253b54",
+    "image_id": "img_7acf8543cede556581254eea3a473f47",
     "member_id": "mem_61023eeb30125bfdb2c2284d3c77b3d6",
     "name": "遠藤理子",
     "group": "sakurazaka46",
     "photo_type_slug": "2nd_album",
-    "url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/400_320_102400.jpg",
-    "dest_key": "img_5a451440701c5ceb8ffba1887f253b54.webp"
+    "url": "https://sakurazaka46.com/images/14/95c/f37f1177d37c319eb88558d602371/800_800_102400.jpg",
+    "dest_key": "img_7acf8543cede556581254eea3a473f47.webp"
+  },
+  {
+    "image_id": "img_633021fe5ee959ac841ec699dbfdf709",
+    "member_id": "mem_5bb8d5630c4956c1ba2a63ea8761b9e6",
+    "name": "伊藤理々杏",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/1d1/b0f71982a410acda6e979d41cfb51.jpg",
+    "dest_key": "img_633021fe5ee959ac841ec699dbfdf709.webp"
+  },
+  {
+    "image_id": "img_8b1125f1df685d98975b2e6ebe4fbe8e",
+    "member_id": "mem_bc7a957b5b0d531da9480fd8943506a6",
+    "name": "岩本蓮加",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/4a8/fa2fc4b3c75b9568ce9adbc16d4bd.jpg",
+    "dest_key": "img_8b1125f1df685d98975b2e6ebe4fbe8e.webp"
+  },
+  {
+    "image_id": "img_81795641ee3155668bb1e9ed0ce108a2",
+    "member_id": "mem_916df6220b6755fbb8d4d5736a453d8a",
+    "name": "梅澤美波",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/8c7/646b36a936a7b4502c3020bbc090a.jpg",
+    "dest_key": "img_81795641ee3155668bb1e9ed0ce108a2.webp"
+  },
+  {
+    "image_id": "img_0e28988dbed455388898034be781219f",
+    "member_id": "mem_fbdc833f0cb4562c8a60767ce7c6039d",
+    "name": "久保史緒里",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/445/60cae08cc551e45e9d8aa008f871c.jpg",
+    "dest_key": "img_0e28988dbed455388898034be781219f.webp"
+  },
+  {
+    "image_id": "img_3f2088f3819352b7b9902a3c636bcc62",
+    "member_id": "mem_b55f84aa951e538b92cf6fab897f1996",
+    "name": "佐藤楓",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/e40/6de034c40c0de70e8d83ccc8b6531.jpg",
+    "dest_key": "img_3f2088f3819352b7b9902a3c636bcc62.webp"
+  },
+  {
+    "image_id": "img_f97484a80af3581cae8298a07323f39e",
+    "member_id": "mem_ba886957a68656009e0883affce7df96",
+    "name": "中村麗乃",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/a5a/ef48c50cbc388b3ef036fc8a04c1b.jpg",
+    "dest_key": "img_f97484a80af3581cae8298a07323f39e.webp"
+  },
+  {
+    "image_id": "img_d32aedd04bc55ba989d83c78dd708e93",
+    "member_id": "mem_d45a34bbf5ad585d8e4ef46a589d2c00",
+    "name": "吉田綾乃クリスティー",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/7ae/b1038e6c3ecb60b9941b6aed7c276.jpg",
+    "dest_key": "img_d32aedd04bc55ba989d83c78dd708e93.webp"
+  },
+  {
+    "image_id": "img_864348581c795295b48fbda617a3750b",
+    "member_id": "mem_5ba3a312bdc55b2aa91175a94878e760",
+    "name": "与田祐希",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/9db/4feadc18570db2c6e4c90999f8e20.jpg",
+    "dest_key": "img_864348581c795295b48fbda617a3750b.webp"
+  },
+  {
+    "image_id": "img_90f99d1977865cf3b49f6e42c3933700",
+    "member_id": "mem_c602aee07c595f669c537f7140abc1fa",
+    "name": "遠藤さくら",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/d90/5ca63b14dde51e680517af2216408.jpg",
+    "dest_key": "img_90f99d1977865cf3b49f6e42c3933700.webp"
+  },
+  {
+    "image_id": "img_26f9a0f3ab8256caa73f24bd7625a24b",
+    "member_id": "mem_88a6fd58df4057379d255e88d3ad0ba0",
+    "name": "賀喜遥香",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/9e1/b4f576fdc288cc8cc68320f657a5d.jpg",
+    "dest_key": "img_26f9a0f3ab8256caa73f24bd7625a24b.webp"
+  },
+  {
+    "image_id": "img_b9bdbc19b18a565da8eebf00307b3cc1",
+    "member_id": "mem_1454226e525550b6996fcceb589e4ffc",
+    "name": "金川紗耶",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/880/87280a20095abdde1ffcd122d8d42.jpg",
+    "dest_key": "img_b9bdbc19b18a565da8eebf00307b3cc1.webp"
+  },
+  {
+    "image_id": "img_0cb65c9a8b9e5aa3bd9e78693aa30592",
+    "member_id": "mem_fedbe59b2ebb540d90a643520479c407",
+    "name": "黒見明香",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/143/57bc0bef04a325148a8a7c62541e1.jpg",
+    "dest_key": "img_0cb65c9a8b9e5aa3bd9e78693aa30592.webp"
+  },
+  {
+    "image_id": "img_f930801f7f535614a30ee4e5fc31aa02",
+    "member_id": "mem_9f6cb5cac6135987b73167203ee8235c",
+    "name": "佐藤璃果",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/d5c/22cbd1c9536b89d66fb470e34f51e.jpg",
+    "dest_key": "img_f930801f7f535614a30ee4e5fc31aa02.webp"
+  },
+  {
+    "image_id": "img_5a18d56479085112a8c3743880f3c8be",
+    "member_id": "mem_3fb604b7c78253e58e667751e125b79e",
+    "name": "柴田柚菜",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/6d8/4643f09fc585a92576513888606c2.jpg",
+    "dest_key": "img_5a18d56479085112a8c3743880f3c8be.webp"
+  },
+  {
+    "image_id": "img_68f0997c80455eb5add619a60822031e",
+    "member_id": "mem_2d1a0b5c9b4a5402a2cb8737152711e6",
+    "name": "田村真佑",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/de5/915861e02d78a55180a5d58ea5c80.jpg",
+    "dest_key": "img_68f0997c80455eb5add619a60822031e.webp"
+  },
+  {
+    "image_id": "img_53cf2e59c5d3515e832fb760e522acb7",
+    "member_id": "mem_1c731613b2cb5339813a718c55fa3ef8",
+    "name": "筒井あやめ",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/9db/414579921f85d8dd289e573c96dc3.jpg",
+    "dest_key": "img_53cf2e59c5d3515e832fb760e522acb7.webp"
+  },
+  {
+    "image_id": "img_19d2ff5124995238993ce849e493f1a0",
+    "member_id": "mem_900332b6a7f35d2fb0f779f4025f158f",
+    "name": "林瑠奈",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/cb1/f34ad14ecbf7be125b2f2f243f841.jpg",
+    "dest_key": "img_19d2ff5124995238993ce849e493f1a0.webp"
+  },
+  {
+    "image_id": "img_922749481c4655d18207361cfb6305d2",
+    "member_id": "mem_b44ec03b6e0d51d6a43de351bd9629f9",
+    "name": "松尾美佑",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/3bd/51a432d9b74ca8b45bbc0e07d34df.jpg",
+    "dest_key": "img_922749481c4655d18207361cfb6305d2.webp"
+  },
+  {
+    "image_id": "img_1b95df4565f35ddea43de8f0db99e80f",
+    "member_id": "mem_a3e621228cff565c90b19ee7f36fc06b",
+    "name": "矢久保美緒",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/c7c/c19487b659717498f8ed992b08fce.jpg",
+    "dest_key": "img_1b95df4565f35ddea43de8f0db99e80f.webp"
+  },
+  {
+    "image_id": "img_0ba446fcdcfb5979bb25afa75fb426d7",
+    "member_id": "mem_4ee76929b757597ba0a78a582d04270a",
+    "name": "弓木奈於",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/f75/2ec1740de010cde723653a4794af2.jpg",
+    "dest_key": "img_0ba446fcdcfb5979bb25afa75fb426d7.webp"
+  },
+  {
+    "image_id": "img_85b179c7c0b55e70931593bf1227a871",
+    "member_id": "mem_6515da2348d85a4ba0fd6d6000ad8188",
+    "name": "五百城茉央",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/ec1/9c670b4ade367a2f551f26eef4450.jpg",
+    "dest_key": "img_85b179c7c0b55e70931593bf1227a871.webp"
+  },
+  {
+    "image_id": "img_ee2485aab58251c5af26412e3df32647",
+    "member_id": "mem_36fc8a7f13d05fe88ae58017b3b59d1c",
+    "name": "池田瑛紗",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/3cd/248094368f7aab375f1900195098a.jpg",
+    "dest_key": "img_ee2485aab58251c5af26412e3df32647.webp"
+  },
+  {
+    "image_id": "img_ccdf1f3933e55d1dba27cf20b6d2797a",
+    "member_id": "mem_972e96e488ad5c69a5ca94181967a0f8",
+    "name": "一ノ瀬美空",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/d21/1d87f2203680137df7346b7551ed0.jpg",
+    "dest_key": "img_ccdf1f3933e55d1dba27cf20b6d2797a.webp"
+  },
+  {
+    "image_id": "img_92eb0d03e92f50aa996c647124863bc7",
+    "member_id": "mem_af5652d5e4bf5a06908862e18d47f9d8",
+    "name": "井上和",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/540/61c907a38e56dced12a57ab544fd3.jpg",
+    "dest_key": "img_92eb0d03e92f50aa996c647124863bc7.webp"
+  },
+  {
+    "image_id": "img_a5b5b097cf1c5e53a683ce6188657d6a",
+    "member_id": "mem_170a8cd7930c512d99c1187064c6ebd4",
+    "name": "岡本姫奈",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/0b4/6e7b29737ae59929b3b5d54901df9.jpg",
+    "dest_key": "img_a5b5b097cf1c5e53a683ce6188657d6a.webp"
+  },
+  {
+    "image_id": "img_336de6274f3855d0ac1ebe93e616ce43",
+    "member_id": "mem_df93a6771b075440b452957007b2689e",
+    "name": "小川彩",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/e8f/d4b6b2c5802a42f04de0b62f4ab7f.jpg",
+    "dest_key": "img_336de6274f3855d0ac1ebe93e616ce43.webp"
+  },
+  {
+    "image_id": "img_1e2b9eb5976a5016a05a4e75cebf3ba7",
+    "member_id": "mem_076f4ee6f7b05730b15ff56cbd457be7",
+    "name": "奥田いろは",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/c2f/3eeaa463de1b7c93ce62b62270ec8.jpg",
+    "dest_key": "img_1e2b9eb5976a5016a05a4e75cebf3ba7.webp"
+  },
+  {
+    "image_id": "img_2648ee7d6b585251a2fb718857021c5f",
+    "member_id": "mem_e7e29d6c19875964ba0079913195d513",
+    "name": "川﨑桜",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/b4e/2a4faecdf5e257fa5e8aae4672f82.jpg",
+    "dest_key": "img_2648ee7d6b585251a2fb718857021c5f.webp"
+  },
+  {
+    "image_id": "img_5396336c1a29549087224b695b975254",
+    "member_id": "mem_f45a1e45200256bb870fc195e360119a",
+    "name": "菅原咲月",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/c09/dfacda505809637c8214da8a8432f.jpg",
+    "dest_key": "img_5396336c1a29549087224b695b975254.webp"
+  },
+  {
+    "image_id": "img_039f3b449f32571f9de521899a193933",
+    "member_id": "mem_c0bafbff935b5eed8ed3e700cbbc09c7",
+    "name": "冨里奈央",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/e27/66bd6c894d1a96288bb9dfaf8809f.jpg",
+    "dest_key": "img_039f3b449f32571f9de521899a193933.webp"
+  },
+  {
+    "image_id": "img_b84c0981292159e3afcac4e68a61c586",
+    "member_id": "mem_61f64dc955b55de8b3540cc265dd27de",
+    "name": "中西アルノ",
+    "group": "nogizaka46",
+    "photo_type_slug": "42nd_single",
+    "url": "https://www.nogizaka46.com/images/46/605/fde6153cac131c43a2e8e0ac0bfcb.jpg",
+    "dest_key": "img_b84c0981292159e3afcac4e68a61c586.webp"
   }
 ]
