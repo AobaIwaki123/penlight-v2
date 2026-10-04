@@ -17,6 +17,7 @@ import {
   IconMoon,
   IconSun,
 } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
 
 interface HeaderProps {
@@ -38,6 +39,22 @@ export function Header({
 }: HeaderProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === 'dark';
+
+  // ローカル環境（localhost / 127.0.0.1）または ?dev=true の時のみ開発・切替メニューを表示
+  const [isDev, setIsDev] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const isLocal =
+        hostname === 'localhost' ||
+        hostname === '127.0.0.1' ||
+        hostname === '[::1]' ||
+        hostname.endsWith('.local') ||
+        window.location.search.includes('dev=true');
+      setIsDev(isLocal);
+    }
+  }, []);
 
   return (
     <Box
@@ -75,8 +92,8 @@ export function Header({
 
       {/* 右: レイアウト切替、フィルター、ダークモード切替 */}
       <Group gap={6}>
-        {/* 開発・検証時のみ表示するデバッグ・切り替えメニュー */}
-        {process.env.NODE_ENV !== 'production' && (
+        {/* ローカル環境（localhost）のみ表示する開発・切り替えメニュー */}
+        {isDev && (
           <>
             {/* レイアウト切り替えメニュー (クラシック vs オーバーレイ vs コンパクト) */}
             <Menu shadow="md" width={180}>
