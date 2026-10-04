@@ -10,6 +10,7 @@ export function LayoutClassic({
   costumeTitle,
   selectedLeftColor,
   selectedRightColor,
+  onOpenInput,
 }: TargetLayoutProps) {
   const primaryImg = target.images?.[0];
   const imageSrc =
@@ -56,21 +57,37 @@ export function LayoutClassic({
         </Text>
       )}
 
-      {/* 左右ペンライト (旧版と同じ2本並び) */}
+      {/* 左右ペンライト (タップで色選択モーダル展開) */}
       <Box pt={4}>
         <Group gap={40} justify="center">
-          <PenlightStick
-            color={selectedLeftColor}
-            label="左手"
-            height={90}
-            width={40}
-          />
-          <PenlightStick
-            color={selectedRightColor}
-            label="右手"
-            height={90}
-            width={40}
-          />
+          <Box
+            role="button"
+            tabIndex={0}
+            onClick={() => onOpenInput?.('left')}
+            style={{ cursor: 'pointer' }}
+            title="タップして左手の色を選択"
+          >
+            <PenlightStick
+              color={selectedLeftColor}
+              label="左手 (タップ)"
+              height={90}
+              width={40}
+            />
+          </Box>
+          <Box
+            role="button"
+            tabIndex={0}
+            onClick={() => onOpenInput?.('right')}
+            style={{ cursor: 'pointer' }}
+            title="タップして右手の色を選択"
+          >
+            <PenlightStick
+              color={selectedRightColor}
+              label="右手 (タップ)"
+              height={90}
+              width={40}
+            />
+          </Box>
         </Group>
       </Box>
     </Stack>

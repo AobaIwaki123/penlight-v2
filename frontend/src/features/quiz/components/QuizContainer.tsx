@@ -15,7 +15,7 @@ import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
 import { Header } from '@/features/quiz/components/Header';
-import { DonutRingInput } from '@/features/quiz/components/inputs/DonutRingInput';
+import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
@@ -33,6 +33,10 @@ export function QuizContainer() {
   // Settings: presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
+
+  // Modal state for Donut Ring Input
+  const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
+  const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
 
   // Session state
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -144,12 +148,19 @@ export function QuizContainer() {
 
   // Render selected layout component
   const renderLayout = () => {
+    const handleOpenInput = (hand: 'left' | 'right') => {
+      setActiveHand(hand);
+      setIsDonutModalOpen(true);
+    };
+
     const props = {
       target: currentMember,
       costumeTitle: '13th Single 制服',
       selectedLeftColor: selectedLeft,
       selectedRightColor: selectedRight,
       isCorrect: feedback === 'correct',
+      onOpenInput: handleOpenInput,
+      isFullscreen: inputMode === 'donut',
     };
 
     switch (layoutMode) {
@@ -289,17 +300,8 @@ export function QuizContainer() {
           </Box>
         )}
 
-        {/* 解答インターフェース (プラグイン切り替え: ドーナツ vs グリッド) */}
-        {inputMode === 'donut' ? (
-          <DonutRingInput
-            target={currentMember}
-            colors={colors}
-            onAnswer={handleAnswer}
-            disabled={feedback !== 'idle'}
-            onColorSelect={handleColorSelect}
-            onResetSelection={handleResetSelection}
-          />
-        ) : (
+        {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
+        {inputMode === 'grid' && (
           <PaletteGridInput
             target={currentMember}
             colors={colors}
@@ -310,6 +312,19 @@ export function QuizContainer() {
           />
         )}
       </Stack>
+
+      {/* ドーナツリングカラー選択モーダル (ペンライトタップ時に写真の上にオーバーレイ出現) */}
+      <DonutRingModal
+        opened={isDonutModalOpen}
+        onClose={() => setIsDonutModalOpen(false)}
+        colors={colors}
+        selectedLeftColor={selectedLeft}
+        selectedRightColor={selectedRight}
+        onAnswer={handleAnswer}
+        onColorSelect={handleColorSelect}
+        disabled={feedback !== 'idle'}
+        initialHand={activeHand}
+      />
 
       {/* 結果発表モーダル */}
       <Modal
