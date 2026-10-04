@@ -14,7 +14,7 @@ for arg in "$@"; do
     fi
 done
 
-echo "=== [1/7] Running Schema Generation & Tests ==="
+echo "=== [1/8] Running Schema Generation & Tests ==="
 ./scripts/generate-all.sh
 
 if [ "$STAGE_MODE" = true ]; then
@@ -22,23 +22,26 @@ if [ "$STAGE_MODE" = true ]; then
     git add frontend/src/types/generated.ts assets/schema/ seeds/seed.sql seeds/data/image_sources.json data/image_sources.json 2>/dev/null || true
 fi
 
-echo "=== [2/7] Verifying Schema Sync (git diff) ==="
+echo "=== [2/8] Verifying Schema Sync (git diff) ==="
 git diff --exit-code frontend/src/types/generated.ts assets/schema/
 
-echo "=== [3/7] Verifying Master Data Integrity ==="
+echo "=== [3/8] Verifying Master Data Integrity ==="
 go run scripts/verify_master.go
 
-echo "=== [4/7] Running Biome Lint & Format Check ==="
+echo "=== [4/8] Verifying Dockerfile & Base Image Integrity ==="
+go run scripts/verify_dockerfile.go
+
+echo "=== [5/8] Running Biome Lint & Format Check ==="
 biome check
 
-echo "=== [5/7] Running Frontend Typecheck & Knip Audit ==="
+echo "=== [6/8] Running Frontend Typecheck & Knip Audit ==="
 npm run --prefix frontend typecheck
 npm run --prefix frontend knip
 
-echo "=== [6/7] Running typos Spell Check ==="
+echo "=== [7/8] Running typos Spell Check ==="
 typos
 
-echo "=== [7/7] Running actionlint (GitHub Actions Static Check) ==="
+echo "=== [8/8] Running actionlint (GitHub Actions Static Check) ==="
 if which actionlint >/dev/null 2>&1; then
     actionlint
 else

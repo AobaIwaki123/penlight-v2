@@ -64,11 +64,22 @@ with urllib.request.urlopen(req) as resp:
 
 ---
 
-## 3. ローカル検証チェックリスト (Dockerfile 作成・変更時)
+## 3. 自動検証スクリプト (`scripts/verify_dockerfile.go`)
 
-- [ ] Node.js は最新 Active LTS（`node:22-alpine` 等）であることをリアルタイム確認したか
-- [ ] Go は `go.mod` と一致する安定版（`golang:1.24-alpine` 等）であることを確認したか
-- [ ] Alpine は最新安定版（`alpine:3.21` 等）であることを確認したか
+`./scripts/verify-all.sh` [4/8] および CI に組み込まれており、以下の不整合を機械的に事前検知して `exit 1` でブロックする：
+1. `go.mod` の Go バージョン要件（`>= 1.26`）と `Dockerfile` の `golang:X.Y-alpine` の不整合
+2. Node.js ベースイメージが Active LTS（`>= 22`）を満たしているか
+3. `CGO_ENABLED=0`（純Go静的コンパイル）の指定漏れ
+4. 非root実行用の `USER` ディレクティブの指定漏れ
+
+---
+
+## 4. ローカル検証チェックリスト (Dockerfile 作成・変更時)
+
+- [ ] `go run scripts/verify_dockerfile.go` がグリーンで通過したか
+- [ ] Node.js は最新 Active LTS（`node:22-alpine` 等）であることを確認したか
+- [ ] Go は `go.mod` と一致する安定版（`golang:1.26-alpine` 等）であることを確認したか
+- [ ] Alpine は最新安定版（`alpine:3.24` 等）であることを確認したか
 - [ ] Go コンパイル時に `CGO_ENABLED=0 GOOS=linux` および `-trimpath -ldflags="-s -w"` が付与されているか
 - [ ] 本番ランタイムコンテナで `USER`（非root）が指定され、ボリューム領域（`/data`）の所有権が適切に設定されているか
 - [ ] `.dockerignore` に不要な開発アセットや DB ファイルが含まれているか

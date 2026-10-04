@@ -35,6 +35,9 @@ jobs:
             exit 1
           }
 
+      - name: "Verify Dockerfile & Base Image Integrity (Ref: ADR-0003, container-guard)"
+        run: go run scripts/verify_dockerfile.go
+
       - name: Run Tests & Coverage
         run: |
           go test -race -coverprofile=coverage.out -covermode=atomic ./...
