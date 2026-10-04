@@ -13,13 +13,17 @@ echo "=== [1/5] Running Schema Generation & Tests ==="
 echo "=== [2/5] Verifying Schema Sync (git diff) ==="
 git diff --exit-code frontend/src/types/generated.ts assets/schema/
 
-echo "=== [3/5] Running Biome Lint & Format Check ==="
+echo "=== [3/6] Running Biome Lint & Format Check ==="
 biome check
 
-echo "=== [4/5] Running typos Spell Check ==="
+echo "=== [4/6] Running Frontend Typecheck & Knip Audit ==="
+npm run --prefix frontend typecheck
+npm run --prefix frontend knip
+
+echo "=== [5/6] Running typos Spell Check ==="
 typos
 
-echo "=== [5/5] Running actionlint (GitHub Actions Static Check) ==="
+echo "=== [6/6] Running actionlint (GitHub Actions Static Check) ==="
 if which actionlint >/dev/null 2>&1; then
     actionlint
 else
