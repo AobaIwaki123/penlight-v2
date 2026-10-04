@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Text } from '@mantine/core';
+import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { TargetLayoutProps } from '@/features/quiz/types';
 
@@ -11,9 +12,9 @@ export function LayoutOverlay({
   selectedRightColor,
 }: TargetLayoutProps) {
   const primaryImg = target.images?.[0];
-  const imageSrc = primaryImg?.image_key
-    ? `/images/${primaryImg.image_key}`
-    : 'https://placehold.co/400x500/7cc7e8/ffffff?text=Penlight+Quiz';
+  const imageSrc =
+    getImageUrl(primaryImg?.image_key) ||
+    'https://placehold.co/400x500/7cc7e8/ffffff?text=Penlight+Quiz';
 
   return (
     <Box style={{ width: '100%', maxWidth: 420 }}>
@@ -89,12 +90,14 @@ export function LayoutOverlay({
               label="左"
               height={70}
               width={28}
+              textColor="#ffffff"
             />
             <PenlightStick
               color={selectedRightColor}
               label="右"
               height={70}
               width={28}
+              textColor="#ffffff"
             />
           </Group>
         </Box>

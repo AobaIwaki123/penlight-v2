@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Stack, Text } from '@mantine/core';
+import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { TargetLayoutProps } from '@/features/quiz/types';
 
@@ -11,9 +12,9 @@ export function LayoutCompact({
   selectedRightColor,
 }: TargetLayoutProps) {
   const primaryImg = target.images?.[0];
-  const imageSrc = primaryImg?.image_key
-    ? `/images/${primaryImg.image_key}`
-    : 'https://placehold.co/240x240/7cc7e8/ffffff?text=Penlight';
+  const imageSrc =
+    getImageUrl(primaryImg?.image_key) ||
+    'https://placehold.co/240x240/7cc7e8/ffffff?text=Penlight';
 
   return (
     <Paper

@@ -5,26 +5,29 @@ import {
   Box,
   Button,
   Container,
+  Loader,
   Modal,
   Progress,
   Stack,
   Text,
 } from '@mantine/core';
 import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { fetchBootstrapData } from '@/features/quiz/api/client';
 import { Header } from '@/features/quiz/components/Header';
 import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridInput';
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
-import { mockColors, mockMembers } from '@/features/quiz/data/mockSeed';
 import type { LayoutMode } from '@/features/quiz/types';
 import type { Color, Member } from '@/types/generated';
 
 export function QuizContainer() {
-  // Master data (mock or loaded from API)
-  const [members] = useState<Member[]>(mockMembers);
-  const [colors] = useState<Color[]>(mockColors);
+  // Master data from backend API
+  const [members, setMembers] = useState<Member[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Settings
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
@@ -40,6 +43,34 @@ export function QuizContainer() {
   const [feedback, setFeedback] = useState<'idle' | 'correct' | 'wrong'>(
     'idle',
   );
+
+  useEffect(() => {
+    fetchBootstrapData()
+      .then((data) => {
+        // Filter active members with penlight configuration
+        const activeMembers = (data.members || []).filter(
+          (m: Member) => m.status === 'active' && m.penlight?.left_color_id,
+        );
+        // Default to Hinatazaka46 members if available, or all active
+        const hinata = activeMembers.filter(
+          (m: Member) => m.group_id === 'grp_e6722901acc15ce2af3dacee3a83840c',
+        );
+        setMembers(hinata.length > 0 ? hinata : activeMembers);
+
+        // Filter colors for the chosen group
+        const groupColors = (data.colors || []).filter(
+          (c: Color) => c.group_id === 'grp_e6722901acc15ce2af3dacee3a83840c',
+        );
+        setColors(
+          groupColors.length > 0 ? groupColors : data.colors.slice(0, 15),
+        );
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setLoadError(err instanceof Error ? err.message : String(err));
+        setIsLoading(false);
+      });
+  }, []);
 
   const currentMember = members[currentIndex] || members[0];
   const colorMap = new Map<string, Color>(colors.map((c) => [c.id, c]));
@@ -130,6 +161,55 @@ export function QuizContainer() {
         return <LayoutClassic {...props} />;
     }
   };
+
+  if (isLoading) {
+    return (
+      <Container
+        size="xs"
+        p="xl"
+        style={{
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}
+      >
+        <Loader size="lg" color="blue" />
+        <Text size="sm" c="dimmed">
+          マスターデータを読み込み中...
+        </Text>
+      </Container>
+    );
+  }
+
+  if (loadError || members.length === 0) {
+    return (
+      <Container
+        size="xs"
+        p="xl"
+        style={{
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}
+      >
+        <Text size="md" fw={700} c="red.6">
+          データの読み込みに失敗しました
+        </Text>
+        <Text size="xs" c="dimmed">
+          {loadError || '有効な出題メンバーが見つかりません'}
+        </Text>
+        <Button variant="light" onClick={() => window.location.reload()}>
+          再試行
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container

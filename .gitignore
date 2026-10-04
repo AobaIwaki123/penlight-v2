@@ -16,10 +16,12 @@
 *.sqlite
 *.sqlite3
 
-# Frontend dependencies & export
+/.next/
 /frontend/node_modules/
 /frontend/.next/
 /frontend/out/
+/frontend/test-results/
+/frontend/playwright-report/
 *.tsbuildinfo
 
 # OS specific files

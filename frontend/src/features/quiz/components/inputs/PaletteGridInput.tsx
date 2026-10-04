@@ -85,14 +85,14 @@ export function PaletteGridInput({
               onClick={() => handleColorClick(c)}
               disabled={disabled}
               variant="default"
-              h={44}
-              p={6}
+              h={42}
+              p={4}
               radius="md"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                gap: 8,
+                gap: 5,
                 border: isFirstSelected
                   ? '2px solid #228be6'
                   : '1px solid #e9ecef',
@@ -105,21 +105,28 @@ export function PaletteGridInput({
               {/* カラーサークル */}
               <Box
                 style={{
-                  width: 20,
-                  height: 20,
+                  width: 16,
+                  height: 16,
                   borderRadius: '50%',
                   backgroundColor: c.hex_code,
                   border: '1px solid rgba(0,0,0,0.15)',
                   flexShrink: 0,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
                 }}
               />
               {/* 色名 */}
               <Text
-                size="11px"
+                size="10px"
                 fw={600}
-                truncate
-                style={{ flexGrow: 1, textAlign: 'left' }}
+                style={{
+                  flexGrow: 1,
+                  textAlign: 'left',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.3px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
               >
                 {c.name}
               </Text>

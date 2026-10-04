@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Stack, Text } from '@mantine/core';
+import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
 import type { TargetLayoutProps } from '@/features/quiz/types';
 
@@ -10,11 +11,10 @@ export function LayoutClassic({
   selectedLeftColor,
   selectedRightColor,
 }: TargetLayoutProps) {
-  // Use image_key if available, fallback to a placeholder
   const primaryImg = target.images?.[0];
-  const imageSrc = primaryImg?.image_key
-    ? `/images/${primaryImg.image_key}`
-    : 'https://placehold.co/320x320/7cc7e8/ffffff?text=Penlight+Quiz';
+  const imageSrc =
+    getImageUrl(primaryImg?.image_key) ||
+    'https://placehold.co/320x320/7cc7e8/ffffff?text=Penlight+Quiz';
 
   return (
     <Stack gap="sm" align="center" style={{ width: '100%' }}>

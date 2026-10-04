@@ -8,6 +8,7 @@ interface PenlightStickProps {
   label?: string;
   height?: number;
   width?: number;
+  textColor?: string;
 }
 
 export function PenlightStick({
@@ -15,13 +16,14 @@ export function PenlightStick({
   label,
   height = 90,
   width = 38,
+  textColor,
 }: PenlightStickProps) {
   const hex = color?.hex_code || '#E0E0E0';
   const name = color?.name || '未選択';
   const isSelected = Boolean(color);
 
   return (
-    <Stack gap={4} align="center">
+    <Stack gap={2} align="center">
       <Box
         style={{
           width,
@@ -40,13 +42,24 @@ export function PenlightStick({
       <Text
         size="xs"
         fw={600}
-        c={isSelected ? 'inherit' : 'dimmed'}
+        c={textColor || (isSelected ? 'inherit' : 'dimmed')}
         ta="center"
+        style={{
+          textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
+          lineHeight: 1.2,
+        }}
       >
         {name}
       </Text>
       {label && (
-        <Text size="10px" c="dimmed">
+        <Text
+          size="10px"
+          c={textColor || 'dimmed'}
+          style={{
+            textShadow: textColor ? '0 1px 3px rgba(0,0,0,0.8)' : undefined,
+            lineHeight: 1.1,
+          }}
+        >
           {label}
         </Text>
       )}
