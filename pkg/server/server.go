@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/aobaiwaki/penlight-v2/frontend"
 	"github.com/aobaiwaki/penlight-v2/pkg/config"
 	"github.com/aobaiwaki/penlight-v2/pkg/model"
 	"github.com/aobaiwaki/penlight-v2/pkg/repository"
@@ -129,6 +132,58 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/healthz", s.handleHealthz)
 	s.mux.HandleFunc("/api/v1/sync/bootstrap", s.handleBootstrap)
 	s.mux.HandleFunc("/images/", s.handleImage)
+
+	// Embedded frontend static SPA handler (Ref: ADR-0002, ADR-0011)
+	if assets, err := frontend.Assets(); err == nil {
+		s.mux.Handle("/", s.spaHandler(assets))
+	} else {
+		log.Printf("Warning: failed to initialize embedded frontend assets: %v", err)
+	}
+}
+
+func (s *Server) spaHandler(assets fs.FS) http.HandlerFunc {
+	fileServer := http.FileServer(http.FS(assets))
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		cleanPath := strings.TrimPrefix(r.URL.Path, "/")
+		if cleanPath == "" {
+			cleanPath = "index.html"
+		}
+
+		// 1. Try serving requested static file from embedded assets
+		if f, err := assets.Open(cleanPath); err == nil {
+			stat, err := f.Stat()
+			_ = f.Close()
+			if err == nil && !stat.IsDir() {
+				if strings.HasPrefix(cleanPath, "_next/static/") {
+					w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+				} else {
+					w.Header().Set("Cache-Control", "public, max-age=3600")
+				}
+				fileServer.ServeHTTP(w, r)
+				return
+			}
+		}
+
+		// 2. SPA Fallback: serve index.html for client-side routing
+		indexFile, err := assets.Open("index.html")
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		defer indexFile.Close()
+
+		indexBytes, err := io.ReadAll(indexFile)
+		if err != nil {
+			http.Error(w, "failed to read index.html", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(indexBytes)
+	}
 }
 
 func (s *Server) handleHealthz(w http.ResponseWriter, r *http.Request) {
