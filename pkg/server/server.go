@@ -15,9 +15,11 @@ import (
 	"time"
 
 	"github.com/aobaiwaki/penlight-v2/frontend"
+	"github.com/aobaiwaki/penlight-v2/migrations"
 	"github.com/aobaiwaki/penlight-v2/pkg/config"
 	"github.com/aobaiwaki/penlight-v2/pkg/model"
 	"github.com/aobaiwaki/penlight-v2/pkg/repository"
+	"github.com/aobaiwaki/penlight-v2/seeds"
 )
 
 // Server holds server dependencies and HTTP router.
@@ -55,10 +57,13 @@ func NewServer(cfg *config.Config) (*Server, error) {
 		return nil, fmt.Errorf("failed to initialize repository: %w", err)
 	}
 
-	// 1. Auto-apply migrations
-	migrationSQL, err := resolveFile("migrations/000001_init.up.sql")
+	// 1. Auto-apply migrations (embedded in binary, fallback to disk)
+	migrationSQL, err := migrations.FS.ReadFile("000001_init.up.sql")
 	if err != nil {
-		return nil, fmt.Errorf("failed to read migration SQL: %w", err)
+		migrationSQL, err = resolveFile("migrations/000001_init.up.sql")
+		if err != nil {
+			return nil, fmt.Errorf("failed to read migration SQL: %w", err)
+		}
 	}
 	if _, err := repo.DB().Exec(string(migrationSQL)); err != nil {
 		return nil, fmt.Errorf("failed to execute migration: %w", err)
@@ -69,7 +74,10 @@ func NewServer(cfg *config.Config) (*Server, error) {
 	_ = repo.DB().QueryRow("SELECT version FROM master_versions WHERE id = 'current';").Scan(&currentVersion)
 	if currentVersion != model.CurrentMasterVersion {
 		log.Printf("Master data update detected (current: %q, target: %q), syncing seeds/seed.sql...", currentVersion, model.CurrentMasterVersion)
-		seedSQL, err := resolveFile("seeds/seed.sql")
+		seedSQL, err := seeds.FS.ReadFile("seed.sql")
+		if err != nil {
+			seedSQL, err = resolveFile("seeds/seed.sql")
+		}
 		if err != nil {
 			log.Printf("Warning: failed to read seeds/seed.sql: %v", err)
 		} else {
@@ -83,17 +91,21 @@ func NewServer(cfg *config.Config) (*Server, error) {
 
 	// 3. Load image sources map for dynamic CDN redirect fallback
 	imageSources := make(map[string]string)
-	for _, candidate := range []string{"seeds/data/image_sources.json", "data/image_sources.json"} {
-		if srcBytes, err := resolveFile(candidate); err == nil {
-			var entries []imageSourceEntry
-			if err := json.Unmarshal(srcBytes, &entries); err == nil {
-				for _, e := range entries {
-					if e.ImageKey != "" && e.URL != "" {
-						imageSources[e.ImageKey] = e.URL
-					}
-				}
-				if len(imageSources) > 0 {
-					break
+	srcBytes, err := seeds.FS.ReadFile("data/image_sources.json")
+	if err != nil {
+		for _, candidate := range []string{"seeds/data/image_sources.json", "data/image_sources.json"} {
+			if b, rErr := resolveFile(candidate); rErr == nil {
+				srcBytes = b
+				break
+			}
+		}
+	}
+	if len(srcBytes) > 0 {
+		var entries []imageSourceEntry
+		if err := json.Unmarshal(srcBytes, &entries); err == nil {
+			for _, e := range entries {
+				if e.ImageKey != "" && e.URL != "" {
+					imageSources[e.ImageKey] = e.URL
 				}
 			}
 		}
