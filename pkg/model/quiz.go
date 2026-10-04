@@ -24,3 +24,12 @@ type QuizQuestion struct {
 	CorrectIndex   int          `json:"correct_index"`    // 0-3
 	GeneratedAt    time.Time    `json:"generated_at"`
 }
+
+// QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018).
+type QuizFilter struct {
+	GroupID          *ID   `json:"group_id,omitempty"`
+	Generations      []int `json:"generations,omitempty"`
+	PhotoTypeIDs     []ID  `json:"photo_type_ids,omitempty"`
+	IncludeGraduated bool  `json:"include_graduated"`
+}
+
