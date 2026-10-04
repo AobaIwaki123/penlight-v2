@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: penlight
-          image: ghcr.io/aobaiwaki123/penlight-v2:latest
+          image: ghcr.io/aobaiwaki123/penlight-v2:1b0da2f
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
