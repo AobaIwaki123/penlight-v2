@@ -137,3 +137,65 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 		t.Fatalf("BatchInsertAnswerLogs failed: %v", err)
 	}
 }
+
+func TestSQLiteRepository_SeedDataImport(t *testing.T) {
+	ctx := context.Background()
+	repo, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	// Apply seed SQL generated from BigQuery
+	seedBytes, err := os.ReadFile(filepath.Join("..", "..", "seeds", "seed.sql"))
+	if err != nil {
+		t.Fatalf("failed to read seed.sql: %v", err)
+	}
+
+	if _, err := repo.DB().ExecContext(ctx, string(seedBytes)); err != nil {
+		t.Fatalf("failed to execute seed.sql: %v", err)
+	}
+
+	// Verify groups
+	groups, err := repo.ListGroups(ctx)
+	if err != nil {
+		t.Fatalf("ListGroups failed: %v", err)
+	}
+	if len(groups) != 2 {
+		t.Fatalf("expected 2 groups, got %d", len(groups))
+	}
+
+	// Verify colors
+	colors, err := repo.ListColors(ctx)
+	if err != nil {
+		t.Fatalf("ListColors failed: %v", err)
+	}
+	if len(colors) != 30 {
+		t.Fatalf("expected 30 colors (15 for Hinatazaka, 15 for Sakurazaka), got %d", len(colors))
+	}
+
+	// Verify active members (ListMembers filters out graduated members)
+	members, err := repo.ListMembers(ctx)
+	if err != nil {
+		t.Fatalf("ListMembers failed: %v", err)
+	}
+	if len(members) != 63 {
+		t.Fatalf("expected 63 active members, got %d", len(members))
+	}
+
+	// Spot check a member
+	var shogenji *model.Member
+	for i := range members {
+		if members[i].FamilyName == "正源司" && members[i].GivenName == "陽子" {
+			shogenji = &members[i]
+			break
+		}
+	}
+	if shogenji == nil {
+		t.Fatal("member 正源司陽子 not found in seed")
+	}
+	if shogenji.Generation != 4 || shogenji.Status != "active" {
+		t.Fatalf("unexpected data for 正源司陽子: %+v", shogenji)
+	}
+	if shogenji.Penlight.LeftColorID == "" || shogenji.Penlight.RightColorID == "" {
+		t.Fatalf("missing colors for 正源司陽子: %+v", shogenji.Penlight)
+	}
+}
+
