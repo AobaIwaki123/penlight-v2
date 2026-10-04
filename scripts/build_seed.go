@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aobaiwaki/penlight-v2/pkg/model"
 	"github.com/google/uuid"
 )
 
@@ -99,7 +100,7 @@ func main() {
 		groupMap[g.Slug] = gid
 
 		sql = append(sql, fmt.Sprintf(
-			"INSERT OR IGNORE INTO groups (id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', '%s', %d, 1, '%s', '%s');",
+			"INSERT INTO groups (id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', '%s', %d, 1, '%s', '%s')\nON CONFLICT(id) DO UPDATE SET name = excluded.name, short_name = excluded.short_name, slug = excluded.slug, theme_color_hex = excluded.theme_color_hex, display_order = excluded.display_order, is_active = excluded.is_active, updated_at = excluded.updated_at;",
 			gid, g.Name, g.ShortName, g.Slug, g.ThemeColorHex, g.DisplayOrder, nowUTC, nowUTC,
 		))
 	}
@@ -116,7 +117,7 @@ func main() {
 		colorMap[fmt.Sprintf("%s:%s", c.GroupSlug, c.Name)] = cid
 
 		sql = append(sql, fmt.Sprintf(
-			"INSERT OR IGNORE INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, '%s', '%s');",
+			"INSERT INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, '%s', '%s')\nON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, name = excluded.name, hex_code = excluded.hex_code, display_order = excluded.display_order, updated_at = excluded.updated_at;",
 			cid, gid, c.Name, c.HexCode, c.DisplayOrder, nowUTC, nowUTC,
 		))
 	}
@@ -133,7 +134,7 @@ func main() {
 		photoTypeMap[fmt.Sprintf("%s:%s", pt.GroupSlug, pt.Slug)] = ptid
 
 		sql = append(sql, fmt.Sprintf(
-			"INSERT OR IGNORE INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, '%s', '%s');",
+			"INSERT INTO photo_types (id, group_id, slug, name, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, '%s', '%s')\nON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, slug = excluded.slug, name = excluded.name, display_order = excluded.display_order, updated_at = excluded.updated_at;",
 			ptid, gid, pt.Slug, pt.Name, pt.DisplayOrder, nowUTC, nowUTC,
 		))
 	}
@@ -170,7 +171,7 @@ func main() {
 		}
 
 		sql = append(sql, fmt.Sprintf(
-			"INSERT OR IGNORE INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', '%s', 0, '%s', '%s');",
+			"INSERT INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', '%s', 0, '%s', '%s')\nON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, family_name = excluded.family_name, given_name = excluded.given_name, family_name_kana = excluded.family_name_kana, given_name_kana = excluded.given_name_kana, generation = excluded.generation, status = excluded.status, left_color_id = excluded.left_color_id, right_color_id = excluded.right_color_id, ordered = excluded.ordered, updated_at = excluded.updated_at;",
 			mid, gid, m.FamilyName, m.GivenName, m.FamilyNameKana, m.GivenNameKana, m.Generation, m.Status, leftColID, rightColID, nowUTC, nowUTC,
 		))
 
@@ -188,7 +189,7 @@ func main() {
 			}
 
 			imageSQL = append(imageSQL, fmt.Sprintf(
-				"INSERT OR IGNORE INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, %d, '%s', '%s');",
+				"INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)\nVALUES ('%s', '%s', '%s', '%s', %d, %d, '%s', '%s');",
 				imgID, mid, ptid, imgKey, isPrimaryInt, orderIdx, nowUTC, nowUTC,
 			))
 
@@ -205,12 +206,14 @@ func main() {
 	}
 
 	sql = append(sql, "\n-- Member Images (1:N, Ref: ADR-0021)")
+	sql = append(sql, "DELETE FROM member_images;")
 	sql = append(sql, imageSQL...)
 
 	// 6. Generate MasterVersion SQL
 	sql = append(sql, "\n-- Master Version (Ref: ADR-0021)")
 	sql = append(sql, fmt.Sprintf(
-		"INSERT OR REPLACE INTO master_versions (id, version, updated_at)\nVALUES ('current', '2026.10.04-3', '%s');",
+		"INSERT OR REPLACE INTO master_versions (id, version, updated_at)\nVALUES ('current', '%s', '%s');",
+		model.CurrentMasterVersion,
 		nowUTC,
 	))
 

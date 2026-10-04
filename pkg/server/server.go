@@ -61,11 +61,11 @@ func NewServer(cfg *config.Config) (*Server, error) {
 		return nil, fmt.Errorf("failed to execute migration: %w", err)
 	}
 
-	// 2. Check if seed data needs to be populated
-	var groupCount int
-	_ = repo.DB().QueryRow("SELECT COUNT(*) FROM groups;").Scan(&groupCount)
-	if groupCount == 0 {
-		log.Println("Database is empty, loading seeds/seed.sql...")
+	// 2. Check if seed data needs to be populated or synchronized (Ref: ADR-0021)
+	var currentVersion string
+	_ = repo.DB().QueryRow("SELECT version FROM master_versions WHERE id = 'current';").Scan(&currentVersion)
+	if currentVersion != model.CurrentMasterVersion {
+		log.Printf("Master data update detected (current: %q, target: %q), syncing seeds/seed.sql...", currentVersion, model.CurrentMasterVersion)
 		seedSQL, err := resolveFile("seeds/seed.sql")
 		if err != nil {
 			log.Printf("Warning: failed to read seeds/seed.sql: %v", err)
@@ -73,7 +73,7 @@ func NewServer(cfg *config.Config) (*Server, error) {
 			if _, err := repo.DB().Exec(string(seedSQL)); err != nil {
 				log.Printf("Warning: failed to execute seeds/seed.sql: %v", err)
 			} else {
-				log.Println("Seed data successfully loaded into SQLite.")
+				log.Println("Seed data successfully synced into SQLite.")
 			}
 		}
 	}
