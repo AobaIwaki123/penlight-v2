@@ -60,6 +60,20 @@ penlight-v2/
 
 外部ミドルウェア（PostgreSQL や Redis 等）の立ち上げは不要。ローカル環境では環境変数の設定なしでそのまま起動できる。
 
+### 開発環境の一括管理 (Make コマンド)
+
+バックエンド（`:8080`）とフロントエンド開発サーバー（`:3000`）を一括でバックグラウンド管理可能：
+
+```bash
+make up       # バックエンド・フロントエンドを一括起動
+make status   # プロセス稼働状態（PID・ポート・URL）の確認
+make logs     # ログのリアルタイム表示 (個別: make logs-back, make logs-front)
+make restart  # 一括再起動
+make down     # 一括停止 (個別: make down-back, make down-front)
+```
+
+### 単一バイナリでの個別起動 (本番互換)
+
 ```bash
 go run ./cmd/server
 ```
