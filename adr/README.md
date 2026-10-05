@@ -32,6 +32,8 @@
 | [0023](./0023-master-data-sync-guarantee-and-verification.md) | マスタデータ差分同期保証および整合性機械検証スクリプトの採用 | Accepted |
 | [0024](./0024-photo-metadata-human-in-the-loop-architecture.md) | 写真メタデータ（衣装・シングル種別）の人間参加型（HITL）策定プロセスの採用 | Accepted |
 | [0025](./0025-embed-sql-migrations-and-seeds-into-binary.md) | マイグレーションSQLおよびシードデータの embed.FS 完全内包アーキテクチャ | Accepted |
+| [0026](./0026-multi-series-hierarchy-and-isolation-architecture.md) | 同一アプリ内におけるシリーズ（Series）階層分離アーキテクチャの採用 | Accepted |
+| [0027](./0027-song-penlight-color-data-structure.md) | 楽曲ペンライトカラー（1色/2色・左右なし）データ構造の採用 | Accepted |
 
 
 ---
