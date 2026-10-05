@@ -154,10 +154,6 @@ export function PortalView({
 
         {/* 配下グループ選択 (横並び配置) */}
         <Stack gap="xs">
-          <Text size="xs" fw={700} c="dimmed">
-            グループ
-          </Text>
-
           <SimpleGrid
             cols={filteredGroups.length <= 3 ? filteredGroups.length : 3}
             spacing="xs"
