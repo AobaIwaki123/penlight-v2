@@ -2,14 +2,14 @@
 
 - **作成日**: 2026-10-05
 - **ステータス**: 計画ドラフト (Under Review)
-- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md) の具現化、トップ画面新設、およびクイズモード完全分離
+- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md), [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md) の具現化、トップ画面新設、およびフィルター統合型モード選択
 
 ---
 
 ## 1. 目的とスコープ境界
 
 ### 目的
-[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）および [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
+[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）、[ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）、[ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md)（ポータル新設 & フィルター統合型モード選択）、および [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md)（ビジュアルアイデンティティ重視ポータルUI）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
 
 ### スコープ境界
 - **対象シリーズ**:

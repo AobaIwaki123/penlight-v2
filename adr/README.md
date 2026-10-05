@@ -34,6 +34,8 @@
 | [0025](./0025-embed-sql-migrations-and-seeds-into-binary.md) | マイグレーションSQLおよびシードデータの embed.FS 完全内包アーキテクチャ | Accepted |
 | [0026](./0026-multi-series-hierarchy-and-isolation-architecture.md) | 同一アプリ内におけるシリーズ（Series）階層分離アーキテクチャの採用 | Accepted |
 | [0027](./0027-song-penlight-color-data-structure.md) | 楽曲ペンライトカラー（1色/2色・左右なし）データ構造の採用 | Accepted |
+| [0028](./0028-portal-and-filter-integrated-mode-architecture.md) | アプリエントリーポータルおよびフィルター統合型モード選択アーキテクチャの採用 | Accepted |
+| [0029](./0029-portal-layout-and-visual-identity-ui.md) | ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用 | Accepted |
 
 
 ---
