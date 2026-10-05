@@ -1,5 +1,5 @@
 ---
-id: ADR-0029
+id: ADR-0030
 title: ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用
 status: Accepted
 scope: App
@@ -10,7 +10,7 @@ deciders: [user, ai]
 date: 2026-10-05
 ---
 
-# 0029. ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用 (0029-portal-layout-and-visual-identity-ui.md)
+# 0030. ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用 (0030-portal-layout-and-visual-identity-ui.md)
 
 - **ステータス**: 承認 (Accepted)
 - **日付**: 2026-10-05
@@ -19,7 +19,7 @@ date: 2026-10-05
 
 ## 1. 背景と解決すべき課題 (Context & Problem)
 
-[ADR-0028](./0028-portal-and-filter-integrated-mode-architecture.md) において、アプリのエントリーポイントとしてポータル画面（Home）の新設が決定された。
+[ADR-0029](./0029-portal-and-filter-integrated-mode-architecture.md) において、アプリのエントリーポイントとしてポータル画面（Home）の新設が決定された。
 ポータル画面の視覚設計にあたっては、以下の設計バランスが求められる。
 
 1. **シンプル設計の徹底**: 過剰な装飾や複雑な階層を避け、直感的に迷わずクイズを開始できるクリーンな UI を維持すること。

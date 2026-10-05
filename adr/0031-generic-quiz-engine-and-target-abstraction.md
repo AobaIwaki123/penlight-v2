@@ -1,5 +1,5 @@
 ---
-id: ADR-0030
+id: ADR-0031
 title: クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用
 status: Accepted
 scope: Backend
@@ -10,7 +10,7 @@ deciders: [user, ai]
 date: 2026-10-05
 ---
 
-# 0030. クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用 (0030-generic-quiz-engine-and-target-abstraction.md)
+# 0031. クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用 (0031-generic-quiz-engine-and-target-abstraction.md)
 
 - **ステータス**: 承認 (Accepted)
 - **日付**: 2026-10-05

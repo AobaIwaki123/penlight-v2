@@ -1,15 +1,15 @@
-# 07. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
+# 09. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
 
 - **作成日**: 2026-10-05
 - **ステータス**: 計画ドラフト (Under Review)
-- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md), [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md), [ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
+- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md), [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
 
 ## 1. 目的とスコープ境界
 
 ### 目的
-[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）、[ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）、[ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md)（ポータル新設 & フィルター統合型モード選択）、[ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md)（ビジュアルアイデンティティ重視ポータルUI）、および [ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md)（ジェネリック出題・判定エンジン抽象化）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
+[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）、[ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）、[ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md)（ポータル新設 & フィルター統合型モード選択）、[ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md)（ビジュアルアイデンティティ重視ポータルUI）、[ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md)（ジェネリック出題・判定エンジン抽象化）、および [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md)（回答ログ多態性永続化）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
 
 ### スコープ境界
 - **対象シリーズ**:
@@ -30,8 +30,8 @@
 
 ```mermaid
 flowchart TD
-    Step1["Step 1: DBスキーマ & 正本Goモデル層拡張<br/>(Series, Song, Group.series_id, マイグレーション, TS型生成)"]
-    Step2["Step 2: 出題エンジン & リポジトリ層拡張<br/>(Series境界フィルタ, 楽曲カラー無順序判定, API)"]
+    Step1["Step 1: DBスキーマ & 正本Goモデル層拡張<br/>(Series, Song, Group.series_id, AnswerLog多態化, マイグレーション, TS型生成)"]
+    Step2["Step 2: 出題エンジン & リポジトリ層拡張<br/>(QuizTarget抽象化, ジェネリックDeck, SetEquality判定, API)"]
     Step3["Step 3: シードマスタデータ拡充<br/>(=LOVE系列マスタ, 代表楽曲カラーデータ, 整合性検証)"]
     Step4["Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合<br/>(シリーズ/モード選択画面, 解答UIプロトタイプ)"]
 
@@ -44,19 +44,20 @@ flowchart TD
 
 ## 3. ステップ別タスク定義と受け入れ基準
 
-### Step 1: DBスキーマ & 正本Goモデル層拡張
+### Step 1: DBスキーマ & 正本Goモデル層拡張 ([ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md))
 - **作業内容**:
   1. `pkg/model/series.go` の新設（TypeID: `ser_<uuidv7>`）
   2. `pkg/model/song.go` の新設（TypeID: `sng_<uuidv7>`）
   3. `pkg/model/group.go` に `SeriesID ID` (`ser_...`) を追加
-  4. `migrations/000002_add_series_and_songs.up.sql` の作成（SQLite DDL）
-  5. `./scripts/generate-all.sh` による TS 型（`frontend/src/types/generated.ts`）および ER 図（`assets/schema/`）の自動再生成
+  4. `pkg/model/answer.go` の改修（`TargetMemberID *ID`, `TargetSongID *ID` への多態化、ADR-0032）
+  5. `migrations/000002_add_series_and_songs.up.sql` の作成（SQLite DDL: Series, Song, answer_logs改修）
+  6. `./scripts/generate-all.sh` による TS 型（`frontend/src/types/generated.ts`）および ER 図（`assets/schema/`）の自動再生成
 - **受け入れ基準**:
   - `make verify-ai` を 1 行でパスすること（型不整合・typos なし）。
 
 ---
 
-### Step 2: 出題エンジン & リポジトリ層拡張 ([ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md))
+### Step 2: 出題エンジン & リポジトリ層拡張 ([ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md))
 - **作業内容**:
   1. `pkg/model/repository.go` に `SeriesRepository`, `SongRepository` メソッドを追加
   2. `pkg/repository/sqlite.go` にクエリ実装

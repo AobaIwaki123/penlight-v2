@@ -1,5 +1,5 @@
 ---
-id: ADR-0028
+id: ADR-0029
 title: アプリエントリーポータルおよびフィルター統合型モード選択アーキテクチャの採用
 status: Accepted
 scope: App
@@ -10,7 +10,7 @@ deciders: [user, ai]
 date: 2026-10-05
 ---
 
-# 0028. アプリエントリーポータルおよびフィルター統合型モード選択アーキテクチャの採用 (0028-portal-and-filter-integrated-mode-architecture.md)
+# 0029. アプリエントリーポータルおよびフィルター統合型モード選択アーキテクチャの採用 (0029-portal-and-filter-integrated-mode-architecture.md)
 
 - **ステータス**: 承認 (Accepted)
 - **日付**: 2026-10-05
