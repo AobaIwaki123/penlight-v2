@@ -99,7 +99,7 @@ export function PortalView({
       p="md"
       style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}
     >
-      <Stack gap="lg" style={{ flexGrow: 1 }}>
+      <Stack gap="xl" style={{ flexGrow: 1 }}>
         {/* ヘッダーブランド */}
         <Paper
           p="md"
@@ -135,9 +135,6 @@ export function PortalView({
         {/* シリーズ選択 (坂道 / イコノイジョイ) */}
         {series.length > 1 && (
           <Stack gap="xs">
-            <Text size="xs" fw={700} c="dimmed">
-              シリーズ
-            </Text>
             <SegmentedControl
               fullWidth
               size="sm"
@@ -190,9 +187,6 @@ export function PortalView({
 
         {/* クイズ種別切替 (メンバー推しメンカラー vs 楽曲カラー) */}
         <Stack gap="xs">
-          <Text size="xs" fw={700} c="dimmed">
-            クイズ形式
-          </Text>
           <SegmentedControl
             fullWidth
             size="md"
