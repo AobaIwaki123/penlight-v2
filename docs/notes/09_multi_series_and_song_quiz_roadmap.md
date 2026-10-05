@@ -22,6 +22,16 @@
 - **楽曲カラー仕様**:
   - 1 色または 2 色（左右なし、例外演出なし、Kana は Optional）。
 
+### 作業環境・引き継ぎ情報 (Workspace)
+- **作業ディレクトリ**: `/Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color`
+- **ベースブランチ**: `origin/main`
+- **トピックブランチ命名規則**:
+  - Step 1: `feat/step1-db-schema-and-models`
+  - Step 2: `feat/step2-quiz-engine-generics-and-repo`
+  - Step 3: `feat/step3-seed-data-and-verify`
+  - Step 4: `feat/step4-portal-and-song-quiz-ui`
+- **検証コマンド**: `make verify-ai`（トークン節約モード）または `make verify`（詳細ログ）
+
 ---
 
 ## 2. 全体ロードマップ (Milestones)
