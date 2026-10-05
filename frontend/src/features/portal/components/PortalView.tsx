@@ -22,14 +22,17 @@ import {
   IconMusic,
   IconUsers,
 } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import type {
   Color,
   Group as IdolGroup,
   Member,
+  Series,
   Song,
 } from '@/types/generated';
 
 interface PortalViewProps {
+  series: Series[];
   groups: IdolGroup[];
   members: Member[];
   songs: Song[];
@@ -42,6 +45,7 @@ interface PortalViewProps {
 }
 
 export function PortalView({
+  series,
   groups,
   members,
   songs,
@@ -52,6 +56,26 @@ export function PortalView({
   onStartQuiz,
 }: PortalViewProps) {
   const activeGroup = groups.find((g) => g.id === selectedGroupId) || groups[0];
+
+  const [selectedSeriesId, setSelectedSeriesId] = useState(
+    activeGroup?.series_id || series[0]?.id || '',
+  );
+
+  useEffect(() => {
+    if (activeGroup?.series_id && activeGroup.series_id !== selectedSeriesId) {
+      setSelectedSeriesId(activeGroup.series_id);
+    }
+  }, [activeGroup, selectedSeriesId]);
+
+  const filteredGroups = groups.filter((g) => g.series_id === selectedSeriesId);
+
+  const handleSeriesChange = (newSeriesId: string) => {
+    setSelectedSeriesId(newSeriesId);
+    const seriesGroups = groups.filter((g) => g.series_id === newSeriesId);
+    if (seriesGroups[0]) {
+      onGroupChange(seriesGroups[0].id);
+    }
+  };
 
   // Candidates: all active members with penlight colors or all songs for this group
   const groupMembers = members.filter(
@@ -107,14 +131,37 @@ export function PortalView({
           </Group>
         </Paper>
 
-        {/* グループ選択 (系列表示なし・横並びグリッドで直接選択) */}
+        {/* シリーズ選択 (坂道 / イコノイジョイ) */}
+        {series.length > 1 && (
+          <Stack gap="xs">
+            <Text size="xs" fw={700} c="dimmed">
+              シリーズ
+            </Text>
+            <SegmentedControl
+              fullWidth
+              size="sm"
+              radius="md"
+              value={selectedSeriesId}
+              onChange={handleSeriesChange}
+              data={series.map((s) => ({
+                label: s.name,
+                value: s.id,
+              }))}
+            />
+          </Stack>
+        )}
+
+        {/* 配下グループ選択 (横並び配置) */}
         <Stack gap="xs">
           <Text size="xs" fw={700} c="dimmed">
-            グループを選択
+            グループ
           </Text>
 
-          <SimpleGrid cols={3} spacing="xs">
-            {groups.map((g) => {
+          <SimpleGrid
+            cols={filteredGroups.length <= 3 ? filteredGroups.length : 3}
+            spacing="xs"
+          >
+            {filteredGroups.map((g) => {
               const isSelected = g.id === activeGroup?.id;
               return (
                 <UnstyledButton

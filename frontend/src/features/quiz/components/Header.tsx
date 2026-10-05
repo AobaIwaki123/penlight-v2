@@ -31,7 +31,6 @@ interface HeaderProps {
   onOpenFilter?: () => void;
   onGoHome?: () => void;
   groupThemeColor?: string;
-  seriesName?: string;
   groupName?: string;
   isSongMode?: boolean;
 }
@@ -44,7 +43,6 @@ export function Header({
   onOpenFilter,
   onGoHome,
   groupThemeColor,
-  seriesName,
   groupName,
   isSongMode,
 }: HeaderProps) {
@@ -121,11 +119,6 @@ export function Header({
               </Badge>
             )}
           </Group>
-          {seriesName && (
-            <Text size="10px" c="dimmed" lh={1}>
-              {seriesName}
-            </Text>
-          )}
         </Box>
       </Group>
 

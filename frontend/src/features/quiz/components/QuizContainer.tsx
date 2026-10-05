@@ -122,9 +122,8 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // View state: 'portal' or 'quiz' (Default to 'quiz' so production directly enters quiz)
-  const [viewMode, setViewMode] = useState<'portal' | 'quiz'>('quiz');
-  const [canShowPortal, setCanShowPortal] = useState(false);
+  // View state: 'portal' or 'quiz'
+  const [viewMode, setViewMode] = useState<'portal' | 'quiz'>('portal');
 
   // Presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
@@ -152,22 +151,6 @@ export function QuizContainer() {
     if (savedLayout) setLayoutMode(savedLayout);
     const savedInput = loadSavedInputMode();
     if (savedInput) setInputMode(savedInput);
-
-    // Enable portal automatically in development environment (localhost, dev mode)
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      const isLocal =
-        hostname === 'localhost' ||
-        hostname === '127.0.0.1' ||
-        hostname === '[::1]' ||
-        hostname.endsWith('.local') ||
-        process.env.NODE_ENV === 'development' ||
-        window.location.search.includes('dev=true');
-      if (isLocal) {
-        setCanShowPortal(true);
-        setViewMode('portal');
-      }
-    }
 
     fetchBootstrapData()
       .then((data) => {
@@ -234,7 +217,6 @@ export function QuizContainer() {
   }, []);
 
   const currentGroup = allGroups.find((g) => g.id === filterCriteria.groupId);
-  const currentSeries = allSeries.find((s) => s.id === currentGroup?.series_id);
   const colorMap = new Map<string, Color>(allColors.map((c) => [c.id, c]));
 
   // Total questions count depending on mode
@@ -460,10 +442,11 @@ export function QuizContainer() {
     );
   }
 
-  // Render Portal View only when canShowPortal is enabled (dev with ?portal=true)
-  if (viewMode === 'portal' && canShowPortal) {
+  // Render Portal View when viewMode is 'portal'
+  if (viewMode === 'portal') {
     return (
       <PortalView
+        series={allSeries}
         groups={allGroups}
         members={allMembers}
         songs={allSongs}
@@ -556,9 +539,8 @@ export function QuizContainer() {
         inputMode={inputMode}
         onInputModeChange={handleInputModeChange}
         onOpenFilter={() => setIsFilterModalOpen(true)}
-        onGoHome={canShowPortal ? handleReturnToPortal : undefined}
+        onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
-        seriesName={currentSeries?.name}
         groupName={currentGroup?.name}
         isSongMode={isSongMode}
       />
@@ -709,17 +691,15 @@ export function QuizContainer() {
             >
               もう一度挑戦
             </Button>
-            {canShowPortal && (
-              <Button
-                leftSection={<IconHome size={16} />}
-                onClick={handleReturnToPortal}
-                variant="light"
-                color="gray"
-                style={{ flex: 1 }}
-              >
-                トップへ戻る
-              </Button>
-            )}
+            <Button
+              leftSection={<IconHome size={16} />}
+              onClick={handleReturnToPortal}
+              variant="light"
+              color="gray"
+              style={{ flex: 1 }}
+            >
+              トップへ戻る
+            </Button>
           </MantineGroup>
         </Stack>
       </Modal>
