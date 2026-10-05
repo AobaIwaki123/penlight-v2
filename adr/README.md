@@ -34,6 +34,7 @@
 | [0025](./0025-embed-sql-migrations-and-seeds-into-binary.md) | マイグレーションSQLおよびシードデータの embed.FS 完全内包アーキテクチャ | Accepted |
 | [0026](./0026-multi-series-hierarchy-and-isolation-architecture.md) | 同一アプリ内におけるシリーズ（Series）階層分離アーキテクチャの採用 | Accepted |
 | [0027](./0027-song-penlight-color-data-structure.md) | 楽曲ペンライトカラー（1色/2色・左右なし）データ構造の採用 | Accepted |
+| [0028](./0028-compliance-test-driven-adr-traceability-architecture.md) | ADR コンプライアンステスト駆動によるトレーサビリティおよび二重管理防止アーキテクチャ | Accepted |
 
 
 ---
