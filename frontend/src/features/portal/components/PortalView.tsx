@@ -169,14 +169,10 @@ export function PortalView({
                   key={g.id}
                   onClick={() => onGroupChange(g.id)}
                   style={{
-                    borderRadius: 12,
-                    padding: '12px 6px',
-                    border: isSelected
-                      ? `2px solid ${g.theme_color_hex}`
-                      : '1px solid var(--mantine-color-default-border)',
-                    backgroundColor: isSelected
-                      ? `${g.theme_color_hex}15`
-                      : 'var(--mantine-color-body)',
+                    padding: '10px 6px 6px',
+                    borderBottom: isSelected
+                      ? `3px solid ${g.theme_color_hex}`
+                      : '3px solid transparent',
                     transition: 'all 0.15s ease',
                     textAlign: 'center',
                     cursor: 'pointer',
