@@ -225,35 +225,10 @@ export function QuizContainer() {
   const currentMember = members[currentIndex] || members[0];
   const currentSong = songs[currentIndex] || songs[0];
 
-  // Change series from Portal
-  const handleSeriesChange = (seriesId: string) => {
-    const seriesGroups = allGroups.filter((g) => g.series_id === seriesId);
-    const firstGroup = seriesGroups[0];
-    const groupMembers = allMembers.filter(
-      (m) => m.group_id === firstGroup?.id,
-    );
-    const gens = Array.from(
-      new Set(groupMembers.map((m) => m.generation)),
-    ).sort((a, b) => a - b);
-
-    const updated: QuizFilterCriteria = {
-      ...filterCriteria,
-      seriesId,
-      groupId: firstGroup ? firstGroup.id : '',
-      generations: gens,
-    };
-    setFilterCriteria(updated);
-    saveFilter(updated);
-
-    if (firstGroup) {
-      setColors(
-        getRelevantColors(allColors, firstGroup.id, seriesId, allGroups),
-      );
-    }
-  };
-
-  // Change group from Portal
+  // Change group from Portal (directly updates group and auto-derives series)
   const handleGroupChange = (groupId: string) => {
+    const targetGroup = allGroups.find((g) => g.id === groupId);
+    const targetSeriesId = targetGroup?.series_id || filterCriteria.seriesId;
     const groupMembers = allMembers.filter((m) => m.group_id === groupId);
     const gens = Array.from(
       new Set(groupMembers.map((m) => m.generation)),
@@ -262,14 +237,13 @@ export function QuizContainer() {
     const updated: QuizFilterCriteria = {
       ...filterCriteria,
       groupId,
+      seriesId: targetSeriesId,
       generations: gens,
     };
     setFilterCriteria(updated);
     saveFilter(updated);
 
-    setColors(
-      getRelevantColors(allColors, groupId, filterCriteria.seriesId, allGroups),
-    );
+    setColors(getRelevantColors(allColors, groupId, targetSeriesId, allGroups));
   };
 
   // Handle filter submission: rebuild deck and reset quiz progress
@@ -467,7 +441,6 @@ export function QuizContainer() {
           songs={allSongs}
           colors={allColors}
           criteria={filterCriteria}
-          onSeriesChange={handleSeriesChange}
           onGroupChange={handleGroupChange}
           onOpenFilter={() => setIsFilterModalOpen(true)}
           onStartQuiz={() => startQuizSession(filterCriteria)}

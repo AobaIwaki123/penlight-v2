@@ -8,7 +8,6 @@ import {
   Container,
   Group,
   Paper,
-  SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
@@ -40,7 +39,6 @@ interface PortalViewProps {
   songs: Song[];
   colors: Color[];
   criteria: QuizFilterCriteria;
-  onSeriesChange: (seriesId: string) => void;
   onGroupChange: (groupId: string) => void;
   onOpenFilter: () => void;
   onStartQuiz: () => void;
@@ -52,17 +50,13 @@ export function PortalView({
   members,
   songs,
   criteria,
-  onSeriesChange,
   onGroupChange,
   onOpenFilter,
   onStartQuiz,
 }: PortalViewProps) {
-  // Current active series and group
-  const activeSeries =
-    series.find((s) => s.id === criteria.seriesId) || series[0];
-  const seriesGroups = groups.filter((g) => g.series_id === activeSeries?.id);
+  // Current active group and series (derived directly from group)
   const activeGroup =
-    seriesGroups.find((g) => g.id === criteria.groupId) || seriesGroups[0];
+    groups.find((g) => g.id === criteria.groupId) || groups[0];
 
   // Candidates count
   const matchingMembers = members.filter((m) => {
@@ -131,47 +125,28 @@ export function PortalView({
           </Group>
         </Paper>
 
-        {/* シリーズ選択 (ADR-0026, ADR-0029, ADR-0030) */}
-        <Stack gap="xs">
-          <Text size="xs" fw={700} c="dimmed">
-            シリーズを選択
-          </Text>
-          {series.length > 1 && (
-            <SegmentedControl
-              fullWidth
-              size="md"
-              radius="md"
-              value={criteria.seriesId}
-              onChange={onSeriesChange}
-              data={series.map((s) => ({
-                label: s.name,
-                value: s.id,
-              }))}
-            />
-          )}
-        </Stack>
-
-        {/* グループ選択カード (ビジュアル・アイデンティティ重視, ADR-0030) */}
+        {/* グループ選択カード (1タップで直接選ぶミニマル設計) */}
         <Stack gap="xs">
           <Group justify="space-between" align="center">
             <Text size="xs" fw={700} c="dimmed">
               グループを選択
             </Text>
             <Text size="xs" c="dimmed">
-              {seriesGroups.length} グループ
+              {groups.length} グループ
             </Text>
           </Group>
 
-          <SimpleGrid cols={seriesGroups.length > 2 ? 3 : 2} spacing="xs">
-            {seriesGroups.map((g) => {
+          <SimpleGrid cols={3} spacing="xs">
+            {groups.map((g) => {
               const isSelected = g.id === activeGroup?.id;
+              const seriesObj = series.find((s) => s.id === g.series_id);
               return (
                 <UnstyledButton
                   key={g.id}
                   onClick={() => onGroupChange(g.id)}
                   style={{
                     borderRadius: 12,
-                    padding: '12px 8px',
+                    padding: '12px 6px',
                     border: isSelected
                       ? `2px solid ${g.theme_color_hex}`
                       : '1px solid var(--mantine-color-default-border)',
@@ -199,9 +174,20 @@ export function PortalView({
                       size="sm"
                       fw={isSelected ? 700 : 500}
                       c={isSelected ? 'var(--mantine-color-text)' : 'dimmed'}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '100%',
+                      }}
                     >
                       {g.name}
                     </Text>
+                    {seriesObj && (
+                      <Text size="9px" c="dimmed" lh={1}>
+                        {seriesObj.name}
+                      </Text>
+                    )}
                   </Stack>
                 </UnstyledButton>
               );

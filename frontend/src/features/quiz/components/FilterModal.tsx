@@ -3,14 +3,16 @@
 import {
   Alert,
   Badge,
+  Box,
   Button,
   Checkbox,
   Group,
   Modal,
-  SegmentedControl,
+  SimpleGrid,
   Stack,
   Switch,
   Text,
+  UnstyledButton,
 } from '@mantine/core';
 import {
   IconAlertCircle,
@@ -55,11 +57,11 @@ export function FilterModal({
   currentFilter,
   onApply,
 }: FilterModalProps) {
-  const [selectedSeriesId, setSelectedSeriesId] = useState(
-    currentFilter.seriesId || series[0]?.id || '',
-  );
   const [selectedGroupId, setSelectedGroupId] = useState(
     currentFilter.groupId || groups[0]?.id || '',
+  );
+  const [selectedSeriesId, setSelectedSeriesId] = useState(
+    currentFilter.seriesId || groups[0]?.series_id || series[0]?.id || '',
   );
   const [selectedGenerations, setSelectedGenerations] = useState<number[]>(
     currentFilter.generations || [],
@@ -72,26 +74,21 @@ export function FilterModal({
   // Sync internal state when modal opens
   useEffect(() => {
     if (opened) {
-      const activeSeriesId = currentFilter.seriesId || series[0]?.id || '';
+      const activeGroupId = currentFilter.groupId || groups[0]?.id || '';
+      const matchedGroup = groups.find((g) => g.id === activeGroupId);
+      const activeSeriesId =
+        matchedGroup?.series_id ||
+        currentFilter.seriesId ||
+        series[0]?.id ||
+        '';
+
+      setSelectedGroupId(activeGroupId);
       setSelectedSeriesId(activeSeriesId);
-
-      // Verify that current groupId belongs to this series
-      const seriesGroups = groups.filter((g) => g.series_id === activeSeriesId);
-      const validGroupId = seriesGroups.some(
-        (g) => g.id === currentFilter.groupId,
-      )
-        ? currentFilter.groupId
-        : seriesGroups[0]?.id || groups[0]?.id || '';
-
-      setSelectedGroupId(validGroupId);
       setSelectedGenerations(currentFilter.generations || []);
       setIncludeGraduated(currentFilter.includeGraduated);
       setSongMode(currentFilter.songMode ?? false);
     }
-  }, [opened, currentFilter, series, groups]);
-
-  // Groups belonging to the currently selected series
-  const filteredGroups = groups.filter((g) => g.series_id === selectedSeriesId);
+  }, [opened, currentFilter, groups, series]);
 
   // Available generations for the currently selected group
   const groupMembers = allMembers.filter((m) => m.group_id === selectedGroupId);
@@ -99,27 +96,13 @@ export function FilterModal({
     new Set(groupMembers.map((m) => m.generation)),
   ).sort((a, b) => a - b);
 
-  // Handle series switch
-  const handleSeriesChange = (newSeriesId: string) => {
-    setSelectedSeriesId(newSeriesId);
-    const newSeriesGroups = groups.filter((g) => g.series_id === newSeriesId);
-    const firstGroup = newSeriesGroups[0];
-    if (firstGroup) {
-      setSelectedGroupId(firstGroup.id);
-      const newMembers = allMembers.filter((m) => m.group_id === firstGroup.id);
-      const newGens = Array.from(
-        new Set(newMembers.map((m) => m.generation)),
-      ).sort((a, b) => a - b);
-      setSelectedGenerations(newGens);
-    } else {
-      setSelectedGroupId('');
-      setSelectedGenerations([]);
-    }
-  };
-
-  // When switching groups, select all available generations for that group
+  // When switching groups, automatically sync series_id and reset generations
   const handleGroupChange = (newGroupId: string) => {
     setSelectedGroupId(newGroupId);
+    const targetGroup = groups.find((g) => g.id === newGroupId);
+    if (targetGroup) {
+      setSelectedSeriesId(targetGroup.series_id);
+    }
     const newGroupMembers = allMembers.filter((m) => m.group_id === newGroupId);
     const newGens = Array.from(
       new Set(newGroupMembers.map((m) => m.generation)),
@@ -188,44 +171,62 @@ export function FilterModal({
       size="sm"
     >
       <Stack gap="md">
-        {/* シリーズ選択 */}
-        {series.length > 1 && (
-          <Stack gap={4}>
-            <Text size="xs" fw={700} c="dimmed">
-              シリーズ選択
-            </Text>
-            <SegmentedControl
-              fullWidth
-              value={selectedSeriesId}
-              onChange={handleSeriesChange}
-              data={series.map((s) => ({
-                label: s.name,
-                value: s.id,
-              }))}
-            />
-          </Stack>
-        )}
-
-        {/* グループ選択 */}
+        {/* グループ選択 (全グループを直接選択できるミニマル設計) */}
         <Stack gap={4}>
           <Text size="xs" fw={700} c="dimmed">
             グループ選択
           </Text>
-          {filteredGroups.length > 0 ? (
-            <SegmentedControl
-              fullWidth
-              value={selectedGroupId}
-              onChange={handleGroupChange}
-              data={filteredGroups.map((g) => ({
-                label: g.name,
-                value: g.id,
-              }))}
-            />
-          ) : (
-            <Text size="xs" c="dimmed">
-              該当グループがありません
-            </Text>
-          )}
+          <SimpleGrid cols={3} spacing={6}>
+            {groups.map((g) => {
+              const isSelected = g.id === selectedGroupId;
+              return (
+                <UnstyledButton
+                  key={g.id}
+                  onClick={() => handleGroupChange(g.id)}
+                  style={{
+                    borderRadius: 8,
+                    padding: '8px 4px',
+                    border: isSelected
+                      ? `2px solid ${g.theme_color_hex}`
+                      : '1px solid var(--mantine-color-default-border)',
+                    backgroundColor: isSelected
+                      ? `${g.theme_color_hex}15`
+                      : 'var(--mantine-color-body)',
+                    transition: 'all 0.15s ease',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Stack align="center" gap={3}>
+                    <Box
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: g.theme_color_hex,
+                        boxShadow: isSelected
+                          ? `0 0 6px ${g.theme_color_hex}`
+                          : 'none',
+                      }}
+                    />
+                    <Text
+                      size="xs"
+                      fw={isSelected ? 700 : 500}
+                      c={isSelected ? 'var(--mantine-color-text)' : 'dimmed'}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '100%',
+                      }}
+                    >
+                      {g.name}
+                    </Text>
+                  </Stack>
+                </UnstyledButton>
+              );
+            })}
+          </SimpleGrid>
         </Stack>
 
         {/* クイズ種別切替: メンバー推しメンカラー vs 楽曲カラー (ADR-0029) */}
