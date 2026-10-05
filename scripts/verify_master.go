@@ -64,13 +64,46 @@ func main() {
 		fmt.Printf("✅ Primary images: %d unique (0 duplicates)\n", totalPrimary)
 	}
 
-	// 3. Verify counts
-	var groupCount, colorCount, memberCount, activeCount int
+	// 3. Verify counts & referential integrity (Ref: ADR-0026, ADR-0027)
+	var seriesCount, groupCount, colorCount, memberCount, activeCount, songCount int
+	_ = db.QueryRow("SELECT count(*) FROM series;").Scan(&seriesCount)
 	_ = db.QueryRow("SELECT count(*) FROM groups WHERE is_active = 1;").Scan(&groupCount)
 	_ = db.QueryRow("SELECT count(*) FROM colors;").Scan(&colorCount)
 	_ = db.QueryRow("SELECT count(*) FROM members;").Scan(&memberCount)
 	_ = db.QueryRow("SELECT count(*) FROM members WHERE status != 'graduated';").Scan(&activeCount)
-	fmt.Printf("✅ Counts: %d groups, %d colors, %d total members (%d active)\n", groupCount, colorCount, memberCount, activeCount)
+	_ = db.QueryRow("SELECT count(*) FROM songs;").Scan(&songCount)
+	fmt.Printf("✅ Counts: %d series, %d groups, %d colors, %d songs, %d total members (%d active)\n",
+		seriesCount, groupCount, colorCount, songCount, memberCount, activeCount)
+
+	// Verify all groups belong to a series
+	var unassignedGroups int
+	_ = db.QueryRow("SELECT count(*) FROM groups WHERE series_id IS NULL;").Scan(&unassignedGroups)
+	if unassignedGroups > 0 {
+		fmt.Printf("❌ %d groups are missing series_id\n", unassignedGroups)
+		hasErrors = true
+	} else {
+		fmt.Printf("✅ All %d groups have valid series_id (ADR-0026)\n", groupCount)
+	}
+
+	// Verify all songs have valid colors
+	var invalidSongColors int
+	_ = db.QueryRow("SELECT count(*) FROM songs s LEFT JOIN colors c1 ON s.color1_id = c1.id LEFT JOIN colors c2 ON s.color2_id = c2.id WHERE c1.id IS NULL OR (s.color2_id IS NOT NULL AND c2.id IS NULL);").Scan(&invalidSongColors)
+	if invalidSongColors > 0 {
+		fmt.Printf("❌ %d songs have invalid color foreign keys\n", invalidSongColors)
+		hasErrors = true
+	} else {
+		fmt.Printf("✅ All %d songs have valid color foreign keys (ADR-0027)\n", songCount)
+	}
+
+	// Verify all members have valid colors
+	var invalidMemberColors int
+	_ = db.QueryRow("SELECT count(*) FROM members m LEFT JOIN colors cl ON m.left_color_id = cl.id LEFT JOIN colors cr ON m.right_color_id = cr.id WHERE cl.id IS NULL OR cr.id IS NULL;").Scan(&invalidMemberColors)
+	if invalidMemberColors > 0 {
+		fmt.Printf("❌ %d members have invalid color foreign keys\n", invalidMemberColors)
+		hasErrors = true
+	} else {
+		fmt.Printf("✅ All %d members have valid color foreign keys\n", memberCount)
+	}
 
 	// 4. Verify image keys match image_sources.json
 	imgSrcPath := filepath.Join("seeds", "data", "image_sources.json")

@@ -65,14 +65,21 @@ func TestADR0018_Compliance_FilterRules(t *testing.T) {
 		t.Fatalf("failed to list groups: %v", err)
 	}
 
-	var hinataID, sakuraID, nogiID model.ID
+	var hinataID, sakuraID, nogiID, ikoloveID, noimeID, joyID model.ID
 	for _, g := range groups {
-		if g.Slug == "hinatazaka46" {
+		switch g.Slug {
+		case "hinatazaka46":
 			hinataID = g.ID
-		} else if g.Slug == "sakurazaka46" {
+		case "sakurazaka46":
 			sakuraID = g.ID
-		} else if g.Slug == "nogizaka46" {
+		case "nogizaka46":
 			nogiID = g.ID
+		case "equal_love":
+			ikoloveID = g.ID
+		case "not_equal_me":
+			noimeID = g.ID
+		case "nearly_equal_joy":
+			joyID = g.ID
 		}
 	}
 
@@ -89,13 +96,28 @@ func TestADR0018_Compliance_FilterRules(t *testing.T) {
 		if err != nil {
 			t.Fatalf("FilterMembers nogi failed: %v", err)
 		}
-
-		if len(filteredHinata) == 0 || len(filteredSakura) == 0 || len(filteredNogi) == 0 {
-			t.Fatal("expected members for all three groups")
+		filteredIkolove, err := quiz.FilterMembers(members, model.QuizFilter{GroupID: &ikoloveID})
+		if err != nil {
+			t.Fatalf("FilterMembers equal_love failed: %v", err)
 		}
-		if len(filteredHinata)+len(filteredSakura)+len(filteredNogi) != len(members) {
-			t.Fatalf("sum of groups (%d+%d+%d) does not match total active members (%d)",
-				len(filteredHinata), len(filteredSakura), len(filteredNogi), len(members))
+		filteredNoime, err := quiz.FilterMembers(members, model.QuizFilter{GroupID: &noimeID})
+		if err != nil {
+			t.Fatalf("FilterMembers not_equal_me failed: %v", err)
+		}
+		filteredJoy, err := quiz.FilterMembers(members, model.QuizFilter{GroupID: &joyID})
+		if err != nil {
+			t.Fatalf("FilterMembers nearly_equal_joy failed: %v", err)
+		}
+
+		if len(filteredHinata) == 0 || len(filteredSakura) == 0 || len(filteredNogi) == 0 ||
+			len(filteredIkolove) == 0 || len(filteredNoime) == 0 || len(filteredJoy) == 0 {
+			t.Fatal("expected members for all six groups")
+		}
+		totalGroupMembers := len(filteredHinata) + len(filteredSakura) + len(filteredNogi) +
+			len(filteredIkolove) + len(filteredNoime) + len(filteredJoy)
+		if totalGroupMembers != len(members) {
+			t.Fatalf("sum of groups (%d) does not match total active members (%d)",
+				totalGroupMembers, len(members))
 		}
 
 		for _, m := range filteredHinata {
@@ -103,9 +125,9 @@ func TestADR0018_Compliance_FilterRules(t *testing.T) {
 				t.Fatalf("expected group %s, got %s for member %s", hinataID, m.GroupID, m.ID)
 			}
 		}
-		for _, m := range filteredNogi {
-			if m.GroupID != nogiID {
-				t.Fatalf("expected group %s, got %s for member %s", nogiID, m.GroupID, m.ID)
+		for _, m := range filteredIkolove {
+			if m.GroupID != ikoloveID {
+				t.Fatalf("expected group %s, got %s for member %s", ikoloveID, m.GroupID, m.ID)
 			}
 		}
 	})

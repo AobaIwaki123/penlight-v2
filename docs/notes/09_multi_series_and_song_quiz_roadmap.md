@@ -1,7 +1,7 @@
 # 09. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
 
 - **作成日**: 2026-10-05
-- **ステータス**: Step 2 完了 / PR レビュー中 (次回: Step 3 着手)
+- **ステータス**: Step 3 完了 / PR 作成 (次回: Step 4 着手)
 - **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md), [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
@@ -12,21 +12,21 @@
 | ステップ | 内容 | トピックブランチ | ステータス | 成果物 / PR |
 |---|---|---|---|---|
 | **Step 1** | DBスキーマ & 正本Goモデル層拡張 | `feat/step1-db-schema-and-models` | 🟣 **Merged** | [PR #23](https://github.com/AobaIwaki123/penlight-v2/pull/23) |
-| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | ✅ **PR作成完了** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
-| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ⏳ **次期着手** | =LOVE 系列マスタ・代表楽曲データ |
-| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏸️ 未着手 | ポータル画面・楽曲解答UI |
+| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | 🟣 **Merged** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
+| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ✅ **PR作成完了** | [PR #26](https://github.com/AobaIwaki123/penlight-v2/pull/26) |
+| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏳ **次期着手** | ポータル画面・楽曲解答UI |
 
 ### 次回再開手順 (Quick Resume Guide)
-1. **PR #24 のマージ確認**:
-   - `gh pr view 24` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
+1. **PR #26 のマージ確認**:
+   - `gh pr view 26` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
 2. **ワークツリー最新化とブランチ切り替え**:
    ```bash
    cd /Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color
    git fetch origin
-   git checkout -B feat/step3-seed-data-and-verify origin/main
+   git checkout -B feat/step4-portal-and-song-quiz-ui origin/main
    ```
-3. **Step 3 の実装着手**:
-   - 本ノートの「3. ステップ別タスク定義と受け入れ基準」の **Step 3** を順次実装。
+3. **Step 4 の実装着手**:
+   - 本ノートの「3. ステップ別タスク定義と受け入れ基準」の **Step 4** を順次実装。
 4. **検証コマンド**:
    - `make verify-ai`（トークン節約モード）または `make verify`（詳細ログ）
 
@@ -123,14 +123,29 @@ flowchart TD
 
 ---
 
-### Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合
-- **作業内容**:
-  1. トップ画面（ポータル画面: `PortalView.tsx`）の新設
-     - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）
-     - モード選択（「メンバーカラークイズ」 / 「楽曲カラークイズ」）
-  2. 楽曲クイズ解答 UI の具体化（1色/2色選択のインタラクション決定）
-  3. `Header.tsx` および `FilterModal.tsx` のシリーズ連動
-  4. オフライン（Local-First）動作の確認
+### Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合 ([ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md))
+- **対象ファイル**:
+  - `frontend/src/app/page.tsx` (ポータルとクイズプレイ画面の表示切り替え)
+  - `frontend/src/features/portal/components/PortalView.tsx` (新設: シリーズカード選択・条件サマリー・CTA)
+  - `frontend/src/features/quiz/components/Header.tsx` (シリーズバッジ表示・ポータル戻るナビゲーション)
+  - `frontend/src/features/quiz/components/FilterModal.tsx` (シリーズ連動グループ/期生選択 & 楽曲モードトグル)
+  - `frontend/src/features/quiz/components/QuizContainer.tsx` (楽曲クイズモード対応・ジェネリック出題連携)
+  - `frontend/src/features/quiz/components/SongQuizArea.tsx` (新設: 楽曲タイトル・Kana・1色/2色解答パレット)
+- **作業チェックリスト**:
+  1. [ ] ポータル画面コンポーネント（`PortalView.tsx`）の新設
+     - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）を Mantine の SegmentedControl またはビジュアルカードで提供
+     - 選択中シリーズに応じた条件サマリー（対象グループ数、期生、クイズ種別）の表示
+     - 「クイズをはじめる」CTA ボタン
+  2. [ ] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動
+     - 選択中シリーズに所属するグループのみを表示
+     - 「楽曲カラークイズ」トグルの提供
+  3. [ ] 楽曲クイズ解答 UI の具体化（`SongQuizArea.tsx`）
+     - 楽曲出題（タイトル大きく、Kana 表示）
+     - 1色 / 2色選択のパレット操作（当該シリーズの公式カラーのみを表示）
+  4. [ ] ヘッダーナビゲーションの改善（`Header.tsx`）
+     - 現在プレイ中のシリーズ名・グループ名の明示
+     - 「トップ（ポータル）へ戻る」ボタンの設置
+  5. [ ] オフライン（Local-First / IndexedDB）同期とキャッシュ動作の確認
 - **画面遷移および状態フロー**:
   ```mermaid
   flowchart TD
@@ -177,4 +192,5 @@ flowchart TD
   ```
 - **受け入れ基準**:
   - トップ画面から直感的にシリーズ・モードを選んでクイズを開始できること。
-  - シリーズ間の完全分離が UI 上で担保されていること。
+  - シリーズ間の完全分離が UI 上で担保されていること（坂道選択時に =LOVE のカラーや楽曲が表示されない）。
+  - `make verify-ai` を 1 行でパスすること。

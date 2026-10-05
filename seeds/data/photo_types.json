@@ -46,5 +46,23 @@
     "slug": "42nd_single",
     "name": "42nd Single アー写",
     "display_order": 1
+  },
+  {
+    "group_slug": "equal_love",
+    "slug": "21th_single",
+    "name": "21th Single アー写",
+    "display_order": 1
+  },
+  {
+    "group_slug": "not_equal_me",
+    "slug": "21th_single",
+    "name": "21th Single アー写",
+    "display_order": 1
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "slug": "21th_single",
+    "name": "21th Single アー写",
+    "display_order": 1
   }
 ]

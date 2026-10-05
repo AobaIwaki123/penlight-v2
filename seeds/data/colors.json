@@ -244,5 +244,251 @@
     "name": "ターコイズ",
     "hex_code": "#40E0D0",
     "display_order": 10
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "濃ピンク",
+    "hex_code": "#FF1493",
+    "display_order": 1
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "薄紫",
+    "hex_code": "#DDA0DD",
+    "display_order": 2
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "オレンジ",
+    "hex_code": "#FFA500",
+    "display_order": 3
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "水色",
+    "hex_code": "#00BFFF",
+    "display_order": 4
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "薄ピンク",
+    "hex_code": "#FFB6C1",
+    "display_order": 5
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "白",
+    "hex_code": "#FFFFFF",
+    "display_order": 6
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "赤",
+    "hex_code": "#FF0000",
+    "display_order": 7
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "黄",
+    "hex_code": "#FFFF00",
+    "display_order": 8
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "紫",
+    "hex_code": "#800080",
+    "display_order": 9
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "緑",
+    "hex_code": "#008000",
+    "display_order": 10
+  },
+  {
+    "group_slug": "equal_love",
+    "name": "青",
+    "hex_code": "#0000FF",
+    "display_order": 11
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "パステルブルー",
+    "hex_code": "#09B8FF",
+    "display_order": 1
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "エメラルドグリーン",
+    "hex_code": "#7AEA9F",
+    "display_order": 2
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "グリーン",
+    "hex_code": "#02BDD6",
+    "display_order": 3
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "パールグリーン",
+    "hex_code": "#72FF66",
+    "display_order": 4
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "ライトグリーン",
+    "hex_code": "#D3FF64",
+    "display_order": 5
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "イエロー",
+    "hex_code": "#FFF764",
+    "display_order": 6
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "オレンジ",
+    "hex_code": "#FFAB09",
+    "display_order": 7
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "レッド",
+    "hex_code": "#FF1818",
+    "display_order": 8
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "ホワイト",
+    "hex_code": "#F5F5F5",
+    "display_order": 9
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "サクラピンク",
+    "hex_code": "#FF9AFD",
+    "display_order": 10
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "ピンク",
+    "hex_code": "#FF18F6",
+    "display_order": 11
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "パッションピンク",
+    "hex_code": "#FF0988",
+    "display_order": 12
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "バイオレット",
+    "hex_code": "#C029DF",
+    "display_order": 13
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "パープル",
+    "hex_code": "#9462D2",
+    "display_order": 14
+  },
+  {
+    "group_slug": "not_equal_me",
+    "name": "ブルー",
+    "hex_code": "#1D72FE",
+    "display_order": 15
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "イエロー",
+    "hex_code": "#FFF764",
+    "display_order": 1
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "パステルブルー",
+    "hex_code": "#09B8FF",
+    "display_order": 2
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "エメラルドグリーン",
+    "hex_code": "#7AEA9F",
+    "display_order": 3
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "グリーン",
+    "hex_code": "#02BDD6",
+    "display_order": 4
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "パールグリーン",
+    "hex_code": "#72FF66",
+    "display_order": 5
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "ライトグリーン",
+    "hex_code": "#D3FF64",
+    "display_order": 6
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "オレンジ",
+    "hex_code": "#FFAB09",
+    "display_order": 7
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "レッド",
+    "hex_code": "#FF1818",
+    "display_order": 8
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "ホワイト",
+    "hex_code": "#F5F5F5",
+    "display_order": 9
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "サクラピンク",
+    "hex_code": "#FF9AFD",
+    "display_order": 10
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "ピンク",
+    "hex_code": "#FF18F6",
+    "display_order": 11
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "パッションピンク",
+    "hex_code": "#FF0988",
+    "display_order": 12
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "バイオレット",
+    "hex_code": "#C029DF",
+    "display_order": 13
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "パープル",
+    "hex_code": "#9462D2",
+    "display_order": 14
+  },
+  {
+    "group_slug": "nearly_equal_joy",
+    "name": "ブルー",
+    "hex_code": "#1D72FE",
+    "display_order": 15
   }
 ]
