@@ -1,4 +1,4 @@
-.PHONY: help up down restart status logs up-back down-back restart-back up-front down-front restart-front logs-back logs-front verify test gen
+.PHONY: help up down restart status logs up-back down-back restart-back up-front down-front restart-front logs-back logs-front verify verify-ai test gen
 
 RUN_DIR := .run
 BACK_PID := $(RUN_DIR)/backend.pid
@@ -112,8 +112,11 @@ logs-back: ## バックエンドログを表示
 logs-front: ## フロントエンドログを表示
 	@tail -f $(FRONT_LOG)
 
-verify: ## 全自動一括検証 (scripts/verify-all.sh)
+verify: ## 全自動一括検証 (詳細ログ表示)
 	@./scripts/verify-all.sh
+
+verify-ai: ## 全自動一括検証 (AI用・成功時は1行のみ出力しトークン節約)
+	@./scripts/verify-all.sh --ai
 
 test: ## Go テスト実行
 	@go test ./...

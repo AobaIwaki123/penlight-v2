@@ -85,7 +85,8 @@ make down-front     # フロントエンドのみ停止
 make restart-front  # フロントエンドのみ再起動
 
 # 開発・検証ショートカット
-make verify         # 全自動一括検証 (./scripts/verify-all.sh)
+make verify         # 全自動一括検証 (詳細ログ表示)
+make verify-ai      # 全自動一括検証 (AI用・成功時は1行のみ出力しトークン節約)
 make test           # Go テスト実行 (go test ./...)
 make gen            # スキーマ・ER図一括再生成 (./scripts/generate-all.sh)
 ```
@@ -115,8 +116,9 @@ go run ./cmd/server
 
 ```bash
 # 【推奨】全自動一括検証（スキーマ再生成・同期検証・テスト・Biome・typos・actionlint）
-make verify
-# または直接実行: ./scripts/verify-all.sh
+make verify-ai      # AIエージェント実行時（成功時は1行のみ、エラー時のみ詳細出力でトークンを大幅節約）
+make verify         # 人間実行時（全ステップの詳細ログを表示）
+# または直接実行: ./scripts/verify-all.sh [--ai]
 
 # バックエンドの静的解析とテスト（個別実行）
 go vet ./...
