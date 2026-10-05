@@ -7,7 +7,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!frontend/src/types/generated.ts", "!assets"]
+    "includes": [
+      "**",
+      "!frontend/src/types/generated.ts",
+      "!assets",
+      "!frontend/public/logos"
+    ]
   },
   "formatter": {
     "enabled": true,

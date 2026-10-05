@@ -23,6 +23,7 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { GroupLogo } from '@/features/portal/components/GroupLogo';
 import type {
   Color,
   Group as IdolGroup,
@@ -98,7 +99,7 @@ export function PortalView({
       p="md"
       style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}
     >
-      <Stack gap="lg" style={{ flexGrow: 1 }}>
+      <Stack gap="xl" style={{ flexGrow: 1 }}>
         {/* ヘッダーブランド */}
         <Paper
           p="md"
@@ -134,9 +135,6 @@ export function PortalView({
         {/* シリーズ選択 (坂道 / イコノイジョイ) */}
         {series.length > 1 && (
           <Stack gap="xs">
-            <Text size="xs" fw={700} c="dimmed">
-              シリーズ
-            </Text>
             <SegmentedControl
               fullWidth
               size="sm"
@@ -153,10 +151,6 @@ export function PortalView({
 
         {/* 配下グループ選択 (横並び配置) */}
         <Stack gap="xs">
-          <Text size="xs" fw={700} c="dimmed">
-            グループ
-          </Text>
-
           <SimpleGrid
             cols={filteredGroups.length <= 3 ? filteredGroups.length : 3}
             spacing="xs"
@@ -168,44 +162,22 @@ export function PortalView({
                   key={g.id}
                   onClick={() => onGroupChange(g.id)}
                   style={{
-                    borderRadius: 12,
-                    padding: '12px 6px',
-                    border: isSelected
-                      ? `2px solid ${g.theme_color_hex}`
-                      : '1px solid var(--mantine-color-default-border)',
-                    backgroundColor: isSelected
-                      ? `${g.theme_color_hex}15`
-                      : 'var(--mantine-color-body)',
+                    padding: '10px 6px 6px',
+                    borderBottom: isSelected
+                      ? `3px solid ${g.theme_color_hex}`
+                      : '3px solid transparent',
                     transition: 'all 0.15s ease',
                     textAlign: 'center',
                     cursor: 'pointer',
                   }}
                 >
-                  <Stack align="center" gap={6}>
-                    <Box
-                      style={{
-                        width: 14,
-                        height: 14,
-                        borderRadius: '50%',
-                        backgroundColor: g.theme_color_hex,
-                        boxShadow: isSelected
-                          ? `0 0 8px ${g.theme_color_hex}`
-                          : 'none',
-                      }}
+                  <Stack align="center" justify="center" gap={0} h={48}>
+                    <GroupLogo
+                      slug={g.slug}
+                      name={g.name}
+                      height={44}
+                      dimmed={!isSelected}
                     />
-                    <Text
-                      size="sm"
-                      fw={isSelected ? 700 : 500}
-                      c={isSelected ? 'var(--mantine-color-text)' : 'dimmed'}
-                      style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      {g.name}
-                    </Text>
                   </Stack>
                 </UnstyledButton>
               );
@@ -215,9 +187,6 @@ export function PortalView({
 
         {/* クイズ種別切替 (メンバー推しメンカラー vs 楽曲カラー) */}
         <Stack gap="xs">
-          <Text size="xs" fw={700} c="dimmed">
-            クイズ形式
-          </Text>
           <SegmentedControl
             fullWidth
             size="md"
