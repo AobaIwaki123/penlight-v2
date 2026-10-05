@@ -402,12 +402,12 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 
 
 
-// InsertAnswerLog inserts an individual quiz answer record idempotently (Ref: ADR-0007).
+// InsertAnswerLog inserts an individual quiz answer record idempotently (Ref: ADR-0007, ADR-0032).
 func (r *SQLiteRepository) InsertAnswerLog(ctx context.Context, log model.AnswerLog) error {
 	const query = `
 		INSERT OR IGNORE INTO answer_logs (
-			id, user_id, quiz_question_id, target_member_id, group_id, is_correct, response_time_ms, answered_at
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+			id, user_id, quiz_question_id, target_member_id, target_song_id, group_id, is_correct, response_time_ms, answered_at
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 	`
 	isCorrectInt := 0
 	if log.IsCorrect {
@@ -419,13 +419,23 @@ func (r *SQLiteRepository) InsertAnswerLog(ctx context.Context, log model.Answer
 		userIDArg = string(log.UserID)
 	}
 
+	var memberIDArg any = nil
+	if log.TargetMemberID != nil {
+		memberIDArg = string(*log.TargetMemberID)
+	}
+	var songIDArg any = nil
+	if log.TargetSongID != nil {
+		songIDArg = string(*log.TargetSongID)
+	}
+
 	_, err := r.db.ExecContext(
 		ctx,
 		query,
 		string(log.ID),
 		userIDArg,
 		string(log.QuizQuestionID),
-		string(log.TargetMemberID),
+		memberIDArg,
+		songIDArg,
 		string(log.GroupID),
 		isCorrectInt,
 		log.ResponseTimeMs,
@@ -451,8 +461,8 @@ func (r *SQLiteRepository) BatchInsertAnswerLogs(ctx context.Context, logs []mod
 
 	const query = `
 		INSERT OR IGNORE INTO answer_logs (
-			id, user_id, quiz_question_id, target_member_id, group_id, is_correct, response_time_ms, answered_at
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+			id, user_id, quiz_question_id, target_member_id, target_song_id, group_id, is_correct, response_time_ms, answered_at
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 	`
 	stmt, err := tx.PrepareContext(ctx, query)
 	if err != nil {
@@ -469,13 +479,22 @@ func (r *SQLiteRepository) BatchInsertAnswerLogs(ctx context.Context, logs []mod
 		if log.UserID != "" {
 			userIDArg = string(log.UserID)
 		}
+		var memberIDArg any = nil
+		if log.TargetMemberID != nil {
+			memberIDArg = string(*log.TargetMemberID)
+		}
+		var songIDArg any = nil
+		if log.TargetSongID != nil {
+			songIDArg = string(*log.TargetSongID)
+		}
 
 		if _, err := stmt.ExecContext(
 			ctx,
 			string(log.ID),
 			userIDArg,
 			string(log.QuizQuestionID),
-			string(log.TargetMemberID),
+			memberIDArg,
+			songIDArg,
 			string(log.GroupID),
 			isCorrectInt,
 			log.ResponseTimeMs,

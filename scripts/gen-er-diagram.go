@@ -227,12 +227,16 @@ func mapTypeToMermaid(goType string) string {
 
 func inferTargetEntity(fkCol string) string {
 	switch fkCol {
+	case "series_id":
+		return "SERIES"
 	case "group_id":
 		return "GROUP"
-	case "left_color_id", "right_color_id", "color_id":
+	case "left_color_id", "right_color_id", "color_id", "color1_id", "color2_id":
 		return "COLOR"
 	case "target_member_id", "member_id":
 		return "MEMBER"
+	case "target_song_id", "song_id":
+		return "SONG"
 	case "photo_type_id":
 		return "PHOTO_TYPE"
 	case "user_id":

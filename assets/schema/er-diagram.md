@@ -4,6 +4,8 @@
 
 ```mermaid
 erDiagram
+    COLOR ||--o{ SONG : "color1_id"
+    COLOR ||--o{ SONG : "color2_id"
     GROUP ||--o{ ANSWER_LOG : "group_id"
     GROUP ||--o{ BATCH_ANSWER_ITEM : "group_id"
     GROUP ||--o{ COLOR : "group_id"
@@ -11,6 +13,7 @@ erDiagram
     GROUP ||--o{ MEMBER : "group_id"
     GROUP ||--o{ PHOTO_TYPE : "group_id"
     GROUP ||--o{ QUIZ_FILTER : "group_id"
+    GROUP ||--o{ SONG : "group_id"
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     MEMBER ||--o{ MEMBER_IMAGE : "member_id"
@@ -20,10 +23,13 @@ erDiagram
     QUIZ_QUESTION ||--o{ ANSWER_LOG : "quiz_question_id"
     QUIZ_QUESTION ||--o{ BATCH_ANSWER_ITEM : "quiz_question_id"
     QUIZ_QUESTION ||--o{ SUBMIT_ANSWER_REQUEST : "quiz_question_id"
+    SERIES ||--o{ GROUP : "series_id"
+    SONG ||--o{ ANSWER_LOG : "target_song_id"
     USER ||--o{ ANSWER_LOG : "user_id"
 
     GROUP {
         string id PK "grp_... (UUID v7)"
+        string series_id FK "ser_... (UUID v7)"
         string name "Formal name, e.g. '日向坂46'"
         string short_name "Short display name, e.g. '日向坂'"
         string slug UK "URL-safe identifier, e.g. 'hinatazaka46', 'aobazaka46'"
@@ -100,14 +106,15 @@ erDiagram
     }
 
     ANSWER_LOG {
-        string id PK "ans_<uuidv7>"
-        string user_id FK "usr_<uuidv7>"
-        string quiz_question_id FK "quiz_<uuidv7>"
-        string target_member_id FK "mem_<uuidv7>"
-        string group_id FK "grp_<uuidv7> (for fast aggregation)"
-        boolean is_correct "whether the answer was correct"
-        int response_time_ms "reaction time in milliseconds"
-        datetime answered_at "timestamp of answer"
+        string id PK
+        string user_id FK
+        string quiz_question_id FK
+        string target_member_id FK "mem_... (メンバー問題時)"
+        string target_song_id FK "sng_... (楽曲問題時)"
+        string group_id FK
+        boolean is_correct
+        int response_time_ms
+        datetime answered_at
     }
 
     QUIZ_QUESTION {

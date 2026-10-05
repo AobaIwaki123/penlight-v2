@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -58,15 +59,8 @@ func NewServer(cfg *config.Config) (*Server, error) {
 	}
 
 	// 1. Auto-apply migrations (embedded in binary, fallback to disk)
-	migrationSQL, err := migrations.FS.ReadFile("000001_init.up.sql")
-	if err != nil {
-		migrationSQL, err = resolveFile("migrations/000001_init.up.sql")
-		if err != nil {
-			return nil, fmt.Errorf("failed to read migration SQL: %w", err)
-		}
-	}
-	if _, err := repo.DB().Exec(string(migrationSQL)); err != nil {
-		return nil, fmt.Errorf("failed to execute migration: %w", err)
+	if err := applyMigrations(repo.DB()); err != nil {
+		return nil, fmt.Errorf("failed to apply migrations: %w", err)
 	}
 
 	// 2. Check if seed data needs to be populated or synchronized (Ref: ADR-0021)
@@ -319,4 +313,69 @@ func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.NotFound(w, r)
+}
+
+func applyMigrations(db *sql.DB) error {
+	// Create schema_migrations table if not exists
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
+		version TEXT PRIMARY KEY,
+		applied_at TEXT NOT NULL
+	);`)
+	if err != nil {
+		return fmt.Errorf("failed to create schema_migrations table: %w", err)
+	}
+
+	// If groups table already exists from pre-schema_migrations era, ensure 000001 is recorded
+	var groupsExists int
+	_ = db.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='groups';").Scan(&groupsExists)
+	if groupsExists > 0 {
+		_, _ = db.Exec("INSERT OR IGNORE INTO schema_migrations (version, applied_at) VALUES ('000001_init.up.sql', ?)", time.Now().UTC().Format(time.RFC3339))
+	}
+
+	migrationFiles := []string{
+		"000001_init.up.sql",
+		"000002_add_series_and_songs.up.sql",
+	}
+
+	for _, filename := range migrationFiles {
+		var exists int
+		err := db.QueryRow("SELECT COUNT(*) FROM schema_migrations WHERE version = ?", filename).Scan(&exists)
+		if err != nil {
+			return fmt.Errorf("failed to check migration status for %s: %w", filename, err)
+		}
+		if exists > 0 {
+			continue
+		}
+
+		migrationSQL, err := migrations.FS.ReadFile(filename)
+		if err != nil {
+			migrationSQL, err = resolveFile("migrations/" + filename)
+			if err != nil {
+				return fmt.Errorf("failed to read migration SQL (%s): %w", filename, err)
+			}
+		}
+
+		tx, err := db.Begin()
+		if err != nil {
+			return fmt.Errorf("failed to begin tx for migration %s: %w", filename, err)
+		}
+
+		if _, err := tx.Exec(string(migrationSQL)); err != nil {
+			_ = tx.Rollback()
+			return fmt.Errorf("failed to execute migration %s: %w", filename, err)
+		}
+
+		now := time.Now().UTC().Format(time.RFC3339)
+		if _, err := tx.Exec("INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)", filename, now); err != nil {
+			_ = tx.Rollback()
+			return fmt.Errorf("failed to record migration %s: %w", filename, err)
+		}
+
+		if err := tx.Commit(); err != nil {
+			return fmt.Errorf("failed to commit migration %s: %w", filename, err)
+		}
+		log.Printf("Applied migration: %s", filename)
+	}
+
+	return nil
 }

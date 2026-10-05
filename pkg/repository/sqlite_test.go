@@ -21,14 +21,15 @@ func setupTestDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 		t.Fatalf("failed to create test repo: %v", err)
 	}
 
-	// Apply migration schema
-	schemaBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", "000001_init.up.sql"))
-	if err != nil {
-		t.Fatalf("failed to read migration file: %v", err)
-	}
-
-	if _, err := repo.DB().Exec(string(schemaBytes)); err != nil {
-		t.Fatalf("failed to execute migration: %v", err)
+	// Apply migration schemas
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql"} {
+		schemaBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
+		if err != nil {
+			t.Fatalf("failed to read migration file %s: %v", migrationFile, err)
+		}
+		if _, err := repo.DB().Exec(string(schemaBytes)); err != nil {
+			t.Fatalf("failed to execute migration %s: %v", migrationFile, err)
+		}
 	}
 
 	cleanup := func() {
@@ -125,11 +126,12 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 	}
 
 
-	// 4. Insert AnswerLog (idempotent)
+	// 4. Insert AnswerLog (idempotent, polymorphic Ref: ADR-0032)
+	targetMemID := model.ID("mem_01")
 	log := model.AnswerLog{
 		ID:             "ans_01",
 		QuizQuestionID: "quiz_01",
-		TargetMemberID: "mem_01",
+		TargetMemberID: &targetMemID,
 		GroupID:        "grp_01",
 		IsCorrect:      true,
 		ResponseTimeMs: 1200,
@@ -143,15 +145,34 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 		t.Fatalf("duplicate InsertAnswerLog failed: %v", err)
 	}
 
-	// 5. Batch Insert
+	// 5. Batch Insert with Member and Song targets
+	// Insert test song first for FK
+	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO songs (id, group_id, title, color1_id, created_at, updated_at)
+		VALUES ('sng_01', 'grp_01', 'テスト楽曲', 'col_01', '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z');
+	`)
+	if err != nil {
+		t.Fatalf("failed to insert test song: %v", err)
+	}
+
+	targetSongID := model.ID("sng_01")
 	logs := []model.AnswerLog{
 		{
 			ID:             "ans_02",
 			QuizQuestionID: "quiz_02",
-			TargetMemberID: "mem_01",
+			TargetMemberID: &targetMemID,
 			GroupID:        "grp_01",
 			IsCorrect:      false,
 			ResponseTimeMs: 2500,
+			AnsweredAt:     now,
+		},
+		{
+			ID:             "ans_03",
+			QuizQuestionID: "quiz_03",
+			TargetSongID:   &targetSongID,
+			GroupID:        "grp_01",
+			IsCorrect:      true,
+			ResponseTimeMs: 1800,
 			AnsweredAt:     now,
 		},
 	}

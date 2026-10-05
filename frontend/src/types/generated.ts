@@ -11,14 +11,15 @@
  * AnswerLog records an individual quiz question response by a user for statistics and review.
  */
 export interface AnswerLog {
-  id: ID; // ans_<uuidv7>
-  user_id: ID; // usr_<uuidv7>
-  quiz_question_id: ID; // quiz_<uuidv7>
-  target_member_id: ID; // mem_<uuidv7>
-  group_id: ID; // grp_<uuidv7> (for fast aggregation)
-  is_correct: boolean; // whether the answer was correct
-  response_time_ms: number /* int */; // reaction time in milliseconds
-  answered_at: string; // timestamp of answer
+  id: ID;
+  user_id: ID;
+  quiz_question_id: ID;
+  target_member_id?: ID; // mem_... (メンバー問題時)
+  target_song_id?: ID; // sng_... (楽曲問題時)
+  group_id: ID;
+  is_correct: boolean;
+  response_time_ms: number /* int */;
+  answered_at: string;
 }
 
 //////////
@@ -171,6 +172,7 @@ export interface AppError {
  */
 export interface Group {
   id: ID; // grp_... (UUID v7)
+  series_id: ID; // ser_... (UUID v7)
   name: string; // Formal name, e.g. "日向坂46"
   short_name: string; // Short display name, e.g. "日向坂"
   slug: string; // URL-safe identifier, e.g. "hinatazaka46", "aobazaka46"
@@ -188,9 +190,11 @@ export interface Group {
  * Prefix defines typed entity identifier prefixes (TypeID convention).
  */
 export type Prefix = string;
+export const PrefixSeries: Prefix = "ser"; // Series: ser_<uuidv7>
 export const PrefixGroup: Prefix = "grp"; // Group: grp_<uuidv7>
 export const PrefixColor: Prefix = "col"; // Color: col_<uuidv7>
 export const PrefixMember: Prefix = "mem"; // Member: mem_<uuidv7>
+export const PrefixSong: Prefix = "sng"; // Song: sng_<uuidv7>
 export const PrefixImage: Prefix = "img"; // Member Image: img_<uuidv7>
 export const PrefixPhotoType: Prefix = "pht"; // Photo Type: pht_<uuidv7>
 export const PrefixQuiz: Prefix = "quiz"; // Quiz Question: quiz_<uuidv7>
@@ -335,6 +339,38 @@ export interface QuizFilter {
  * model package types to preserve zero external dependencies in the model layer.
  */
 export type Repository = any;
+
+//////////
+// source: series.go
+
+/**
+ * Series represents an idol franchise or series (e.g. "坂道シリーズ", "=LOVE系列").
+ */
+export interface Series {
+  id: ID; // ser_... (UUID v7)
+  name: string; // Formal name, e.g. "坂道シリーズ", "=LOVE系列"
+  slug: string; // URL-safe identifier, e.g. "sakamichi", "ikolove"
+  display_order: number /* int */; // UI sort order
+  created_at: string;
+  updated_at: string;
+}
+
+//////////
+// source: song.go
+
+/**
+ * Song represents a musical track entity and its official/live penlight colors.
+ */
+export interface Song {
+  id: ID; // sng_... (UUID v7)
+  group_id: ID; // 所属グループ (grp_...)
+  title: string; // 楽曲タイトル (例: "絶対アイドル辞めないで")
+  kana?: string; // 読み仮名 (任意・未設定可, ソート補助用)
+  color1_id: ID; // 1色目 (必須, col_...)
+  color2_id?: ID; // 2色目 (任意, col_...。1色の曲は nil)
+  created_at: string;
+  updated_at: string;
+}
 
 //////////
 // source: user.go

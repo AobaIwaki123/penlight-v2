@@ -25,7 +25,9 @@ func BuildBlendedDeck(
 	// 1. Build set of seen member IDs from history
 	seenIDs := make(map[model.ID]bool, len(history))
 	for _, log := range history {
-		seenIDs[log.TargetMemberID] = true
+		if targetID := log.GetTargetID(); targetID != "" {
+			seenIDs[targetID] = true
+		}
 	}
 
 	// 2. Partition pool into unseen and seen members

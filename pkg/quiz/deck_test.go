@@ -50,8 +50,9 @@ func TestBuildBlendedDeck(t *testing.T) {
 
 	t.Run("All seen: fallback to seen members", func(t *testing.T) {
 		history := make([]model.AnswerLog, len(pool))
-		for i, m := range pool {
-			history[i] = model.AnswerLog{TargetMemberID: m.ID}
+		for i := range pool {
+			id := pool[i].ID
+			history[i] = model.AnswerLog{TargetMemberID: &id}
 		}
 
 		deck := quiz.BuildBlendedDeck(pool, history, 10, rng)
@@ -72,7 +73,8 @@ func TestBuildBlendedDeck(t *testing.T) {
 		// 10 members seen, 10 members unseen
 		history := make([]model.AnswerLog, 10)
 		for i := 0; i < 10; i++ {
-			history[i] = model.AnswerLog{TargetMemberID: pool[i].ID}
+			id := pool[i].ID
+			history[i] = model.AnswerLog{TargetMemberID: &id}
 		}
 
 		deck := quiz.BuildBlendedDeck(pool, history, 10, rng)
@@ -84,7 +86,7 @@ func TestBuildBlendedDeck(t *testing.T) {
 		seenCount := 0
 		seenSet := make(map[model.ID]bool)
 		for _, log := range history {
-			seenSet[log.TargetMemberID] = true
+			seenSet[log.GetTargetID()] = true
 		}
 
 		for _, m := range deck {
