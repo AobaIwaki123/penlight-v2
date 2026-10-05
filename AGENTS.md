@@ -62,14 +62,32 @@ penlight-v2/
 
 ### 開発環境の一括管理 (Make コマンド)
 
-バックエンド（`:8080`）とフロントエンド開発サーバー（`:3000`）を一括でバックグラウンド管理可能：
+バックエンド（Go / `:8080`）とフロントエンド開発サーバー（Next.js / `:3000`）をバックグラウンドプロセスとして一括管理できる。ポートのリッスン待機や多重起動防止・ゾンビプロセスの確実な解放（PID & ポートキル）が自動で行われる。
 
 ```bash
-make up       # バックエンド・フロントエンドを一括起動
-make status   # プロセス稼働状態（PID・ポート・URL）の確認
-make logs     # ログのリアルタイム表示 (個別: make logs-back, make logs-front)
-make restart  # 一括再起動
-make down     # 一括停止 (個別: make down-back, make down-front)
+# 基本操作（一括）
+make up             # バックエンド・フロントエンドを両方起動（ポート待機後にステータス表示）
+make status         # 各プロセスの稼働状態（RUNNING / STOPPED、PID、ポート、URL）を確認
+make restart        # 両プロセスを安全に一括再起動
+make down           # 全プロセスを一括停止（ポート強制解放を含む）
+
+# ログ確認
+make logs           # バックエンド・フロントエンド両方のログをリアルタイム表示 (Ctrl+C で抜ける)
+make logs-back      # バックエンドのログのみ表示
+make logs-front     # フロントエンドのログのみ表示
+
+# コンポーネント別の個別管理
+make up-back        # バックエンドのみ起動 (:8080)
+make down-back      # バックエンドのみ停止
+make restart-back   # バックエンドのみ再起動
+make up-front       # フロントエンドのみ起動 (:3000)
+make down-front     # フロントエンドのみ停止
+make restart-front  # フロントエンドのみ再起動
+
+# 開発・検証ショートカット
+make verify         # 全自動一括検証 (./scripts/verify-all.sh)
+make test           # Go テスト実行 (go test ./...)
+make gen            # スキーマ・ER図一括再生成 (./scripts/generate-all.sh)
 ```
 
 ### 単一バイナリでの個別起動 (本番互換)
@@ -97,7 +115,8 @@ go run ./cmd/server
 
 ```bash
 # 【推奨】全自動一括検証（スキーマ再生成・同期検証・テスト・Biome・typos・actionlint）
-./scripts/verify-all.sh
+make verify
+# または直接実行: ./scripts/verify-all.sh
 
 # バックエンドの静的解析とテスト（個別実行）
 go vet ./...
