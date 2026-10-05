@@ -25,12 +25,14 @@ func setupRealSeedDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 		t.Fatalf("failed to create sqlite repo: %v", err)
 	}
 
-	migrationBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", "000001_init.up.sql"))
-	if err != nil {
-		t.Fatalf("failed to read migration: %v", err)
-	}
-	if _, err := repo.DB().Exec(string(migrationBytes)); err != nil {
-		t.Fatalf("failed to apply migration: %v", err)
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql"} {
+		migrationBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
+		if err != nil {
+			t.Fatalf("failed to read migration %s: %v", migrationFile, err)
+		}
+		if _, err := repo.DB().Exec(string(migrationBytes)); err != nil {
+			t.Fatalf("failed to apply migration %s: %v", migrationFile, err)
+		}
 	}
 
 	seedBytes, err := os.ReadFile(filepath.Join("..", "..", "seeds", "seed.sql"))
@@ -315,7 +317,8 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 		// First 10 members are seen in history
 		history := make([]model.AnswerLog, 10)
 		for i := 0; i < 10; i++ {
-			history[i] = model.AnswerLog{TargetMemberID: pool[i].ID}
+			id := pool[i].ID
+			history[i] = model.AnswerLog{TargetMemberID: &id}
 		}
 
 		deck := quiz.BuildBlendedDeck(pool, history, 10, rng)
@@ -327,7 +330,7 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 		unseenCount := 0
 		seenMap := make(map[model.ID]bool)
 		for _, log := range history {
-			seenMap[log.TargetMemberID] = true
+			seenMap[log.GetTargetID()] = true
 		}
 
 		for _, m := range deck {
@@ -359,8 +362,9 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 
 			// Simulate answering all questions in the deck
 			for _, m := range deck {
+				memID := m.ID
 				accumulatedHistory = append(accumulatedHistory, model.AnswerLog{
-					TargetMemberID: m.ID,
+					TargetMemberID: &memID,
 					AnsweredAt:     time.Now().UTC(),
 				})
 				totalSeenSet[m.ID] = true
@@ -387,7 +391,8 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 		// Boundary B: All Seen (subsequent game after full mastery)
 		allSeenHistory := make([]model.AnswerLog, len(pool))
 		for i, m := range pool {
-			allSeenHistory[i] = model.AnswerLog{TargetMemberID: m.ID}
+			id := m.ID
+			allSeenHistory[i] = model.AnswerLog{TargetMemberID: &id}
 		}
 		d2 := quiz.BuildBlendedDeck(pool, allSeenHistory, 10, rng)
 		if len(d2) != 10 {
