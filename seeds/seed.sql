@@ -1036,4 +1036,4 @@ ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, title = excluded.tit
 
 -- Master Version (Ref: ADR-0021)
 INSERT OR REPLACE INTO master_versions (id, version, updated_at)
-VALUES ('current', '2026.10.05-2', '2026-10-04T00:00:00Z');
+VALUES ('current', '2026.10.05-3', '2026-10-04T00:00:00Z');
