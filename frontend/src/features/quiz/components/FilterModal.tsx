@@ -7,7 +7,7 @@ import {
   Checkbox,
   Group,
   Modal,
-  SimpleGrid,
+  SegmentedControl,
   Stack,
   Switch,
   Text,
@@ -57,6 +57,12 @@ export function FilterModal({
   const [selectedGroupId, setSelectedGroupId] = useState(
     currentFilter.groupId || groups[0]?.id || '',
   );
+  const [selectedSeriesId, setSelectedSeriesId] = useState(
+    groups.find((g) => g.id === (currentFilter.groupId || groups[0]?.id))
+      ?.series_id ||
+      series[0]?.id ||
+      '',
+  );
   const [selectedGenerations, setSelectedGenerations] = useState<number[]>(
     currentFilter.generations || [],
   );
@@ -69,18 +75,45 @@ export function FilterModal({
   useEffect(() => {
     if (opened) {
       const activeGroupId = currentFilter.groupId || groups[0]?.id || '';
+      const matchedGroup = groups.find((g) => g.id === activeGroupId);
+      const activeSeriesId = matchedGroup?.series_id || series[0]?.id || '';
+
       setSelectedGroupId(activeGroupId);
+      setSelectedSeriesId(activeSeriesId);
       setSelectedGenerations(currentFilter.generations || []);
       setIncludeGraduated(currentFilter.includeGraduated);
       setSongMode(currentFilter.songMode ?? false);
     }
-  }, [opened, currentFilter, groups]);
+  }, [opened, currentFilter, groups, series]);
+
+  // Groups belonging to the currently selected series
+  const filteredGroups = groups.filter((g) => g.series_id === selectedSeriesId);
 
   // Available generations for the currently selected group
   const groupMembers = allMembers.filter((m) => m.group_id === selectedGroupId);
   const availableGenerations = Array.from(
     new Set(groupMembers.map((m) => m.generation)),
   ).sort((a, b) => a - b);
+
+  // When switching series, automatically select the first group of that series
+  const handleSeriesChange = (newSeriesId: string) => {
+    setSelectedSeriesId(newSeriesId);
+    const newSeriesGroups = groups.filter((g) => g.series_id === newSeriesId);
+    const firstGroup = newSeriesGroups[0];
+    if (firstGroup) {
+      setSelectedGroupId(firstGroup.id);
+      const newGroupMembers = allMembers.filter(
+        (m) => m.group_id === firstGroup.id,
+      );
+      const newGens = Array.from(
+        new Set(newGroupMembers.map((m) => m.generation)),
+      ).sort((a, b) => a - b);
+      setSelectedGenerations(newGens);
+    } else {
+      setSelectedGroupId('');
+      setSelectedGenerations([]);
+    }
+  };
 
   // When switching groups, reset generations to all for that group
   const handleGroupChange = (newGroupId: string) => {
@@ -152,46 +185,44 @@ export function FilterModal({
       size="sm"
     >
       <Stack gap="md">
-        {/* グループ選択 (シリーズでグルーピング・カラー丸なし文字のみ) */}
-        <Stack gap="xs">
+        {/* シリーズ選択 (拡張性重視: 選択すると配下のグループが表示される) */}
+        {series.length > 1 && (
+          <Stack gap={4}>
+            <Text size="xs" fw={700} c="dimmed">
+              シリーズ選択
+            </Text>
+            <SegmentedControl
+              fullWidth
+              value={selectedSeriesId}
+              onChange={handleSeriesChange}
+              data={series.map((s) => ({
+                label: s.name,
+                value: s.id,
+              }))}
+            />
+          </Stack>
+        )}
+
+        {/* 配下のグループ選択 (文字のみ・SegmentedControl) */}
+        <Stack gap={4}>
           <Text size="xs" fw={700} c="dimmed">
             グループ選択
           </Text>
-          {series.map((ser) => {
-            const seriesGroups = groups.filter((g) => g.series_id === ser.id);
-            if (seriesGroups.length === 0) return null;
-            return (
-              <Stack key={ser.id} gap={4}>
-                <Text size="11px" fw={700} c="dimmed">
-                  {ser.name}
-                </Text>
-                <SimpleGrid cols={3} spacing={6}>
-                  {seriesGroups.map((g) => {
-                    const isSelected = g.id === selectedGroupId;
-                    return (
-                      <Button
-                        key={g.id}
-                        variant={isSelected ? 'filled' : 'default'}
-                        color="blue"
-                        size="xs"
-                        radius="md"
-                        onClick={() => handleGroupChange(g.id)}
-                        styles={{
-                          label: {
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          },
-                        }}
-                      >
-                        {g.name}
-                      </Button>
-                    );
-                  })}
-                </SimpleGrid>
-              </Stack>
-            );
-          })}
+          {filteredGroups.length > 0 ? (
+            <SegmentedControl
+              fullWidth
+              value={selectedGroupId}
+              onChange={handleGroupChange}
+              data={filteredGroups.map((g) => ({
+                label: g.name,
+                value: g.id,
+              }))}
+            />
+          ) : (
+            <Text size="xs" c="dimmed">
+              該当グループがありません
+            </Text>
+          )}
         </Stack>
 
         {/* クイズ種別切替: メンバー推しメンカラー vs 楽曲カラー */}

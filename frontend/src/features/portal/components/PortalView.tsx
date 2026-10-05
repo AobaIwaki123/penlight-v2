@@ -101,7 +101,7 @@ export function PortalView({
                 ペンライトクイズ
               </Text>
               <Text size="xs" c="dimmed">
-                推しメンカラー & 楽曲ペンライト当て
+                推しメンカラー & 楽曲ペンライトクイズ
               </Text>
             </Box>
           </Group>
@@ -183,7 +183,7 @@ export function PortalView({
                 label: (
                   <Group gap={6} justify="center">
                     <IconUsers size={16} />
-                    <span>推しメンカラー</span>
+                    <span>メンバー</span>
                   </Group>
                 ),
               },
@@ -192,7 +192,7 @@ export function PortalView({
                 label: (
                   <Group gap={6} justify="center">
                     <IconMusic size={16} />
-                    <span>楽曲カラー</span>
+                    <span>楽曲</span>
                   </Group>
                 ),
               },
@@ -206,11 +206,6 @@ export function PortalView({
             <Box>
               <Text size="sm" fw={700}>
                 {activeGroup?.name}
-              </Text>
-              <Text size="xs" c="dimmed">
-                {songMode
-                  ? '代表曲の指定カラークイズ'
-                  : '現役メンバーの推しメンカラークイズ'}
               </Text>
             </Box>
             <Badge
