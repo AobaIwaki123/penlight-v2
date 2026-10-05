@@ -23,6 +23,7 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { GroupLogo } from '@/features/portal/components/GroupLogo';
 import type {
   Color,
   Group as IdolGroup,
@@ -181,31 +182,13 @@ export function PortalView({
                     cursor: 'pointer',
                   }}
                 >
-                  <Stack align="center" gap={6}>
-                    <Box
-                      style={{
-                        width: 14,
-                        height: 14,
-                        borderRadius: '50%',
-                        backgroundColor: g.theme_color_hex,
-                        boxShadow: isSelected
-                          ? `0 0 8px ${g.theme_color_hex}`
-                          : 'none',
-                      }}
+                  <Stack align="center" justify="center" gap={0} h={48}>
+                    <GroupLogo
+                      slug={g.slug}
+                      name={g.name}
+                      height={44}
+                      dimmed={!isSelected}
                     />
-                    <Text
-                      size="sm"
-                      fw={isSelected ? 700 : 500}
-                      c={isSelected ? 'var(--mantine-color-text)' : 'dimmed'}
-                      style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      {g.name}
-                    </Text>
                   </Stack>
                 </UnstyledButton>
               );
