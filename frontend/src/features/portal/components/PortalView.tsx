@@ -20,7 +20,6 @@ import {
   IconColorSwatch,
   IconFlame,
   IconMusic,
-  IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
 import type {
@@ -86,35 +85,25 @@ export function PortalView({
             borderColor: `${activeGroup?.theme_color_hex || '#7CC7E8'}40`,
           }}
         >
-          <Group justify="space-between" align="center">
-            <Group gap="xs">
-              <ThemeIcon
-                size={38}
-                radius="md"
-                style={{
-                  backgroundColor: activeGroup?.theme_color_hex || '#7CC7E8',
-                  color: '#ffffff',
-                }}
-              >
-                <IconColorSwatch size={22} />
-              </ThemeIcon>
-              <Box>
-                <Text fw={800} size="lg" style={{ letterSpacing: '0.02em' }}>
-                  ペンライトクイズ
-                </Text>
-                <Text size="xs" c="dimmed">
-                  推しメンカラー & 楽曲ペンライト当て
-                </Text>
-              </Box>
-            </Group>
-            <Badge
-              variant="light"
-              color="indigo"
-              size="sm"
-              leftSection={<IconSparkles size={12} />}
+          <Group justify="flex-start" align="center">
+            <ThemeIcon
+              size={38}
+              radius="md"
+              style={{
+                backgroundColor: activeGroup?.theme_color_hex || '#7CC7E8',
+                color: '#ffffff',
+              }}
             >
-              v2.0
-            </Badge>
+              <IconColorSwatch size={22} />
+            </ThemeIcon>
+            <Box>
+              <Text fw={800} size="lg" style={{ letterSpacing: '0.02em' }}>
+                ペンライトクイズ
+              </Text>
+              <Text size="xs" c="dimmed">
+                推しメンカラー & 楽曲ペンライト当て
+              </Text>
+            </Box>
           </Group>
         </Paper>
 
