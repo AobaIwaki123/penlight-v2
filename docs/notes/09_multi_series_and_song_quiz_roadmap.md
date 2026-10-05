@@ -1,12 +1,12 @@
 # 09. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
 
 - **作成日**: 2026-10-05
-- **ステータス**: Step 4 完了 / PR 作成
+- **ステータス**: 全ステップ完了 / Merged (Step 1〜4)
 - **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md), [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
 
-## 0. 進捗状況と再開ガイド (Progress & Quick Resume)
+## 0. 進捗状況と完了サマリー (Progress & Summary)
 
 ### 進捗マトリクス (Progress Matrix)
 | ステップ | 内容 | トピックブランチ | ステータス | 成果物 / PR |
@@ -14,21 +14,11 @@
 | **Step 1** | DBスキーマ & 正本Goモデル層拡張 | `feat/step1-db-schema-and-models` | 🟣 **Merged** | [PR #23](https://github.com/AobaIwaki123/penlight-v2/pull/23) |
 | **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | 🟣 **Merged** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
 | **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | 🟣 **Merged** | [PR #26](https://github.com/AobaIwaki123/penlight-v2/pull/26) |
-| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ✅ **実装完了 / PR作成** | [PR #27](https://github.com/AobaIwaki123/penlight-v2/pull/27) |
+| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | 🟣 **Merged** | [PR #27](https://github.com/AobaIwaki123/penlight-v2/pull/27) |
 
-### 次回再開手順 (Quick Resume Guide)
-1. **PR #26 のマージ確認**:
-   - `gh pr view 26` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
-2. **ワークツリー最新化とブランチ切り替え**:
-   ```bash
-   cd /Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color
-   git fetch origin
-   git checkout -B feat/step4-portal-and-song-quiz-ui origin/main
-   ```
-3. **Step 4 の実装着手**:
-   - 本ノートの「3. ステップ別タスク定義と受け入れ基準」の **Step 4** を順次実装。
-4. **検証コマンド**:
-   - `make verify-ai`（トークン節約モード）または `make verify`（詳細ログ）
+### 開発完了サマリー (Summary)
+全 4 ステップのPRがすべて承認・マージ完了。
+同一アプリ内での「シリーズ階層分離（坂道シリーズ / イコノイジョイ）」、「楽曲ペンライトカラークイズ」、「ポータル画面新設」が単一バイナリ・軽量設計（メモリ 32MiB）を維持したまま完全に結合・稼働。
 
 ---
 
@@ -42,34 +32,38 @@
   - `sakamichi`: 乃木坂46・櫻坂46・日向坂46（既存）
   - `ikolove`: =LOVE・≠ME・≒JOY（新規）
 - **クイズモード**:
+- **対象シリーズ**:
+  - `sakamichi`: 乃木坂46・櫻坂46・日向坂46（既存）
+  - `ikolove`: =LOVE・≠ME・≒JOY（新規、呼称: 「イコノイジョイ」）
+- **クイズモード**:
   - **完全分離**: 「メンバー推しメンカラー当て」と「楽曲カラー当て」は混在させず、独立したモードとして提供。
 - **UI / エントリーポイント**:
-  - **トップ画面（ポータル画面）の新設**: シリーズ選択およびクイズモード選択を最初に行う。
+  - **トップ画面（ポータル画面）の新設**: シリーズ選択（「坂道シリーズ」 / 「イコノイジョイ」）および配下グループの横並び選択、クイズモード選択を行う。
 - **楽曲カラー仕様**:
   - 1 色または 2 色（左右なし、例外演出なし、Kana は Optional）。
 
 ### 作業環境・引き継ぎ情報 (Workspace)
-- **作業ディレクトリ**: `/Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color`
+- **作業ディレクトリ**: `/Users/aobaiwaki/penlight-v2`
 - **ベースブランチ**: `origin/main`
 - **トピックブランチ命名規則**:
-  - Step 1: `feat/step1-db-schema-and-models`
-  - Step 2: `feat/step2-quiz-engine-generics-and-repo`
-  - Step 3: `feat/step3-seed-data-and-verify`
-  - Step 4: `feat/step4-portal-and-song-quiz-ui`
+  - Step 1: `feat/step1-db-schema-and-models` (Merged)
+  - Step 2: `feat/step2-quiz-engine-generics-and-repo` (Merged)
+  - Step 3: `feat/step3-seed-data-and-verify` (Merged)
+  - Step 4: `feat/step4-portal-and-song-quiz-ui` (Merged)
 - **検証コマンド**: `make verify-ai`（トークン節約モード）または `make verify`（詳細ログ）
 
 ---
 
 ## 2. 全体ロードマップ (Milestones)
 
-手戻りを防ぎ、各ステップで確実に `make verify-ai` をパスさせる 4 段階の PR 分割計画。
+手戻りを防ぎ、各ステップで確実に `make verify-ai` をパスさせる 4 段階の PR 分割計画（全完了）。
 
 ```mermaid
 flowchart TD
     Step1["Step 1: DBスキーマ & 正本Goモデル層拡張<br/>(Series, Song, Group.series_id, AnswerLog多態化, マイグレーション, TS型生成)"]
     Step2["Step 2: 出題エンジン & リポジトリ層拡張<br/>(QuizTarget抽象化, ジェネリックDeck, SetEquality判定, API)"]
-    Step3["Step 3: シードマスタデータ拡充<br/>(=LOVE系列マスタ, 代表楽曲カラーデータ, 整合性検証)"]
-    Step4["Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合<br/>(シリーズ/モード選択画面, 解答UIプロトタイプ)"]
+    Step3["Step 3: シードマスタデータ拡充<br/>(イコノイジョイマスタ, 代表楽曲カラーデータ, 整合性検証)"]
+    Step4["Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合<br/>(シリーズ/グループ横並び選択, 楽曲クイズUI, フィルター階層化)"]
 
     Step1 --> Step2
     Step2 --> Step3
@@ -106,15 +100,15 @@ flowchart TD
 - **受け入れ基準**:
   - メンバーと楽曲の両方が同一の `BuildBlendedDeck` で正しくシャッフル・出題されること。
   - 1色（楽曲）および2色（メンバー・楽曲）の無順序判定が単体テストで網羅されていること。
-  - 坂道シリーズ指定時に =LOVE 系列のデータが絶対に混入しないテストがパスすること。
+  - 坂道シリーズ指定時にイコノイジョイのデータが絶対に混入しないテストがパスすること。
 
 ---
 
 ### Step 3: シードマスタデータ拡充
 - **作業内容**:
-  1. `seeds/data/series.json` 新設（`sakamichi`, `ikolove`）
+  1. `seeds/data/series.json` 新設（`sakamichi`, `ikolove` - 「イコノイジョイ」）
   2. `seeds/data/groups.json` 更新（既存グループへの `series_id` 紐付け、=LOVE・≠ME・≒JOY 追加）
-  3. `seeds/data/colors.json` 更新（=LOVE 系列公式カラーの追加）
+  3. `seeds/data/colors.json` 更新（イコノイジョイ公式カラーの追加）
   4. `seeds/data/songs.json` 新設（各グループの代表曲およびカラー指定）
   5. `scripts/build_seed.go` の拡張と `seeds/seed.sql` 再生成
   6. `scripts/verify_master.go` の検証拡張
@@ -125,72 +119,82 @@ flowchart TD
 
 ### Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合 ([ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md))
 - **対象ファイル**:
-  - `frontend/src/app/page.tsx` (ポータルとクイズプレイ画面の表示切り替え)
-  - `frontend/src/features/portal/components/PortalView.tsx` (新設: シリーズカード選択・条件サマリー・CTA)
-  - `frontend/src/features/quiz/components/Header.tsx` (シリーズバッジ表示・ポータル戻るナビゲーション)
+  - `frontend/src/features/portal/components/PortalView.tsx` (新設: シリーズ選択・配下グループ横並びカード・モード切替・CTA)
+  - `frontend/src/features/quiz/components/Header.tsx` (グループ名表示・ポータル戻るナビゲーション)
   - `frontend/src/features/quiz/components/FilterModal.tsx` (シリーズ連動グループ/期生選択 & 楽曲モードトグル)
-  - `frontend/src/features/quiz/components/QuizContainer.tsx` (楽曲クイズモード対応・ジェネリック出題連携)
+  - `frontend/src/features/quiz/components/QuizContainer.tsx` (ポータルとクイズ画面の連携・楽曲クイズモード対応)
   - `frontend/src/features/quiz/components/SongQuizArea.tsx` (新設: 楽曲タイトル・Kana・1色/2色解答パレット)
+- **UI/UX 設計決定事項 (User Feedback)**:
+  1. **シリーズ呼称**: 「=LOVE系列」ではなく、公式・合同総称である **「イコノイジョイ」** に統一。
+  2. **ポータル画面（トップページ）**:
+     - 上段に **シリーズ選択（SegmentedControl: 坂道シリーズ / イコノイジョイ）**。
+     - 下段に **選択されたシリーズ配下のグループを横並び（SimpleGrid）で配置**（将来ロゴ差し替え可能なカードUI）。
+     - バージョン表記や期生・卒業生等の複雑なフィルターはトップページには置かず、極限までシンプルに保つ。
+  3. **フィルターモーダル（クイズ画面内）**:
+     - 将来の拡張性を重視し、**「シリーズ選択 → 配下のグループ選択」** の階層方式を維持。
+     - テーマカラーの丸印は排除し、文字のみの SegmentedControl で表示。
+  4. **クイズ画面ヘッダー左上**:
+     - 冗長なシリーズ名は非表示とし、**グループ名のみ**（+ 楽曲モード時のバッジ）を表示。
 - **作業チェックリスト**:
   1. [x] ポータル画面コンポーネント（`PortalView.tsx`）の新設
-     - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）を Mantine の SegmentedControl またはビジュアルカードで提供
-     - 選択中シリーズに応じた条件サマリー（対象グループ数、期生、クイズ種別）の表示
-     - 「クイズをはじめる」CTA ボタン
-  2. [x] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動
-     - 選択中シリーズに所属するグループのみを表示
-     - 「楽曲カラークイズ」トグルの提供
+  2. [x] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動・文字のみSegmentedControl化
   3. [x] 楽曲クイズ解答 UI の具体化（`SongQuizArea.tsx`）
-     - 楽曲出題（タイトル大きく、Kana 表示）
-     - 1色 / 2色選択のパレット操作（当該シリーズの公式カラーのみを表示）
-  4. [x] ヘッダーナビゲーションの改善（`Header.tsx`）
-     - 現在プレイ中のシリーズ名・グループ名の明示
-     - 「トップ（ポータル）へ戻る」ボタンの設置
-  5. [x] オフライン（Local-First / IndexedDB）同期とキャッシュ動作の確認
+  4. [x] ヘッダーナビゲーションの改善（`Header.tsx`、グループ名のみ表示、Home戻るボタン）
+  5. [x] 1色/2色楽曲判定およびUIの最適化
 - **画面遷移および状態フロー**:
   ```mermaid
   flowchart TD
       subgraph Portal["ポータル画面 (Home / PortalView)"]
-          SeriesSelect["シリーズ選択<br/>(坂道シリーズ / =LOVE系列)"]
-          FilterSummary["出題条件サマリー<br/>(グループ / 期生 / 楽曲モード)"]
+          SeriesSelect["シリーズ選択<br/>(坂道シリーズ / イコノイジョイ)"]
+          GroupSelect["配下グループ選択<br/>(横並びカード)"]
+          ModeSelect["クイズ形式選択<br/>(メンバー / 楽曲)"]
           StartBtn["「クイズをはじめる」CTA"]
 
-          SeriesSelect --> FilterSummary
-          FilterSummary --> StartBtn
+          SeriesSelect --> GroupSelect
+          GroupSelect --> ModeSelect
+          ModeSelect --> StartBtn
       end
 
       subgraph Modal["フィルターモーダル (FilterModal)"]
-          GroupGen["グループ・期生選択"]
-          SongToggle["楽曲カラークイズ<br/>(デフォルト: OFF)"]
+          ModalSeries["シリーズ選択 (文字のみ)"]
+          ModalGroup["配下グループ選択 (文字のみ)"]
+          ModalGens["期生・卒業生選択"]
+          ModalSongToggle["クイズ形式 (メンバー / 楽曲)"]
+
+          ModalSeries --> ModalGroup
+          ModalGroup --> ModalGens
+          ModalGroup --> ModalSongToggle
       end
 
       subgraph Quiz["クイズプレイ画面 (QuizContainer)"]
-          HeaderNav["ヘッダー<br/>(Home戻る / 条件変更)"]
+          HeaderNav["ヘッダー<br/>(Home戻る / グループ名表示 / フィルター起動)"]
           QuizArea["出題エリア<br/>(メンバー推しメンカラー or 楽曲カラー)"]
           Palette["公式カラーパレット<br/>(当該シリーズのカラーのみ)"]
       end
 
-      subgraph Result["リザルト画面 (QuizResult)"]
+      subgraph Result["リザルト画面 (Modal)"]
           Score["スコア・成績表示"]
           RetryBtn["「もう一度挑戦」"]
           HomeBtn["「トップへ戻る」"]
       end
 
       subgraph Storage["ローカル永続化 (LocalStorage)"]
-          State["activeSeries (ser_...)<br/>QuizFilter (グループ・期生・楽曲フラグ)"]
+          State["savedSettings<br/>(groupId, songMode)"]
       end
 
-      FilterSummary -.->|"条件編集"| Modal
-      Modal -.->|"保存 & 適用"| FilterSummary
       StartBtn -->|"クイズ開始"| Quiz
-      Quiz -->|"10問完了"| Result
+      HeaderNav -.->|"フィルターモーダル開く"| Modal
+      Modal -.->|"保存 & 即時再出題"| Quiz
+      Quiz -->|"全問完了"| Result
       HeaderNav -->|"いつでも戻れる"| Portal
       HomeBtn --> Portal
       RetryBtn --> Quiz
 
-      SeriesSelect <--> Storage
+      Portal <--> Storage
       Modal <--> Storage
   ```
 - **受け入れ基準**:
-  - トップ画面から直感的にシリーズ・モードを選んでクイズを開始できること。
-  - シリーズ間の完全分離が UI 上で担保されていること（坂道選択時に =LOVE のカラーや楽曲が表示されない）。
+  - トップ画面から直感的にシリーズ・グループ・モードを選んでクイズを開始できること。
+  - シリーズ間の完全分離が UI 上で担保されていること（坂道選択時にイコノイジョイのカラーや楽曲が表示されない）。
+  - クイズ画面ヘッダー左上はグループ名のみでスッキリと表示されること。
   - `make verify-ai` を 1 行でパスすること。
