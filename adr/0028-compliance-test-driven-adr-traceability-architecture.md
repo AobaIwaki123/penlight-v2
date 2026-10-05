@@ -41,23 +41,34 @@ flowchart LR
 
 ### 具現化仕様
 
-1. **テストケース命名規約**:
-   - 各 ADR の要件を保護・検証するテストには、必ずテスト関数名またはサブルーチン名に `ADR-00XX` を冠する。
+1. **ADR 具現化仕様のナンバリング規約 (Specification Numbering)**:
+   - 今後作成・改訂される ADR の「2. 決定事項と具現化仕様」は、必ず連番（`1.`, `2.`, `3.`）で項目化し、先頭に対象レイヤー（`[Backend]`, `[Frontend]`, `[DB]`, `[Contract]` 等）を明記する。
+   - 例:
+     ```markdown
+     ## 2. 決定事項と具現化仕様
+     1. [Backend] 母集団フィルタリング関数 (FilterMembers) の提供
+     2. [Frontend] FilterModal における衣装 (PhotoType) 選択 UI の提供
+     3. [Contract] 候補者不足時の Problem Details (ERR_INVALID_INPUT) 返却
+     ```
+
+2. **サブ要件テスト命名規約 (`ADR-00XX/Y`)**:
+   - 各テストケース名には、対応する ADR 番号とサブ要件番号（`ADR-00XX/Y`）を冠する。
    - バックエンド (Go):
      ```go
-     t.Run("ADR-0018: Costume (PhotoType) Filtering on Real Seed Data", func(t *testing.T) { ... })
-     func TestADR0020_BlendedDeckSelection(t *testing.T) { ... }
+     t.Run("ADR-0018/1: [Backend] Candidate Pool Filtering Logic", func(t *testing.T) { ... })
+     t.Run("ADR-0018/3: [Contract] Error on Insufficient Candidates", func(t *testing.T) { ... })
      ```
    - フロントエンド (TypeScript / Vitest 等):
      ```ts
-     describe('ADR-0007: offline image prefetch and cache', () => { ... });
+     test('ADR-0018/2: [Frontend] PhotoType Selection UI in FilterModal', () => { ... });
      ```
 
-2. **実装完了の客観的判定基準**:
-   - 「該当 ADR の番号を冠したテストケースが存在し、CI（`make verify-ai`）で PASS していること」をもって **実装完了（Implemented）** と認定する。
-   - テストが存在しない、あるいは失敗している場合は **未実装（Unimplemented）または一部実装（Partial）** とみなす。
+3. **「一部未実装 (Partial)」の客観的判定ルール**:
+   - ADR 内の全サブ要件（1〜N）のテストが存在し、すべて PASS ──► **✅ 完全実装 (Implemented)**
+   - 一部のサブ要件のみテストが存在・PASS（例: Backend のみ PASS、Frontend が未実装または `test.todo` / `t.Skip`） ──► **⚠️ 一部実装 (Partial)**
+   - テストが 1 つも存在しない、またはテストが失敗 ──► **❌ 未実装 (Unimplemented)**
 
-3. **移行・整理プロセスの分離**:
+4. **移行・整理プロセスの分離**:
    - 既存の全 ADR に対する現時点の静的な実装達成率マトリクスは、一旦 `docs/notes/08_adr_implementation_status_and_achievement_matrix.md` で一時的に可視化・整理する。
    - 各 ADR の機能実装時に、本規約に基づくコンプライアンステストを追加していくことで、自動的に静的ノートからテスト駆動の動的保証へ移行させる。
 
