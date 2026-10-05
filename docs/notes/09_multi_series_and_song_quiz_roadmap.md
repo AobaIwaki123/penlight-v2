@@ -123,14 +123,29 @@ flowchart TD
 
 ---
 
-### Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合
-- **作業内容**:
-  1. トップ画面（ポータル画面: `PortalView.tsx`）の新設
-     - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）
-     - モード選択（「メンバーカラークイズ」 / 「楽曲カラークイズ」）
-  2. 楽曲クイズ解答 UI の具体化（1色/2色選択のインタラクション決定）
-  3. `Header.tsx` および `FilterModal.tsx` のシリーズ連動
-  4. オフライン（Local-First）動作の確認
+### Step 4: フロントエンド ポータル画面 & 楽曲クイズUI結合 ([ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md))
+- **対象ファイル**:
+  - `frontend/src/app/page.tsx` (ポータルとクイズプレイ画面の表示切り替え)
+  - `frontend/src/features/portal/components/PortalView.tsx` (新設: シリーズカード選択・条件サマリー・CTA)
+  - `frontend/src/features/quiz/components/Header.tsx` (シリーズバッジ表示・ポータル戻るナビゲーション)
+  - `frontend/src/features/quiz/components/FilterModal.tsx` (シリーズ連動グループ/期生選択 & 楽曲モードトグル)
+  - `frontend/src/features/quiz/components/QuizContainer.tsx` (楽曲クイズモード対応・ジェネリック出題連携)
+  - `frontend/src/features/quiz/components/SongQuizArea.tsx` (新設: 楽曲タイトル・Kana・1色/2色解答パレット)
+- **作業チェックリスト**:
+  1. [ ] ポータル画面コンポーネント（`PortalView.tsx`）の新設
+     - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）を Mantine の SegmentedControl またはビジュアルカードで提供
+     - 選択中シリーズに応じた条件サマリー（対象グループ数、期生、クイズ種別）の表示
+     - 「クイズをはじめる」CTA ボタン
+  2. [ ] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動
+     - 選択中シリーズに所属するグループのみを表示
+     - 「楽曲カラークイズ」トグルの提供
+  3. [ ] 楽曲クイズ解答 UI の具体化（`SongQuizArea.tsx`）
+     - 楽曲出題（タイトル大きく、Kana 表示）
+     - 1色 / 2色選択のパレット操作（当該シリーズの公式カラーのみを表示）
+  4. [ ] ヘッダーナビゲーションの改善（`Header.tsx`）
+     - 現在プレイ中のシリーズ名・グループ名の明示
+     - 「トップ（ポータル）へ戻る」ボタンの設置
+  5. [ ] オフライン（Local-First / IndexedDB）同期とキャッシュ動作の確認
 - **画面遷移および状態フロー**:
   ```mermaid
   flowchart TD
@@ -177,4 +192,5 @@ flowchart TD
   ```
 - **受け入れ基準**:
   - トップ画面から直感的にシリーズ・モードを選んでクイズを開始できること。
-  - シリーズ間の完全分離が UI 上で担保されていること。
+  - シリーズ間の完全分離が UI 上で担保されていること（坂道選択時に =LOVE のカラーや楽曲が表示されない）。
+  - `make verify-ai` を 1 行でパスすること。
