@@ -90,6 +90,50 @@ flowchart TD
   2. 楽曲クイズ解答 UI の具体化（1色/2色選択のインタラクション決定）
   3. `Header.tsx` および `FilterModal.tsx` のシリーズ連動
   4. オフライン（Local-First）動作の確認
+- **画面遷移および状態フロー**:
+  ```mermaid
+  flowchart TD
+      subgraph Portal["ポータル画面 (Home / PortalView)"]
+          SeriesSelect["シリーズ選択<br/>(坂道シリーズ / =LOVE系列)"]
+          FilterSummary["出題条件サマリー<br/>(グループ / 期生 / 楽曲モード)"]
+          StartBtn["「クイズをはじめる」CTA"]
+
+          SeriesSelect --> FilterSummary
+          FilterSummary --> StartBtn
+      end
+
+      subgraph Modal["フィルターモーダル (FilterModal)"]
+          GroupGen["グループ・期生選択"]
+          SongToggle["楽曲カラークイズ<br/>(デフォルト: OFF)"]
+      end
+
+      subgraph Quiz["クイズプレイ画面 (QuizContainer)"]
+          HeaderNav["ヘッダー<br/>(Home戻る / 条件変更)"]
+          QuizArea["出題エリア<br/>(メンバー推しメンカラー or 楽曲カラー)"]
+          Palette["公式カラーパレット<br/>(当該シリーズのカラーのみ)"]
+      end
+
+      subgraph Result["リザルト画面 (QuizResult)"]
+          Score["スコア・成績表示"]
+          RetryBtn["「もう一度挑戦」"]
+          HomeBtn["「トップへ戻る」"]
+      end
+
+      subgraph Storage["ローカル永続化 (LocalStorage)"]
+          State["activeSeries (ser_...)<br/>QuizFilter (グループ・期生・楽曲フラグ)"]
+      end
+
+      FilterSummary -.->|"条件編集"| Modal
+      Modal -.->|"保存 & 適用"| FilterSummary
+      StartBtn -->|"クイズ開始"| Quiz
+      Quiz -->|"10問完了"| Result
+      HeaderNav -->|"いつでも戻れる"| Portal
+      HomeBtn --> Portal
+      RetryBtn --> Quiz
+
+      SeriesSelect <--> Storage
+      Modal <--> Storage
+  ```
 - **受け入れ基準**:
   - トップ画面から直感的にシリーズ・モードを選んでクイズを開始できること。
   - シリーズ間の完全分離が UI 上で担保されていること。
