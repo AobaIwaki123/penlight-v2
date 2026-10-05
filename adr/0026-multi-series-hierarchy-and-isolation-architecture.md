@@ -20,9 +20,9 @@ date: 2026-10-05
 ## 1. 背景と解決すべき課題 (Context & Problem)
 
 本システムはこれまで坂道グループ（乃木坂46・櫻坂46・日向坂46）を対象に運用されてきた。
-今回、新たに =LOVE 系列（=LOVE、≠ME、≒JOY 等）を追加導入する要件が生じた。
+今回、新たにイコノイジョイ（=LOVE、≠ME、≒JOY 等）を追加導入する要件が生じた。
 
-アイドルファン文化において、異なる系列（坂道シリーズ vs =LOVE 系列）はファン層や文脈が大きく異なり、**「クイズ出題やカラーパレット、グループ選択において決して混ざり合わないこと」** が必須要件となる。
+アイドルファン文化において、異なる系列（坂道シリーズ vs イコノイジョイ）はファン層や文脈が大きく異なり、**「クイズ出題やカラーパレット、グループ選択において決して混ざり合わないこと」** が必須要件となる。
 
 一方、これを別アプリ（別 Pod / 別 DB / 別ドメイン）として物理分離した場合、自宅 Kubernetes クラスタにおける Pod・PVC・Service・Ingress、および CI/CD パイプラインが 2 重化し、単一バイナリ・軽量運用（メモリ 32MiB）という基本設計方針（[ADR-0002](./0002-backend-go-architecture.md), [ADR-0012](./0012-kubernetes-deployment-and-gitops-architecture.md)）を損なう。
 
@@ -36,10 +36,10 @@ date: 2026-10-05
 グループ（`Group`）の上位概念として `Series` を定義する。
 
 ```go
-// Series represents an idol franchise or series (e.g. "坂道シリーズ", "=LOVE系列").
+// Series represents an idol franchise or series (e.g. "坂道シリーズ", "イコノイジョイ").
 type Series struct {
 	ID           ID        `json:"id"`            // ser_... (UUID v7)
-	Name         string    `json:"name"`          // Formal name, e.g. "坂道シリーズ", "=LOVE系列"
+	Name         string    `json:"name"`          // Formal name, e.g. "坂道シリーズ", "イコノイジョイ"
 	Slug         string    `json:"slug"`          // URL-safe identifier, e.g. "sakamichi", "ikolove"
 	DisplayOrder int       `json:"display_order"` // UI sort order
 	CreatedAt    time.Time `json:"created_at"`
