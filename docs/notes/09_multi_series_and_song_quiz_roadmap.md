@@ -12,13 +12,13 @@
 | ステップ | 内容 | トピックブランチ | ステータス | 成果物 / PR |
 |---|---|---|---|---|
 | **Step 1** | DBスキーマ & 正本Goモデル層拡張 | `feat/step1-db-schema-and-models` | 🟣 **Merged** | [PR #23](https://github.com/AobaIwaki123/penlight-v2/pull/23) |
-| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | ✅ **PR作成完了** | [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md) 具現化 |
+| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | ✅ **PR作成完了** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
 | **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ⏳ **次期着手** | =LOVE 系列マスタ・代表楽曲データ |
 | **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏸️ 未着手 | ポータル画面・楽曲解答UI |
 
 ### 次回再開手順 (Quick Resume Guide)
-1. **PR のマージ確認**:
-   - `gh pr view` で Step 2 PR の状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
+1. **PR #24 のマージ確認**:
+   - `gh pr view 24` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
 2. **ワークツリー最新化とブランチ切り替え**:
    ```bash
    cd /Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color
