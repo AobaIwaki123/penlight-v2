@@ -13,3 +13,17 @@ type Song struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
+
+// GetID returns the song's surrogate key ID (implements QuizTarget, Ref: ADR-0031).
+func (s Song) GetID() ID {
+	return s.ID
+}
+
+// GetCorrectColors returns the 1 or 2 penlight color IDs for the song (implements QuizTarget, Ref: ADR-0027, ADR-0031).
+func (s Song) GetCorrectColors() []ID {
+	if s.Color2ID != nil {
+		return []ID{s.Color1ID, *s.Color2ID}
+	}
+	return []ID{s.Color1ID}
+}
+

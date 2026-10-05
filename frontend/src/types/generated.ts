@@ -43,12 +43,14 @@ export interface Color {
 // source: dto.go
 
 /**
- * BootstrapResponse contains all master records required for offline PWA operation.
+ * BootstrapResponse contains all master records required for offline PWA operation (Ref: ADR-0007, ADR-0026, ADR-0027).
  */
 export interface BootstrapResponse {
+  series: Series[];
   groups: Group[];
   colors: Color[];
   members: Member[];
+  songs: Song[];
   generated_at: string;
 }
 /**
@@ -321,13 +323,15 @@ export interface QuizQuestion {
   generated_at: string;
 }
 /**
- * QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018).
+ * QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018, ADR-0026, ADR-0029).
  */
 export interface QuizFilter {
+  series_id?: ID;
   group_id?: ID;
   generations?: number /* int */[];
   photo_type_ids?: ID[];
   include_graduated: boolean;
+  song_mode: boolean; // true: 楽曲カラークイズ, false: メンバーカラークイズ (ADR-0029)
 }
 
 //////////

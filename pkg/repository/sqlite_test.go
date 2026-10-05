@@ -275,4 +275,135 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	}
 }
 
+func TestSQLiteRepository_SeriesAndSongs(t *testing.T) {
+	ctx := context.Background()
+	repo, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	now := time.Now().UTC().Truncate(time.Second).Format(time.RFC3339)
+
+	// 1. Insert series
+	_, err := repo.DB().ExecContext(ctx, `
+		INSERT INTO series (id, name, slug, display_order, created_at, updated_at)
+		VALUES
+			('ser_01', '坂道シリーズ', 'sakamichi', 1, ?, ?),
+			('ser_02', '=LOVE系列', 'ikolove', 2, ?, ?);
+	`, now, now, now, now)
+	if err != nil {
+		t.Fatalf("failed to insert series: %v", err)
+	}
+
+	// 2. Test ListSeries and GetSeries
+	seriesList, err := repo.ListSeries(ctx)
+	if err != nil {
+		t.Fatalf("ListSeries failed: %v", err)
+	}
+	if len(seriesList) != 2 || seriesList[0].Slug != "sakamichi" || seriesList[1].Slug != "ikolove" {
+		t.Fatalf("unexpected series list: %+v", seriesList)
+	}
+
+	ser, err := repo.GetSeries(ctx, "ser_01")
+	if err != nil {
+		t.Fatalf("GetSeries failed: %v", err)
+	}
+	if ser == nil || ser.Name != "坂道シリーズ" {
+		t.Fatalf("unexpected series: %+v", ser)
+	}
+
+	// 3. Insert groups with series_id
+	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO groups (id, series_id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at)
+		VALUES
+			('grp_hinata', 'ser_01', '日向坂46', '日向坂', 'hinatazaka46', '#7CC7E8', 1, 1, ?, ?),
+			('grp_equal', 'ser_02', '=LOVE', 'イコラブ', 'equal-love', '#FFC0CB', 2, 1, ?, ?);
+	`, now, now, now, now)
+	if err != nil {
+		t.Fatalf("failed to insert groups: %v", err)
+	}
+
+	// 4. Test ListGroups and ListGroupsBySeries
+	groups, err := repo.ListGroups(ctx)
+	if err != nil {
+		t.Fatalf("ListGroups failed: %v", err)
+	}
+	if len(groups) != 2 || groups[0].SeriesID != "ser_01" || groups[1].SeriesID != "ser_02" {
+		t.Fatalf("unexpected groups with series_id: %+v", groups)
+	}
+
+	sakamichiGroups, err := repo.ListGroupsBySeries(ctx, "ser_01")
+	if err != nil {
+		t.Fatalf("ListGroupsBySeries failed: %v", err)
+	}
+	if len(sakamichiGroups) != 1 || sakamichiGroups[0].ID != "grp_hinata" {
+		t.Fatalf("unexpected sakamichi groups: %+v", sakamichiGroups)
+	}
+
+	// 5. Insert colors
+	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
+		VALUES
+			('col_sky', 'grp_hinata', 'スカイブルー', '#7CC7E8', 1, ?, ?),
+			('col_white', 'grp_hinata', 'ホワイト', '#FFFFFF', 2, ?, ?),
+			('col_pink', 'grp_equal', 'ピンク', '#FFC0CB', 1, ?, ?);
+	`, now, now, now, now, now, now)
+	if err != nil {
+		t.Fatalf("failed to insert colors: %v", err)
+	}
+
+	// 6. Insert members and test ListMembersBySeries
+	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO members (id, group_id, family_name, given_name, family_name_kana, given_name_kana, generation, status, left_color_id, right_color_id, ordered, created_at, updated_at)
+		VALUES
+			('mem_01', 'grp_hinata', '正源司', '陽子', 'しょうげんじ', 'ようこ', 4, 'active', 'col_sky', 'col_white', 0, ?, ?),
+			('mem_02', 'grp_equal', '佐々木', '舞香', 'ささき', 'まいか', 1, 'active', 'col_pink', 'col_pink', 0, ?, ?);
+	`, now, now, now, now)
+	if err != nil {
+		t.Fatalf("failed to insert members: %v", err)
+	}
+
+	sakamichiMembers, err := repo.ListMembersBySeries(ctx, "ser_01")
+	if err != nil {
+		t.Fatalf("ListMembersBySeries failed: %v", err)
+	}
+	if len(sakamichiMembers) != 1 || sakamichiMembers[0].ID != "mem_01" {
+		t.Fatalf("unexpected sakamichi members: %+v", sakamichiMembers)
+	}
+
+	// 7. Insert songs and test ListSongs, ListSongsByGroup, ListSongsBySeries
+	_, err = repo.DB().ExecContext(ctx, `
+		INSERT INTO songs (id, group_id, title, kana, color1_id, color2_id, created_at, updated_at)
+		VALUES
+			('sng_01', 'grp_hinata', 'キュン', 'きゅん', 'col_sky', 'col_white', ?, ?),
+			('sng_02', 'grp_equal', '絶対アイドル辞めないで', 'ぜったいあいどるやめないで', 'col_pink', NULL, ?, ?);
+	`, now, now, now, now)
+	if err != nil {
+		t.Fatalf("failed to insert songs: %v", err)
+	}
+
+	allSongs, err := repo.ListSongs(ctx)
+	if err != nil {
+		t.Fatalf("ListSongs failed: %v", err)
+	}
+	if len(allSongs) != 2 {
+		t.Fatalf("expected 2 songs, got %d", len(allSongs))
+	}
+
+	hinataSongs, err := repo.ListSongsByGroup(ctx, "grp_hinata")
+	if err != nil {
+		t.Fatalf("ListSongsByGroup failed: %v", err)
+	}
+	if len(hinataSongs) != 1 || hinataSongs[0].Title != "キュン" || hinataSongs[0].Color2ID == nil {
+		t.Fatalf("unexpected hinata songs: %+v", hinataSongs)
+	}
+
+	equalSongs, err := repo.ListSongsBySeries(ctx, "ser_02")
+	if err != nil {
+		t.Fatalf("ListSongsBySeries failed: %v", err)
+	}
+	if len(equalSongs) != 1 || equalSongs[0].Title != "絶対アイドル辞めないで" || equalSongs[0].Color2ID != nil {
+		t.Fatalf("unexpected equal songs: %+v", equalSongs)
+	}
+}
+
+
 

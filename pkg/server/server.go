@@ -216,6 +216,15 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	series, err := s.repo.ListSeries(ctx)
+	if err != nil {
+		http.Error(w, "failed to list series", http.StatusInternalServerError)
+		return
+	}
+	if series == nil {
+		series = make([]model.Series, 0)
+	}
+
 	groups, err := s.repo.ListGroups(ctx)
 	if err != nil {
 		http.Error(w, "failed to list groups", http.StatusInternalServerError)
@@ -242,10 +251,21 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	songs, err := s.repo.ListSongs(ctx)
+	if err != nil {
+		http.Error(w, "failed to list songs", http.StatusInternalServerError)
+		return
+	}
+	if songs == nil {
+		songs = make([]model.Song, 0)
+	}
+
 	resp := model.BootstrapResponse{
+		Series:      series,
 		Groups:      groups,
 		Colors:      colors,
 		Members:     members,
+		Songs:       songs,
 		GeneratedAt: time.Now().UTC(),
 	}
 

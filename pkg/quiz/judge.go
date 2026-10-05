@@ -4,21 +4,30 @@ import (
 	"github.com/aobaiwaki/penlight-v2/pkg/model"
 )
 
-// JudgeAnswer verifies whether the user-selected two colors match the member's official penlight colors.
-// In accordance with ADR-0019, order is not considered (either left/right orientation is accepted).
-func JudgeAnswer(color1ID, color2ID model.ID, target model.Member) bool {
-	correctLeft := target.Penlight.LeftColorID
-	correctRight := target.Penlight.RightColorID
-
-	// 1. Direct match (L==ans.L && R==ans.R)
-	if color1ID == correctLeft && color2ID == correctRight {
-		return true
+// JudgeAnswer checks whether user's selected colors match target's correct colors as an unordered set (Ref: ADR-0019, ADR-0031).
+// It supports single-color targets (1-color songs) and two-color targets (members, 2-color songs).
+func JudgeAnswer(selectedColors []model.ID, target QuizTarget) bool {
+	correctColors := target.GetCorrectColors()
+	if len(selectedColors) != len(correctColors) {
+		return false
 	}
 
-	// 2. Inverted match (L==ans.R && R==ans.L)
-	if color1ID == correctRight && color2ID == correctLeft {
-		return true
+	counts := make(map[model.ID]int, len(correctColors))
+	for _, c := range correctColors {
+		counts[c]++
 	}
 
-	return false
+	for _, c := range selectedColors {
+		counts[c]--
+		if counts[c] < 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
+// JudgeAnswerPair is a convenience wrapper for checking two selected colors against a member or song (Ref: ADR-0019).
+func JudgeAnswerPair(color1ID, color2ID model.ID, target QuizTarget) bool {
+	return JudgeAnswer([]model.ID{color1ID, color2ID}, target)
 }

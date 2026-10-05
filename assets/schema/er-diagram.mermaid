@@ -19,6 +19,7 @@ erDiagram
     QUIZ_QUESTION ||--o{ BATCH_ANSWER_ITEM : "quiz_question_id"
     QUIZ_QUESTION ||--o{ SUBMIT_ANSWER_REQUEST : "quiz_question_id"
     SERIES ||--o{ GROUP : "series_id"
+    SERIES ||--o{ QUIZ_FILTER : "series_id"
     SONG ||--o{ ANSWER_LOG : "target_song_id"
     USER ||--o{ ANSWER_LOG : "user_id"
 

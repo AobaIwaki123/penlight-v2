@@ -153,7 +153,7 @@ func main() {
 		c2 := displayColors[idx2-1]
 
 		// Judge answer using pkg/quiz/judge.go (tolerant of hand orientation)
-		isCorrect := quiz.JudgeAnswer(c1.ID, c2.ID, target)
+		isCorrect := quiz.JudgeAnswerPair(c1.ID, c2.ID, target)
 
 		correctL := colorMap[target.Penlight.LeftColorID]
 		correctR := colorMap[target.Penlight.RightColorID]

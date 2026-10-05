@@ -2,6 +2,7 @@ package quiz_test
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
@@ -238,28 +239,28 @@ func TestADR0019_Compliance_JudgmentRules(t *testing.T) {
 	dummyColor := model.ID("col_dummy_wrong_color")
 
 	t.Run("ADR-0019: Direct order match (Left, Right) is TRUE", func(t *testing.T) {
-		if !quiz.JudgeAnswer(correctL, correctR, *shogenji) {
+		if !quiz.JudgeAnswer([]model.ID{correctL, correctR}, *shogenji) {
 			t.Fatal("expected true for direct match")
 		}
 	})
 
 	t.Run("ADR-0019: Inverted order match (Right, Left) is TRUE (Hand switch tolerated)", func(t *testing.T) {
-		if !quiz.JudgeAnswer(correctR, correctL, *shogenji) {
+		if !quiz.JudgeAnswer([]model.ID{correctR, correctL}, *shogenji) {
 			t.Fatal("expected true for inverted match")
 		}
 	})
 
 	t.Run("ADR-0019: One color wrong is FALSE", func(t *testing.T) {
-		if quiz.JudgeAnswer(correctL, dummyColor, *shogenji) {
+		if quiz.JudgeAnswer([]model.ID{correctL, dummyColor}, *shogenji) {
 			t.Fatal("expected false when one color is wrong")
 		}
-		if quiz.JudgeAnswer(dummyColor, correctR, *shogenji) {
+		if quiz.JudgeAnswer([]model.ID{dummyColor, correctR}, *shogenji) {
 			t.Fatal("expected false when one color is wrong")
 		}
 	})
 
 	t.Run("ADR-0019: Both colors wrong is FALSE", func(t *testing.T) {
-		if quiz.JudgeAnswer(dummyColor, dummyColor, *shogenji) {
+		if quiz.JudgeAnswer([]model.ID{dummyColor, dummyColor}, *shogenji) {
 			t.Fatal("expected false when both colors are wrong")
 		}
 	})
@@ -274,17 +275,17 @@ func TestADR0019_Compliance_JudgmentRules(t *testing.T) {
 		}
 
 		// Double tap with correct color -> TRUE
-		if !quiz.JudgeAnswer("col_white", "col_white", sameColorMember) {
+		if !quiz.JudgeAnswer([]model.ID{"col_white", "col_white"}, sameColorMember) {
 			t.Fatal("expected true for double tap match")
 		}
 
 		// Double tap with wrong color -> FALSE
-		if quiz.JudgeAnswer("col_red", "col_red", sameColorMember) {
+		if quiz.JudgeAnswer([]model.ID{"col_red", "col_red"}, sameColorMember) {
 			t.Fatal("expected false for double tap wrong color")
 		}
 
 		// One white, one blue -> FALSE
-		if quiz.JudgeAnswer("col_white", "col_blue", sameColorMember) {
+		if quiz.JudgeAnswer([]model.ID{"col_white", "col_blue"}, sameColorMember) {
 			t.Fatal("expected false for partial match on same-color member")
 		}
 	})
@@ -407,7 +408,7 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 		}
 
 		// Boundary D: Zero or negative inputs
-		if d := quiz.BuildBlendedDeck(nil, nil, 10, rng); d != nil {
+		if d := quiz.BuildBlendedDeck[model.Member](nil, nil, 10, rng); d != nil {
 			t.Fatalf("expected nil on nil pool, got %+v", d)
 		}
 		if d := quiz.BuildBlendedDeck(pool, nil, 0, rng); d != nil {
@@ -448,6 +449,167 @@ func TestADR0020_Compliance_BlendedDeckStrategy(t *testing.T) {
 		imgFallback := quiz.SelectQuestionImage(memberWithoutImages, model.QuizFilter{}, rng)
 		if imgFallback != nil {
 			t.Fatalf("expected nil when no images exist, got %+v", imgFallback)
+		}
+	})
+}
+
+// =========================================================================
+// ADR-0026: Multi-Series Hierarchy & Isolation Specification Compliance Tests
+// =========================================================================
+
+func TestADR0026_Compliance_SeriesIsolation(t *testing.T) {
+	serSakamichi := model.ID("ser_sakamichi")
+	serIkolove := model.ID("ser_ikolove")
+
+	groups := []model.Group{
+		{ID: "grp_hinata", SeriesID: serSakamichi, Name: "日向坂46"},
+		{ID: "grp_sakura", SeriesID: serSakamichi, Name: "櫻坂46"},
+		{ID: "grp_equal", SeriesID: serIkolove, Name: "=LOVE"},
+	}
+
+	members := []model.Member{
+		{ID: "mem_h1", GroupID: "grp_hinata", Status: "active"},
+		{ID: "mem_h2", GroupID: "grp_hinata", Status: "active"},
+		{ID: "mem_s1", GroupID: "grp_sakura", Status: "active"},
+		{ID: "mem_s2", GroupID: "grp_sakura", Status: "active"},
+		{ID: "mem_e1", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e2", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e3", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e4", GroupID: "grp_equal", Status: "active"},
+	}
+
+	colors := []model.Color{
+		{ID: "col_white", GroupID: nil, Name: "白"},
+		{ID: "col_sky", GroupID: func() *model.ID { id := model.ID("grp_hinata"); return &id }(), Name: "スカイブルー"},
+		{ID: "col_pink", GroupID: func() *model.ID { id := model.ID("grp_equal"); return &id }(), Name: "イコラブピンク"},
+	}
+
+	t.Run("ADR-0026/1: Member candidate pool strictly excludes cross-series contamination", func(t *testing.T) {
+		sakamichiFiltered, err := quiz.FilterMembers(members, model.QuizFilter{SeriesID: &serSakamichi}, groups...)
+		if err != nil {
+			t.Fatalf("FilterMembers for Sakamichi failed: %v", err)
+		}
+		if len(sakamichiFiltered) != 4 {
+			t.Fatalf("expected 4 sakamichi members, got %d", len(sakamichiFiltered))
+		}
+		for _, m := range sakamichiFiltered {
+			if m.GroupID == "grp_equal" {
+				t.Fatalf("ADR-0026 Violation: =LOVE member %s found in Sakamichi pool", m.ID)
+			}
+		}
+	})
+
+	t.Run("ADR-0026/2: Official palette strictly isolates series-specific colors", func(t *testing.T) {
+		sakamichiColors := quiz.FilterColorsBySeries(colors, groups, serSakamichi)
+		for _, c := range sakamichiColors {
+			if c.ID == "col_pink" {
+				t.Fatalf("ADR-0026 Violation: =LOVE color %s found in Sakamichi palette", c.ID)
+			}
+		}
+
+		ikoloveColors := quiz.FilterColorsBySeries(colors, groups, serIkolove)
+		for _, c := range ikoloveColors {
+			if c.ID == "col_sky" {
+				t.Fatalf("ADR-0026 Violation: Hinatazaka color %s found in =LOVE palette", c.ID)
+			}
+		}
+	})
+}
+
+// =========================================================================
+// ADR-0031: Generic Quiz Engine & Target Abstraction Compliance Tests
+// =========================================================================
+
+func TestADR0031_Compliance_GenericQuizEngine(t *testing.T) {
+	rng := rand.New(rand.NewSource(12345))
+
+	colSky := model.ID("col_sky")
+	colWhite := model.ID("col_white")
+	colPink := model.ID("col_pink")
+
+	memberTarget := model.Member{
+		ID: "mem_target_01",
+		Penlight: model.PenlightPair{
+			LeftColorID:  colSky,
+			RightColorID: colWhite,
+		},
+	}
+
+	songTarget1Color := model.Song{
+		ID:       "sng_target_01",
+		Title:    "絶対アイドル辞めないで",
+		Color1ID: colPink,
+	}
+
+	songTarget2Color := model.Song{
+		ID:       "sng_target_02",
+		Title:    "キュン",
+		Color1ID: colSky,
+		Color2ID: &colWhite,
+	}
+
+	t.Run("ADR-0031/1: QuizTarget interface satisfaction", func(t *testing.T) {
+		var _ quiz.QuizTarget = memberTarget
+		var _ quiz.QuizTarget = songTarget1Color
+		var _ quiz.QuizTarget = songTarget2Color
+
+		if memberTarget.GetID() != "mem_target_01" || len(memberTarget.GetCorrectColors()) != 2 {
+			t.Fatalf("unexpected member target colors: %v", memberTarget.GetCorrectColors())
+		}
+		if songTarget1Color.GetID() != "sng_target_01" || len(songTarget1Color.GetCorrectColors()) != 1 {
+			t.Fatalf("unexpected 1-color song colors: %v", songTarget1Color.GetCorrectColors())
+		}
+		if songTarget2Color.GetID() != "sng_target_02" || len(songTarget2Color.GetCorrectColors()) != 2 {
+			t.Fatalf("unexpected 2-color song colors: %v", songTarget2Color.GetCorrectColors())
+		}
+	})
+
+	t.Run("ADR-0031/2: Generic BuildBlendedDeck handles songs and members equally", func(t *testing.T) {
+		songs := make([]model.Song, 12)
+		for i := range songs {
+			songs[i] = model.Song{
+				ID:       model.ID(fmt.Sprintf("sng_poly_%02d", i+1)),
+				Title:    fmt.Sprintf("Song %d", i+1),
+				Color1ID: colSky,
+			}
+		}
+
+		sngID := songs[0].ID
+		history := []model.AnswerLog{
+			{TargetSongID: &sngID},
+		}
+
+		deck := quiz.BuildBlendedDeck(songs, history, 8, rng)
+		if len(deck) != 8 {
+			t.Fatalf("expected 8 songs in deck, got %d", len(deck))
+		}
+	})
+
+	t.Run("ADR-0031/3: Set Equality Judgment (1-color and 2-color targets)", func(t *testing.T) {
+		// 1-color song: exact 1 match -> TRUE
+		if !quiz.JudgeAnswer([]model.ID{colPink}, songTarget1Color) {
+			t.Fatal("expected true for 1-color song match")
+		}
+		// 1-color song: wrong color -> FALSE
+		if quiz.JudgeAnswer([]model.ID{colSky}, songTarget1Color) {
+			t.Fatal("expected false for 1-color song wrong color")
+		}
+		// 1-color song: extra color passed -> FALSE
+		if quiz.JudgeAnswer([]model.ID{colPink, colWhite}, songTarget1Color) {
+			t.Fatal("expected false when extra color passed to 1-color song")
+		}
+
+		// 2-color song: direct order -> TRUE
+		if !quiz.JudgeAnswer([]model.ID{colSky, colWhite}, songTarget2Color) {
+			t.Fatal("expected true for 2-color song direct match")
+		}
+		// 2-color song: inverted order -> TRUE
+		if !quiz.JudgeAnswer([]model.ID{colWhite, colSky}, songTarget2Color) {
+			t.Fatal("expected true for 2-color song inverted match")
+		}
+		// 2-color song: mismatched color -> FALSE
+		if quiz.JudgeAnswer([]model.ID{colSky, colPink}, songTarget2Color) {
+			t.Fatal("expected false for 2-color song mismatch")
 		}
 	})
 }

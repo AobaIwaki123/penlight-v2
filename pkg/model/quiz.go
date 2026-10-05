@@ -25,11 +25,13 @@ type QuizQuestion struct {
 	GeneratedAt    time.Time    `json:"generated_at"`
 }
 
-// QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018).
+// QuizFilter specifies candidate pool filtering criteria (Ref: ADR-0018, ADR-0026, ADR-0029).
 type QuizFilter struct {
+	SeriesID         *ID   `json:"series_id,omitempty"`
 	GroupID          *ID   `json:"group_id,omitempty"`
 	Generations      []int `json:"generations,omitempty"`
 	PhotoTypeIDs     []ID  `json:"photo_type_ids,omitempty"`
 	IncludeGraduated bool  `json:"include_graduated"`
+	SongMode         bool  `json:"song_mode"` // true: 楽曲カラークイズ, false: メンバーカラークイズ (ADR-0029)
 }
 

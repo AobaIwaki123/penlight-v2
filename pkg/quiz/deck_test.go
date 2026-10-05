@@ -112,7 +112,7 @@ func TestBuildBlendedDeck(t *testing.T) {
 	})
 
 	t.Run("Empty pool or non-positive deckSize", func(t *testing.T) {
-		if deck := quiz.BuildBlendedDeck(nil, nil, 10, rng); deck != nil {
+		if deck := quiz.BuildBlendedDeck[model.Member](nil, nil, 10, rng); deck != nil {
 			t.Fatalf("expected nil for empty pool, got %+v", deck)
 		}
 		if deck := quiz.BuildBlendedDeck(pool, nil, 0, rng); deck != nil {
@@ -136,6 +136,37 @@ func TestBuildBlendedDeck(t *testing.T) {
 		}
 		if !different {
 			t.Log("Note: decks happened to be identical (unlikely with 20 items)")
+		}
+	})
+
+	t.Run("ADR-0031 Generics: BuildBlendedDeck with Song targets", func(t *testing.T) {
+		songs := make([]model.Song, 15)
+		for i := 0; i < 15; i++ {
+			songs[i] = model.Song{
+				ID:       model.ID(fmt.Sprintf("sng_%02d", i+1)),
+				Title:    fmt.Sprintf("楽曲%d", i+1),
+				Color1ID: "col_blue",
+			}
+		}
+
+		// 5 songs seen in history
+		history := make([]model.AnswerLog, 5)
+		for i := 0; i < 5; i++ {
+			sID := songs[i].ID
+			history[i] = model.AnswerLog{TargetSongID: &sID}
+		}
+
+		songDeck := quiz.BuildBlendedDeck(songs, history, 10, rng)
+		if len(songDeck) != 10 {
+			t.Fatalf("expected 10 songs in deck, got %d", len(songDeck))
+		}
+
+		seenIDs := make(map[model.ID]bool)
+		for _, s := range songDeck {
+			if seenIDs[s.ID] {
+				t.Fatalf("duplicate song %s in deck", s.ID)
+			}
+			seenIDs[s.ID] = true
 		}
 	})
 }

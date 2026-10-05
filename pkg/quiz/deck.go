@@ -9,20 +9,20 @@ import (
 // DefaultUnseenRatio is the target ratio of unseen members in a deck (Ref: ADR-0020).
 const DefaultUnseenRatio = 0.7
 
-// BuildBlendedDeck creates a quiz deck by blending unseen members and review (seen) members
-// based on past answer logs (Ref: ADR-0020).
-// It guarantees zero duplicate members within the generated deck.
-func BuildBlendedDeck(
-	pool []model.Member,
+// BuildBlendedDeck creates a quiz deck by blending unseen items and review (seen) items
+// based on past answer logs for ANY QuizTarget (Ref: ADR-0020, ADR-0031).
+// It guarantees zero duplicate items within the generated deck.
+func BuildBlendedDeck[T QuizTarget](
+	pool []T,
 	history []model.AnswerLog,
 	deckSize int,
 	rng *rand.Rand,
-) []model.Member {
+) []T {
 	if len(pool) == 0 || deckSize <= 0 {
 		return nil
 	}
 
-	// 1. Build set of seen member IDs from history
+	// 1. Build set of seen target IDs from history
 	seenIDs := make(map[model.ID]bool, len(history))
 	for _, log := range history {
 		if targetID := log.GetTargetID(); targetID != "" {
@@ -30,19 +30,19 @@ func BuildBlendedDeck(
 		}
 	}
 
-	// 2. Partition pool into unseen and seen members
-	var unseen, seen []model.Member
-	for _, m := range pool {
-		if seenIDs[m.ID] {
-			seen = append(seen, m)
+	// 2. Partition pool into unseen and seen items
+	var unseen, seen []T
+	for _, item := range pool {
+		if seenIDs[item.GetID()] {
+			seen = append(seen, item)
 		} else {
-			unseen = append(unseen, m)
+			unseen = append(unseen, item)
 		}
 	}
 
 	// 3. Shuffle unseen and seen groups separately using Fisher-Yates
-	shuffleMembers(unseen, rng)
-	shuffleMembers(seen, rng)
+	shuffleItems(unseen, rng)
+	shuffleItems(seen, rng)
 
 	// 4. Calculate target allocation
 	actualDeckSize := deckSize
@@ -62,7 +62,7 @@ func BuildBlendedDeck(
 		takeSeen = remainingNeeded
 	}
 
-	// If we haven't reached actualDeckSize and there are leftover unseen members, take more unseen
+	// If we haven't reached actualDeckSize and there are leftover unseen items, take more unseen
 	if takeUnseen+takeSeen < actualDeckSize && len(unseen) > takeUnseen {
 		additionalUnseen := actualDeckSize - (takeUnseen + takeSeen)
 		leftoverUnseen := len(unseen) - takeUnseen
@@ -73,21 +73,21 @@ func BuildBlendedDeck(
 	}
 
 	// Combine into final deck
-	deck := make([]model.Member, 0, actualDeckSize)
+	deck := make([]T, 0, actualDeckSize)
 	deck = append(deck, unseen[:takeUnseen]...)
 	deck = append(deck, seen[:takeSeen]...)
 
 	// 5. Final shuffle to randomize presentation order
-	shuffleMembers(deck, rng)
+	shuffleItems(deck, rng)
 
 	return deck
 }
 
-// shuffleMembers performs an in-place Fisher-Yates shuffle on a slice of members.
-func shuffleMembers(members []model.Member, rng *rand.Rand) {
-	for i := len(members) - 1; i > 0; i-- {
+// shuffleItems performs an in-place Fisher-Yates shuffle on any slice.
+func shuffleItems[T any](items []T, rng *rand.Rand) {
+	for i := len(items) - 1; i > 0; i-- {
 		j := rng.Intn(i + 1)
-		members[i], members[j] = members[j], members[i]
+		items[i], items[j] = items[j], items[i]
 	}
 }
 
