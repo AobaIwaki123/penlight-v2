@@ -1881,7 +1881,13 @@
     "status": "active",
     "left_color": "白",
     "right_color": "紫",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/otani_emiri.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1893,7 +1899,13 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "青",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/oba_hana.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1905,7 +1917,13 @@
     "status": "active",
     "left_color": "水色",
     "right_color": "濃ピンク",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/otoshima_risa.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1917,7 +1935,13 @@
     "status": "active",
     "left_color": "薄ピンク",
     "right_color": "薄ピンク",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/saito_kiara.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1929,7 +1953,13 @@
     "status": "active",
     "left_color": "白",
     "right_color": "白",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/sasaki_maika.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1941,7 +1971,13 @@
     "status": "active",
     "left_color": "赤",
     "right_color": "赤",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/takamatsu_hitomi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1953,7 +1989,13 @@
     "status": "active",
     "left_color": "黄",
     "right_color": "オレンジ",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/takiwaki_shoko.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1965,7 +2007,13 @@
     "status": "active",
     "left_color": "紫",
     "right_color": "紫",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/noguchi_iori.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1977,7 +2025,13 @@
     "status": "active",
     "left_color": "緑",
     "right_color": "緑",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/morohashi_sana.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "equal_love",
@@ -1989,7 +2043,13 @@
     "status": "active",
     "left_color": "黄",
     "right_color": "青",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://equal-love.jp/image/profile/yamamoto_anna.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2001,7 +2061,13 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "ホワイト",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/ogi_hana.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2013,7 +2079,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "イエロー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/ochiai_kirari.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2025,7 +2097,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "パステルブルー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/kanisawa_moeko.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2037,7 +2115,13 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "ホワイト",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/kawaguchi_natsune.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2049,7 +2133,13 @@
     "status": "active",
     "left_color": "ライトグリーン",
     "right_color": "ライトグリーン",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/kawanago_natsumi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2061,7 +2151,13 @@
     "status": "active",
     "left_color": "パッションピンク",
     "right_color": "サクラピンク",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/sakurai_momo.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2085,7 +2181,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "サクラピンク",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/suzuki_hitomi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2097,7 +2199,13 @@
     "status": "active",
     "left_color": "ピンク",
     "right_color": "ホワイト",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/tanizaki_saya.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2109,7 +2217,13 @@
     "status": "active",
     "left_color": "ライトグリーン",
     "right_color": "イエロー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/tomita_nanaka.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2121,7 +2235,13 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "ブルー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/nagata_shiori.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "not_equal_me",
@@ -2133,7 +2253,13 @@
     "status": "active",
     "left_color": "バイオレット",
     "right_color": "パステルブルー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://not-equal-me.jp/image/profile/honda_miyuki.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2145,7 +2271,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "イエロー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/aida_jurii.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2157,7 +2289,13 @@
     "status": "active",
     "left_color": "サクラピンク",
     "right_color": "イエロー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/amano_konoa.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2169,7 +2307,13 @@
     "status": "active",
     "left_color": "バイオレット",
     "right_color": "バイオレット",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/ichihara_ayumi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2181,7 +2325,13 @@
     "status": "active",
     "left_color": "ブルー",
     "right_color": "ブルー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/esumi_renon.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2193,7 +2343,13 @@
     "status": "active",
     "left_color": "パステルブルー",
     "right_color": "パステルブルー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/oshida_mitsuki.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2205,7 +2361,13 @@
     "status": "active",
     "left_color": "ホワイト",
     "right_color": "ホワイト",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/onishi_aoi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2217,7 +2379,13 @@
     "status": "active",
     "left_color": "イエロー",
     "right_color": "イエロー",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/ozawa_aimi.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2229,7 +2397,13 @@
     "status": "active",
     "left_color": "オレンジ",
     "right_color": "サクラピンク",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/takahashi_mai.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2241,7 +2415,13 @@
     "status": "active",
     "left_color": "グリーン",
     "right_color": "ホワイト",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/fujisawa_riko.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2253,7 +2433,13 @@
     "status": "active",
     "left_color": "レッド",
     "right_color": "レッド",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/murayama_yuuka.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2265,7 +2451,13 @@
     "status": "active",
     "left_color": "ピンク",
     "right_color": "バイオレット",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/yamada_momoka.jpg",
+        "is_primary": true
+      }
+    ]
   },
   {
     "group_slug": "nearly_equal_joy",
@@ -2277,6 +2469,12 @@
     "status": "active",
     "left_color": "エメラルドグリーン",
     "right_color": "エメラルドグリーン",
-    "images": []
+    "images": [
+      {
+        "photo_type_slug": "21th_single",
+        "url": "https://nearly-equal-joy.jp/image/profile/yamano_arisu.jpg",
+        "is_primary": true
+      }
+    ]
   }
 ]

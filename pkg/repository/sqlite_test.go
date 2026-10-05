@@ -267,8 +267,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListPhotoTypes failed: %v", err)
 	}
-	if len(photoTypes) != 8 {
-		t.Fatalf("expected 8 photo types (4 Hinatazaka, 3 Sakurazaka, 1 Nogizaka), got %d", len(photoTypes))
+	if len(photoTypes) != 11 {
+		t.Fatalf("expected 11 photo types (8 Sakamichi, 3 Ikolove), got %d", len(photoTypes))
 	}
 
 	// Verify member images list
@@ -281,6 +281,28 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	}
 	if images[0].PhotoType == nil || images[0].PhotoType.Name == "" {
 		t.Fatalf("expected loaded PhotoType on image, got %+v", images[0].PhotoType)
+	}
+
+	// Spot check an equal_love member's image
+	var maika *model.Member
+	for i := range members {
+		if members[i].FamilyName == "佐々木" && members[i].GivenName == "舞香" {
+			maika = &members[i]
+			break
+		}
+	}
+	if maika == nil {
+		t.Fatal("member 佐々木舞香 not found in seed")
+	}
+	if maika.PrimaryImage() == nil {
+		t.Fatal("expected primary image for 佐々木舞香")
+	}
+	maikaImages, err := repo.ListMemberImages(ctx, maika.ID)
+	if err != nil || len(maikaImages) == 0 {
+		t.Fatalf("expected images for 佐々木舞香, got err: %v, count: %d", err, len(maikaImages))
+	}
+	if maikaImages[0].PhotoType == nil || maikaImages[0].PhotoType.Slug != "21th_single" {
+		t.Fatalf("expected 21th_single photo type for 佐々木舞香, got %+v", maikaImages[0].PhotoType)
 	}
 
 	// Verify master version
