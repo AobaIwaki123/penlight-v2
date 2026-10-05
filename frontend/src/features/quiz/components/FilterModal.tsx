@@ -3,7 +3,6 @@
 import {
   Alert,
   Badge,
-  Box,
   Button,
   Checkbox,
   Group,
@@ -12,7 +11,6 @@ import {
   Stack,
   Switch,
   Text,
-  UnstyledButton,
 } from '@mantine/core';
 import {
   IconAlertCircle,
@@ -21,7 +19,12 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import type { Group as IdolGroup, Member, Song } from '@/types/generated';
+import type {
+  Group as IdolGroup,
+  Member,
+  Series,
+  Song,
+} from '@/types/generated';
 
 export interface QuizFilterCriteria {
   groupId: string;
@@ -33,6 +36,7 @@ export interface QuizFilterCriteria {
 interface FilterModalProps {
   opened: boolean;
   onClose: () => void;
+  series: Series[];
   groups: IdolGroup[];
   allMembers: Member[];
   allSongs: Song[];
@@ -43,6 +47,7 @@ interface FilterModalProps {
 export function FilterModal({
   opened,
   onClose,
+  series,
   groups,
   allMembers,
   allSongs,
@@ -77,7 +82,7 @@ export function FilterModal({
     new Set(groupMembers.map((m) => m.generation)),
   ).sort((a, b) => a - b);
 
-  // When switching groups, select all available generations for that group
+  // When switching groups, reset generations to all for that group
   const handleGroupChange = (newGroupId: string) => {
     setSelectedGroupId(newGroupId);
     const newGroupMembers = allMembers.filter((m) => m.group_id === newGroupId);
@@ -147,62 +152,46 @@ export function FilterModal({
       size="sm"
     >
       <Stack gap="md">
-        {/* グループ選択 */}
-        <Stack gap={4}>
+        {/* グループ選択 (シリーズでグルーピング・カラー丸なし文字のみ) */}
+        <Stack gap="xs">
           <Text size="xs" fw={700} c="dimmed">
             グループ選択
           </Text>
-          <SimpleGrid cols={3} spacing={6}>
-            {groups.map((g) => {
-              const isSelected = g.id === selectedGroupId;
-              return (
-                <UnstyledButton
-                  key={g.id}
-                  onClick={() => handleGroupChange(g.id)}
-                  style={{
-                    borderRadius: 8,
-                    padding: '8px 4px',
-                    border: isSelected
-                      ? `2px solid ${g.theme_color_hex}`
-                      : '1px solid var(--mantine-color-default-border)',
-                    backgroundColor: isSelected
-                      ? `${g.theme_color_hex}15`
-                      : 'var(--mantine-color-body)',
-                    transition: 'all 0.15s ease',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Stack align="center" gap={3}>
-                    <Box
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: '50%',
-                        backgroundColor: g.theme_color_hex,
-                        boxShadow: isSelected
-                          ? `0 0 6px ${g.theme_color_hex}`
-                          : 'none',
-                      }}
-                    />
-                    <Text
-                      size="xs"
-                      fw={isSelected ? 700 : 500}
-                      c={isSelected ? 'var(--mantine-color-text)' : 'dimmed'}
-                      style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      {g.name}
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
-              );
-            })}
-          </SimpleGrid>
+          {series.map((ser) => {
+            const seriesGroups = groups.filter((g) => g.series_id === ser.id);
+            if (seriesGroups.length === 0) return null;
+            return (
+              <Stack key={ser.id} gap={4}>
+                <Text size="11px" fw={700} c="dimmed">
+                  {ser.name}
+                </Text>
+                <SimpleGrid cols={3} spacing={6}>
+                  {seriesGroups.map((g) => {
+                    const isSelected = g.id === selectedGroupId;
+                    return (
+                      <Button
+                        key={g.id}
+                        variant={isSelected ? 'filled' : 'default'}
+                        color="blue"
+                        size="xs"
+                        radius="md"
+                        onClick={() => handleGroupChange(g.id)}
+                        styles={{
+                          label: {
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          },
+                        }}
+                      >
+                        {g.name}
+                      </Button>
+                    );
+                  })}
+                </SimpleGrid>
+              </Stack>
+            );
+          })}
         </Stack>
 
         {/* クイズ種別切替: メンバー推しメンカラー vs 楽曲カラー */}

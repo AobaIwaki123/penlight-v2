@@ -209,8 +209,8 @@ export function PortalView({
               </Text>
               <Text size="xs" c="dimmed">
                 {songMode
-                  ? '代表曲の指定カラー当て'
-                  : '現役メンバーの推しメンカラー当て'}
+                  ? '代表曲の指定カラークイズ'
+                  : '現役メンバーの推しメンカラークイズ'}
               </Text>
             </Box>
             <Badge

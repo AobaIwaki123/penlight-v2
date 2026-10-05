@@ -647,6 +647,7 @@ export function QuizContainer() {
       <FilterModal
         opened={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
+        series={allSeries}
         groups={allGroups}
         allMembers={allMembers}
         allSongs={allSongs}
