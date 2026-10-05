@@ -153,7 +153,7 @@ export function QuizContainer() {
     const savedInput = loadSavedInputMode();
     if (savedInput) setInputMode(savedInput);
 
-    // Check if portal is explicitly enabled (dev only)
+    // Enable portal automatically in development environment (localhost, dev mode)
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       const isLocal =
@@ -161,9 +161,9 @@ export function QuizContainer() {
         hostname === '127.0.0.1' ||
         hostname === '[::1]' ||
         hostname.endsWith('.local') ||
+        process.env.NODE_ENV === 'development' ||
         window.location.search.includes('dev=true');
-      const hasPortalParam = window.location.search.includes('portal=true');
-      if (isLocal && hasPortalParam) {
+      if (isLocal) {
         setCanShowPortal(true);
         setViewMode('portal');
       }
