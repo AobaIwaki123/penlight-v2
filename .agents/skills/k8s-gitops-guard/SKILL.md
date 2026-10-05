@@ -5,7 +5,7 @@ description: 自宅KubernetesクラスタにおけるArgoCD宣言的GitOps、Clo
 
 # Kubernetes デプロイ & ArgoCD GitOps 運用規約 (k8s-gitops-guard)
 
-> **管轄 ADR**: [ADR-0003](../../../adr/0003-deployment-target-and-container-registry.md), [ADR-0012](../../../adr/0012-kubernetes-deployment-and-gitops-architecture.md)
+> **管轄 ADR**: [ADR-0003](../../../adr/0003-deployment-target-and-container-registry.md), [ADR-0012](../../../adr/0012-kubernetes-deployment-and-gitops-architecture.md), [ADR-0015](../../../adr/0015-minimal-configuration-and-secrets-management.md), [ADR-0025](../../../adr/0025-embed-sql-migrations-and-seeds-into-binary.md)
 
 本スキルは、自宅 Proxmox k8s クラスタ上で稼働する `penlight-v2` において、ArgoCD を用いた宣言的 GitOps、Cloudflare Tunnel Ingress による安全な外部公開、および SQLite WAL の単一ライター整合性を担保するための運用・検証手順を定める。
 
@@ -22,7 +22,9 @@ description: 自宅KubernetesクラスタにおけるArgoCD宣言的GitOps、Clo
 4. **最小リソースクォータの設定**:
    - 単一バイナリの軽量性を活かし、CPU Request `20m` / Memory Request `32Mi`、CPU Limit `500m` / Memory Limit `128Mi` を維持してクラスタリソースを浪費しない。
 5. **最小構成の環境変数 (ADR-0015 準拠)**:
-   - マニフェスト内で設定する環境変数は `DATA_DIR: /data` を基本とし、不要な環境変数の追加・肥大化を禁止する。
+   - マニフェスト内で設定する環境変数は `DATA_DIR: /data` および Secret からの `SESSION_SECRET` 注入に限定し、不要な環境変数の追加・散乱を禁止する。
+6. **非root実行と PVC 書き込み権限の保証 (`fsGroup: 10001`)**:
+   - Ceph RBD 等の外部ストレージ利用時にも非rootユーザー（`UID: 10001`）が SQLite ファイルを読み書きできるよう、PodSpec に `fsGroup: 10001`, `runAsUser: 10001`, `runAsGroup: 10001` を必ず設定すること。
 
 ---
 
@@ -82,6 +84,8 @@ kubectl describe application penlight -n argocd
 | `deploy: app path does not exist` | `main` ブランチに `deploy/` がまだマージされていない | PR を `main` にマージ後、ArgoCD をハードリフレッシュ (`kubectl annotate application penlight -n argocd argocd.argoproj.io/refresh=hard --overwrite`) する |
 | `ErrImagePull / ImagePullBackOff` | GitHub Actions のコンテナビルド未完了、またはタグ名不一致 | `gh run list --workflow=Deploy` でビルド完了を確認。リポジトリが Public であることを確認 |
 | `CrashLoopBackOff (unable to open database file / permission denied)` | PVC（`/data`）の所有権が非rootユーザーと不一致 | PodSpec に `securityContext.fsGroup: 10001` を指定して PVC の所有権を自動調整する |
+| `CrashLoopBackOff (SESSION_SECRET is required)` | 本番環境でシークレット未注入 | Kubernetes Secret `penlight-secret` を作成し、Deployment の `env` で `secretKeyRef` から注入する |
+| `CrashLoopBackOff (failed to read migration SQL)` | ランタイムコンテナ内に SQL ファイルが未配置 | `migrations.FS` / `seeds.FS` で単一バイナリ内に完全内包（ADR-0025）されていることを確認する |
 | `go: go.mod requires go >= X` | Dockerfile 内の Go ビルダーバージョン不足 | Dockerfile の `golang:<version>-alpine` を `go.mod` 以上（`container-guard` 参照）に更新する |
 
 ---
@@ -90,6 +94,7 @@ kubectl describe application penlight -n argocd
 
 - [ ] `replicas: 1` かつ `strategy.type: Recreate` が設定されているか
 - [ ] PodSpec に `securityContext.fsGroup: 10001` が設定され、PVC 書き込み権限が確保されているか
+- [ ] `SESSION_SECRET` が `secretKeyRef` 経由で安全に注入されているか
 - [ ] PVC のマウントパスが `/data`、`DATA_DIR` が `/data` になっているか
 - [ ] Ingress の `ingressClassName` が `"cloudflare-tunnel"` になっているか
 - [ ] リソース制限（Requests 32Mi / Limits 128Mi）が守られているか

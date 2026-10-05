@@ -5,9 +5,9 @@ description: Dockerfileのベースイメージ最新LTS特定、マルチステ
 
 # コンテナイメージ・Dockerfile 検証規約 (container-guard)
 
-> **管轄 ADR**: [ADR-0003](../../../adr/0003-deployment-target-and-container-registry.md), [ADR-0012](../../../adr/0012-kubernetes-deployment-and-gitops-architecture.md)
+> **管轄 ADR**: [ADR-0003](../../../adr/0003-deployment-target-and-container-registry.md), [ADR-0011](../../../adr/0011-directory-structure-and-responsibility-boundaries.md), [ADR-0012](../../../adr/0012-kubernetes-deployment-and-gitops-architecture.md), [ADR-0025](../../../adr/0025-embed-sql-migrations-and-seeds-into-binary.md)
 
-本スキルは、`Dockerfile` を作成・更新する際に、AI の古い学習データによる「過去の Node/Go/Alpine バージョンの採用」を防ぎ、マルチステージビルドによる最小サイズ化とセキュリティ（非root実行・CGOフリー）を徹底するための運用手順を定める。
+本スキルは、`Dockerfile` を作成・更新する際に、AI の古い学習データによる「過去の Node/Go/Alpine バージョンの採用」を防ぎ、マルチステージビルドによる最小サイズ化とセキュリティ（非root実行・CGOフリー・単一バイナリ完全内包）を徹底するための運用手順を定める。
 
 ---
 
@@ -25,6 +25,8 @@ description: Dockerfileのベースイメージ最新LTS特定、マルチステ
    - Node.js SDK や npm キャッシュ、Go コンパイラ、Git、ソースコード全体を本番イメージに持ち込んではならない。実行ステージにはコンパイル済み単一バイナリ、CA 証明書、および `/data` ボリュームのみを含めること。
 6. **`.dockerignore` の網羅性**:
    - `.git`, `node_modules`, `data/`, `*.sqlite*`, ドキュメント類など、ビルドコンテキストを不要に肥大化させるファイルは必ず `.dockerignore` で除外すること。
+7. **実行時リソースの `embed.FS` による完全内包 (Single Binary Invariant, ADR-0025)**:
+   - フロントエンド静的アセット（`out`）のみならず、マイグレーション SQL（`migrations/*.sql`）やシードマスタデータ（`seeds/seed.sql`, `seeds/data/*.json`）等の初期化・同期用リソースはすべて Go の `embed.FS` で単一バイナリ内部に組み込むこと。実行ステージへの個別ファイルコピー（`COPY migrations ...` 等）に依存せず、バイナリ単独でマイグレーションから Web/API 配信まで自律完結させること。
 
 ---
 
