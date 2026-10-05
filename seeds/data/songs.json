@@ -1,0 +1,65 @@
+[
+  {
+    "group_slug": "equal_love",
+    "title": "記憶のどこかで",
+    "kana": "きおくのどこかで",
+    "color1": "赤",
+    "color2": null
+  },
+  {
+    "group_slug": "equal_love",
+    "title": "手遅れcaution",
+    "kana": "ておくれこーしょん",
+    "color1": "赤",
+    "color2": null
+  },
+  {
+    "group_slug": "equal_love",
+    "title": "推しのいる世界",
+    "kana": "おしのいるせかい",
+    "color1": "紫",
+    "color2": null
+  },
+  {
+    "group_slug": "equal_love",
+    "title": "僕のヒロイン",
+    "kana": "ぼくのひろいん",
+    "color1": "青",
+    "color2": null
+  },
+  {
+    "group_slug": "equal_love",
+    "title": "おかえり、花便り",
+    "kana": "おかえりはなだより",
+    "color1": "青",
+    "color2": "黄"
+  },
+  {
+    "group_slug": "not_equal_me",
+    "title": "ピオニーズ",
+    "kana": "ぴおにーず",
+    "color1": "レッド",
+    "color2": null
+  },
+  {
+    "group_slug": "not_equal_me",
+    "title": "空白の花",
+    "kana": "くうはくのはな",
+    "color1": "ホワイト",
+    "color2": null
+  },
+  {
+    "group_slug": "not_equal_me",
+    "title": "サマーチョコレート",
+    "kana": "さまーちょこれーと",
+    "color1": "ピンク",
+    "color2": null
+  },
+  {
+    "group_slug": "not_equal_me",
+    "title": "君と僕の歌",
+    "kana": "きみとぼくのうた",
+    "color1": "エメラルドグリーン",
+    "color2": null
+  }
+]

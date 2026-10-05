@@ -1,7 +1,7 @@
 # 09. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
 
 - **作成日**: 2026-10-05
-- **ステータス**: Step 2 完了 / PR レビュー中 (次回: Step 3 着手)
+- **ステータス**: Step 3 完了 / PR 作成 (次回: Step 4 着手)
 - **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md), [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
@@ -12,21 +12,21 @@
 | ステップ | 内容 | トピックブランチ | ステータス | 成果物 / PR |
 |---|---|---|---|---|
 | **Step 1** | DBスキーマ & 正本Goモデル層拡張 | `feat/step1-db-schema-and-models` | 🟣 **Merged** | [PR #23](https://github.com/AobaIwaki123/penlight-v2/pull/23) |
-| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | ✅ **PR作成完了** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
-| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ⏳ **次期着手** | =LOVE 系列マスタ・代表楽曲データ |
-| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏸️ 未着手 | ポータル画面・楽曲解答UI |
+| **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | 🟣 **Merged** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
+| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ✅ **PR作成中** | =LOVE 系列マスタ・代表楽曲データ |
+| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏳ **次期着手** | ポータル画面・楽曲解答UI |
 
 ### 次回再開手順 (Quick Resume Guide)
-1. **PR #24 のマージ確認**:
-   - `gh pr view 24` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
+1. **PR (Step 3) のマージ確認**:
+   - `gh pr view` で状態確認。マージ完了を確認する（エージェントの独断マージは禁止、ユーザーの明示指示で実行）。
 2. **ワークツリー最新化とブランチ切り替え**:
    ```bash
    cd /Users/aobaiwaki/penlight-v2-worktrees/feat-multi-series-and-song-color
    git fetch origin
-   git checkout -B feat/step3-seed-data-and-verify origin/main
+   git checkout -B feat/step4-portal-and-song-quiz-ui origin/main
    ```
-3. **Step 3 の実装着手**:
-   - 本ノートの「3. ステップ別タスク定義と受け入れ基準」の **Step 3** を順次実装。
+3. **Step 4 の実装着手**:
+   - 本ノートの「3. ステップ別タスク定義と受け入れ基準」の **Step 4** を順次実装。
 4. **検証コマンド**:
    - `make verify-ai`（トークン節約モード）または `make verify`（詳細ログ）
 

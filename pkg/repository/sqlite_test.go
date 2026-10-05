@@ -196,13 +196,22 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 		t.Fatalf("failed to execute seed.sql: %v", err)
 	}
 
+	// Verify series
+	seriesList, err := repo.ListSeries(ctx)
+	if err != nil {
+		t.Fatalf("ListSeries failed: %v", err)
+	}
+	if len(seriesList) != 2 {
+		t.Fatalf("expected 2 series (Sakamichi, Ikolove), got %d", len(seriesList))
+	}
+
 	// Verify groups
 	groups, err := repo.ListGroups(ctx)
 	if err != nil {
 		t.Fatalf("ListGroups failed: %v", err)
 	}
-	if len(groups) != 3 {
-		t.Fatalf("expected 3 groups, got %d", len(groups))
+	if len(groups) != 6 {
+		t.Fatalf("expected 6 groups (3 Sakamichi, 3 Ikolove), got %d", len(groups))
 	}
 
 	// Verify colors
@@ -210,8 +219,8 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListColors failed: %v", err)
 	}
-	if len(colors) != 41 {
-		t.Fatalf("expected 41 colors (15 for Hinatazaka, 15 for Sakurazaka, 11 for Nogizaka), got %d", len(colors))
+	if len(colors) != 82 {
+		t.Fatalf("expected 82 colors (41 Sakamichi, 41 Ikolove), got %d", len(colors))
 	}
 
 	// Verify active members (ListMembers filters out graduated members)
@@ -219,8 +228,17 @@ func TestSQLiteRepository_SeedDataImport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ListMembers failed: %v", err)
 	}
-	if len(members) != 85 {
-		t.Fatalf("expected 85 active members, got %d", len(members))
+	if len(members) != 118 {
+		t.Fatalf("expected 118 active members (85 Sakamichi + 33 Ikolove), got %d", len(members))
+	}
+
+	// Verify songs
+	songs, err := repo.ListSongs(ctx)
+	if err != nil {
+		t.Fatalf("ListSongs failed: %v", err)
+	}
+	if len(songs) != 9 {
+		t.Fatalf("expected 9 songs, got %d", len(songs))
 	}
 
 	// Spot check a member

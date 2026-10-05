@@ -1,5 +1,6 @@
 [
   {
+    "series_slug": "sakamichi",
     "slug": "hinatazaka46",
     "name": "日向坂46",
     "short_name": "日向坂",
@@ -7,6 +8,7 @@
     "display_order": 1
   },
   {
+    "series_slug": "sakamichi",
     "slug": "sakurazaka46",
     "name": "櫻坂46",
     "short_name": "櫻坂",
@@ -14,10 +16,35 @@
     "display_order": 2
   },
   {
+    "series_slug": "sakamichi",
     "slug": "nogizaka46",
     "name": "乃木坂46",
     "short_name": "乃木坂",
     "theme_color_hex": "#7E2682",
     "display_order": 3
+  },
+  {
+    "series_slug": "ikolove",
+    "slug": "equal_love",
+    "name": "=LOVE",
+    "short_name": "イコラブ",
+    "theme_color_hex": "#F28D9A",
+    "display_order": 4
+  },
+  {
+    "series_slug": "ikolove",
+    "slug": "not_equal_me",
+    "name": "≠ME",
+    "short_name": "ノイミー",
+    "theme_color_hex": "#00A381",
+    "display_order": 5
+  },
+  {
+    "series_slug": "ikolove",
+    "slug": "nearly_equal_joy",
+    "name": "≒JOY",
+    "short_name": "ニアジョイ",
+    "theme_color_hex": "#FFE200",
+    "display_order": 6
   }
 ]
