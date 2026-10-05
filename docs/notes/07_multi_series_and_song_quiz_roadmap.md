@@ -2,14 +2,14 @@
 
 - **作成日**: 2026-10-05
 - **ステータス**: 計画ドラフト (Under Review)
-- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md), [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md) の具現化、トップ画面新設、およびフィルター統合型モード選択
+- **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md), [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md), [ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
 
 ## 1. 目的とスコープ境界
 
 ### 目的
-[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）、[ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）、[ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md)（ポータル新設 & フィルター統合型モード選択）、および [ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md)（ビジュアルアイデンティティ重視ポータルUI）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
+[ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md)（同一アプリ内シリーズ分離）、[ADR-0027](../../adr/0027-song-penlight-color-data-structure.md)（楽曲カラーデータ構造）、[ADR-0028](../../adr/0028-portal-and-filter-integrated-mode-architecture.md)（ポータル新設 & フィルター統合型モード選択）、[ADR-0029](../../adr/0029-portal-layout-and-visual-identity-ui.md)（ビジュアルアイデンティティ重視ポータルUI）、および [ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md)（ジェネリック出題・判定エンジン抽象化）に基づき、単一バイナリ・軽量運用（メモリ 32MiB）を維持したまま、以下の機能安全な段階的リリースを達成する。
 
 ### スコープ境界
 - **対象シリーズ**:
@@ -56,16 +56,20 @@ flowchart TD
 
 ---
 
-### Step 2: 出題エンジン & リポジトリ層拡張
+### Step 2: 出題エンジン & リポジトリ層拡張 ([ADR-0030](../../adr/0030-generic-quiz-engine-and-target-abstraction.md))
 - **作業内容**:
   1. `pkg/model/repository.go` に `SeriesRepository`, `SongRepository` メソッドを追加
   2. `pkg/repository/sqlite.go` にクエリ実装
-  3. `pkg/quiz/filter.go` にシリーズ境界フィルタ（他シリーズのグループ・カラー混入遮断）を実装
-  4. `pkg/quiz/song_evaluator.go` に楽曲カラー判定ロジック（1色一致 or 2色無順序一致）を実装
-  5. 単体テストの作成（`pkg/quiz/`）
+  3. `pkg/quiz/target.go` に `QuizTarget` インターフェース（`GetID()`, `GetCorrectColors()`）を新設
+  4. `Member` および `Song` に `QuizTarget` インターフェースを実装
+  5. `pkg/quiz/deck.go` の `BuildBlendedDeck` をジェネリック化（`BuildBlendedDeck[T QuizTarget]`）
+  6. `pkg/quiz/judge.go` の `JudgeAnswer` を無順序カラー集合一致判定に共通化
+  7. `pkg/quiz/filter.go` にシリーズ境界フィルタ（他シリーズのグループ・カラー混入遮断）を実装
+  8. 単体テストの作成・拡充（`pkg/quiz/`）
 - **受け入れ基準**:
+  - メンバーと楽曲の両方が同一の `BuildBlendedDeck` で正しくシャッフル・出題されること。
+  - 1色（楽曲）および2色（メンバー・楽曲）の無順序判定が単体テストで網羅されていること。
   - 坂道シリーズ指定時に =LOVE 系列のデータが絶対に混入しないテストがパスすること。
-  - 楽曲カラーの 1 色・2 色無順序判定テストがパスすること。
 
 ---
 

@@ -36,6 +36,7 @@
 | [0027](./0027-song-penlight-color-data-structure.md) | 楽曲ペンライトカラー（1色/2色・左右なし）データ構造の採用 | Accepted |
 | [0028](./0028-portal-and-filter-integrated-mode-architecture.md) | アプリエントリーポータルおよびフィルター統合型モード選択アーキテクチャの採用 | Accepted |
 | [0029](./0029-portal-layout-and-visual-identity-ui.md) | ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用 | Accepted |
+| [0030](./0030-generic-quiz-engine-and-target-abstraction.md) | クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用 | Accepted |
 
 
 ---
