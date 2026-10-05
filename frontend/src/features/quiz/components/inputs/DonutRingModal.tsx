@@ -15,6 +15,7 @@ interface DonutRingModalProps {
   onColorSelect: (hand: 'left' | 'right', color: Color) => void;
   disabled: boolean;
   initialHand?: 'left' | 'right';
+  requiredColorsCount?: 1 | 2;
 }
 
 export function DonutRingModal({
@@ -27,6 +28,7 @@ export function DonutRingModal({
   onColorSelect,
   disabled,
   initialHand = 'left',
+  requiredColorsCount = 2,
 }: DonutRingModalProps) {
   const [currentHand, setCurrentHand] = useState<'left' | 'right'>(initialHand);
   const [hoveredColor, setHoveredColor] = useState<Color | null>(null);
@@ -41,6 +43,13 @@ export function DonutRingModal({
 
   const handleColorClick = (color: Color) => {
     if (disabled) return;
+
+    if (requiredColorsCount === 1) {
+      onColorSelect('left', color);
+      onAnswer({ leftColorId: color.id, rightColorId: '' });
+      onClose();
+      return;
+    }
 
     if (currentHand === 'left') {
       onColorSelect('left', color);
@@ -144,70 +153,89 @@ export function DonutRingModal({
             transition: 'all 0.2s ease',
           }}
         >
-          {/* 視覚的ペンライト2本並び (横並びを厳守 wrap="nowrap") */}
-          <Group gap={12} justify="center" align="center" wrap="nowrap">
-            {/* 左ペンライト */}
+          {/* 視覚的ペンライト表示 */}
+          {requiredColorsCount === 1 ? (
             <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => setCurrentHand('left')}
               style={{
-                cursor: 'pointer',
-                padding: '4px 6px',
+                padding: '4px 8px',
                 borderRadius: 8,
-                backgroundColor:
-                  currentHand === 'left'
-                    ? 'rgba(34, 139, 230, 0.45)'
-                    : 'transparent',
-                border:
-                  currentHand === 'left'
-                    ? '2px solid #339af0'
-                    : '1px solid transparent',
-                transform:
-                  currentHand === 'left' ? 'scale(1.1)' : 'scale(0.92)',
-                transition: 'all 0.15s ease',
+                backgroundColor: 'rgba(34, 139, 230, 0.45)',
+                border: '2px solid #339af0',
               }}
             >
               <PenlightStick
                 color={selectedLeftColor}
-                label="左"
-                height={46}
-                width={20}
+                label="指定色"
+                height={50}
+                width={22}
                 textColor="#ffffff"
               />
             </Box>
+          ) : (
+            <Group gap={12} justify="center" align="center" wrap="nowrap">
+              {/* 左ペンライト */}
+              <Box
+                role="button"
+                tabIndex={0}
+                onClick={() => setCurrentHand('left')}
+                style={{
+                  cursor: 'pointer',
+                  padding: '4px 6px',
+                  borderRadius: 8,
+                  backgroundColor:
+                    currentHand === 'left'
+                      ? 'rgba(34, 139, 230, 0.45)'
+                      : 'transparent',
+                  border:
+                    currentHand === 'left'
+                      ? '2px solid #339af0'
+                      : '1px solid transparent',
+                  transform:
+                    currentHand === 'left' ? 'scale(1.1)' : 'scale(0.92)',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <PenlightStick
+                  color={selectedLeftColor}
+                  label="左"
+                  height={46}
+                  width={20}
+                  textColor="#ffffff"
+                />
+              </Box>
 
-            {/* 右ペンライト */}
-            <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => setCurrentHand('right')}
-              style={{
-                cursor: 'pointer',
-                padding: '4px 6px',
-                borderRadius: 8,
-                backgroundColor:
-                  currentHand === 'right'
-                    ? 'rgba(253, 126, 20, 0.45)'
-                    : 'transparent',
-                border:
-                  currentHand === 'right'
-                    ? '2px solid #ff922b'
-                    : '1px solid transparent',
-                transform:
-                  currentHand === 'right' ? 'scale(1.1)' : 'scale(0.92)',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              <PenlightStick
-                color={selectedRightColor}
-                label="右"
-                height={46}
-                width={20}
-                textColor="#ffffff"
-              />
-            </Box>
-          </Group>
+              {/* 右ペンライト */}
+              <Box
+                role="button"
+                tabIndex={0}
+                onClick={() => setCurrentHand('right')}
+                style={{
+                  cursor: 'pointer',
+                  padding: '4px 6px',
+                  borderRadius: 8,
+                  backgroundColor:
+                    currentHand === 'right'
+                      ? 'rgba(253, 126, 20, 0.45)'
+                      : 'transparent',
+                  border:
+                    currentHand === 'right'
+                      ? '2px solid #ff922b'
+                      : '1px solid transparent',
+                  transform:
+                    currentHand === 'right' ? 'scale(1.1)' : 'scale(0.92)',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <PenlightStick
+                  color={selectedRightColor}
+                  label="右"
+                  height={46}
+                  width={20}
+                  textColor="#ffffff"
+                />
+              </Box>
+            </Group>
+          )}
 
           {/* 選択中/ホバー中の色名 (1行固定・文字数に合わせた動的サイズ) */}
           <Text

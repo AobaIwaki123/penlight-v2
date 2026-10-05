@@ -327,7 +327,7 @@ func TestSQLiteRepository_SeriesAndSongs(t *testing.T) {
 		INSERT INTO series (id, name, slug, display_order, created_at, updated_at)
 		VALUES
 			('ser_01', '坂道シリーズ', 'sakamichi', 1, ?, ?),
-			('ser_02', '=LOVE系列', 'ikolove', 2, ?, ?);
+			('ser_02', 'イコノイジョイ', 'ikolove', 2, ?, ?);
 	`, now, now, now, now)
 	if err != nil {
 		t.Fatalf("failed to insert series: %v", err)

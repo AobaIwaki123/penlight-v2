@@ -6,13 +6,15 @@ import {
   Button,
   Container,
   Loader,
+  Group as MantineGroup,
   Modal,
   Progress,
   Stack,
   Text,
 } from '@mantine/core';
-import { IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
+import { IconHome, IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { PortalView } from '@/features/portal/components/PortalView';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
 import {
   FilterModal,
@@ -25,8 +27,17 @@ import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridI
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
+import { SongQuizArea } from '@/features/quiz/components/SongQuizArea';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
-import type { Color, Group, Member } from '@/types/generated';
+import {
+  loadSavedInputMode,
+  loadSavedLayoutMode,
+  loadSavedSettings,
+  saveInputMode,
+  saveLayoutMode,
+  saveSettings,
+} from '@/features/quiz/utils/storage';
+import type { Color, Group, Member, Series, Song } from '@/types/generated';
 
 function filterAndShuffleMembers(
   sourceMembers: Member[],
@@ -36,9 +47,14 @@ function filterAndShuffleMembers(
     if (m.group_id !== filter.groupId) return false;
     if (!filter.includeGraduated && m.status !== 'active') return false;
     if (!m.penlight?.left_color_id || !m.penlight?.right_color_id) return false;
-    return filter.generations.includes(m.generation);
+    if (
+      filter.generations.length > 0 &&
+      !filter.generations.includes(m.generation)
+    ) {
+      return false;
+    }
+    return true;
   });
-  // Shuffle array using Fisher-Yates
   const shuffled = [...filtered];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -47,29 +63,71 @@ function filterAndShuffleMembers(
   return shuffled;
 }
 
+function filterAndShuffleSongs(
+  sourceSongs: Song[],
+  filter: QuizFilterCriteria,
+): Song[] {
+  const filtered = sourceSongs.filter((s) => s.group_id === filter.groupId);
+  const shuffled = [...filtered];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function getRelevantColors(
+  allColors: Color[],
+  groupId: string,
+  seriesId: string,
+  groups: Group[],
+): Color[] {
+  const groupColors = allColors.filter((c) => c.group_id === groupId);
+  if (groupColors.length > 0) return groupColors;
+
+  const seriesGroupIds = new Set(
+    groups.filter((g) => g.series_id === seriesId).map((g) => g.id),
+  );
+  const seriesColors = allColors.filter(
+    (c) => c.group_id && seriesGroupIds.has(c.group_id),
+  );
+  if (seriesColors.length > 0) return seriesColors;
+
+  return allColors.slice(0, 15);
+}
+
 export function QuizContainer() {
   // Master data from backend API
+  const [allSeries, setAllSeries] = useState<Series[]>([]);
   const [allGroups, setAllGroups] = useState<Group[]>([]);
   const [allMembers, setAllMembers] = useState<Member[]>([]);
+  const [allSongs, setAllSongs] = useState<Song[]>([]);
   const [allColors, setAllColors] = useState<Color[]>([]);
 
-  // Active quiz pool and colors
-  const [members, setMembers] = useState<Member[]>([]);
-  const [colors, setColors] = useState<Color[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  // Settings: presentation layout & input interface (default to overlay + donut)
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
-  const [inputMode, setInputMode] = useState<InputMode>('donut');
-
-  // Filter criteria and modal state
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  // Filter criteria (used in quiz session and configurable via modal)
   const [filterCriteria, setFilterCriteria] = useState<QuizFilterCriteria>({
     groupId: '',
     generations: [],
     includeGraduated: false,
+    songMode: false,
   });
+
+  // Modal state for quiz page filtering
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Active quiz pool and colors
+  const [members, setMembers] = useState<Member[]>([]);
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // View state: 'portal' or 'quiz'
+  const [viewMode, setViewMode] = useState<'portal' | 'quiz'>('portal');
+
+  // Presentation layout & input interface
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
+  const [inputMode, setInputMode] = useState<InputMode>('donut');
 
   // Modal state for Donut Ring Input
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
@@ -88,57 +146,68 @@ export function QuizContainer() {
   );
 
   useEffect(() => {
+    // Restore saved layout and input mode
+    const savedLayout = loadSavedLayoutMode();
+    if (savedLayout) setLayoutMode(savedLayout);
+    const savedInput = loadSavedInputMode();
+    if (savedInput) setInputMode(savedInput);
+
     fetchBootstrapData()
       .then((data) => {
-        const groups = data.groups || [];
+        const rawSeries = data.series || [];
+        const rawGroups = data.groups || [];
         const rawMembers = data.members || [];
+        const rawSongs = data.songs || [];
         const rawColors = data.colors || [];
 
-        setAllGroups(groups);
+        setAllSeries(rawSeries);
+        setAllGroups(rawGroups);
         setAllMembers(rawMembers);
+        setAllSongs(rawSongs);
         setAllColors(rawColors);
 
-        // Default to Hinatazaka46 if available, or first group
+        // Load saved settings or fallback to Hinatazaka46
+        const saved = loadSavedSettings();
         const defaultGroup =
-          groups.find((g) => g.slug === 'hinatazaka46') || groups[0];
+          rawGroups.find((g) => g.id === saved?.groupId) ||
+          rawGroups.find((g) => g.slug === 'hinatazaka46') ||
+          rawGroups[0];
         const defaultGroupId = defaultGroup ? defaultGroup.id : '';
 
         // Extract generations for default group
         const groupMembers = rawMembers.filter(
           (m) => m.group_id === defaultGroupId,
         );
-        const gens = Array.from(
+        const allGens = Array.from(
           new Set(groupMembers.map((m) => m.generation)),
         ).sort((a, b) => a - b);
 
         const initialCriteria: QuizFilterCriteria = {
           groupId: defaultGroupId,
-          generations: gens,
+          generations: allGens,
           includeGraduated: false,
+          songMode: saved?.songMode ?? false,
         };
+
         setFilterCriteria(initialCriteria);
 
-        const initialMembers = filterAndShuffleMembers(
-          rawMembers,
-          initialCriteria,
-        );
-        setMembers(
-          initialMembers.length > 0
-            ? initialMembers
-            : rawMembers.filter(
-                (m) =>
-                  m.status === 'active' &&
-                  m.penlight?.left_color_id &&
-                  m.penlight?.right_color_id,
-              ),
-        );
+        if (defaultGroup) {
+          const relevantColors = getRelevantColors(
+            rawColors,
+            defaultGroupId,
+            defaultGroup.series_id,
+            rawGroups,
+          );
+          setColors(relevantColors);
+        }
 
-        const groupColors = rawColors.filter(
-          (c) => c.group_id === defaultGroupId,
-        );
-        setColors(
-          groupColors.length > 0 ? groupColors : rawColors.slice(0, 15),
-        );
+        // Initialize quiz deck immediately so production directly plays the quiz
+        if (initialCriteria.songMode) {
+          setSongs(filterAndShuffleSongs(rawSongs, initialCriteria));
+        } else {
+          setMembers(filterAndShuffleMembers(rawMembers, initialCriteria));
+        }
+
         setIsLoading(false);
       })
       .catch((err) => {
@@ -147,20 +216,78 @@ export function QuizContainer() {
       });
   }, []);
 
-  const currentMember = members[currentIndex] || members[0];
-  const colorMap = new Map<string, Color>(colors.map((c) => [c.id, c]));
   const currentGroup = allGroups.find((g) => g.id === filterCriteria.groupId);
+  const colorMap = new Map<string, Color>(allColors.map((c) => [c.id, c]));
 
-  // Handle filter submission: rebuild deck and reset quiz progress
+  // Total questions count depending on mode
+  const totalQuestions = filterCriteria.songMode
+    ? songs.length
+    : members.length;
+  const currentMember = members[currentIndex] || members[0];
+  const currentSong = songs[currentIndex] || songs[0];
+
+  // Change group from Portal (automatically resets generations to all)
+  const handleGroupChange = (groupId: string) => {
+    const groupMembers = allMembers.filter((m) => m.group_id === groupId);
+    const gens = Array.from(
+      new Set(groupMembers.map((m) => m.generation)),
+    ).sort((a, b) => a - b);
+
+    const updated: QuizFilterCriteria = {
+      ...filterCriteria,
+      groupId,
+      generations: gens,
+    };
+    setFilterCriteria(updated);
+    saveSettings({ groupId, songMode: filterCriteria.songMode });
+
+    const targetGroup = allGroups.find((g) => g.id === groupId);
+    if (targetGroup) {
+      setColors(
+        getRelevantColors(allColors, groupId, targetGroup.series_id, allGroups),
+      );
+    }
+  };
+
+  // Change songMode from Portal
+  const handleSongModeChange = (newSongMode: boolean) => {
+    const updated = { ...filterCriteria, songMode: newSongMode };
+    setFilterCriteria(updated);
+    saveSettings({ groupId: filterCriteria.groupId, songMode: newSongMode });
+  };
+
+  // Apply new filter criteria from Quiz Page Modal
   const handleApplyFilter = (newCriteria: QuizFilterCriteria) => {
     setFilterCriteria(newCriteria);
-    const filtered = filterAndShuffleMembers(allMembers, newCriteria);
-    setMembers(filtered);
+    saveSettings({
+      groupId: newCriteria.groupId,
+      songMode: newCriteria.songMode,
+    });
 
-    const groupColors = allColors.filter(
-      (c) => c.group_id === newCriteria.groupId,
-    );
-    setColors(groupColors.length > 0 ? groupColors : allColors.slice(0, 15));
+    const targetGroup = allGroups.find((g) => g.id === newCriteria.groupId);
+    if (targetGroup) {
+      setColors(
+        getRelevantColors(
+          allColors,
+          newCriteria.groupId,
+          targetGroup.series_id,
+          allGroups,
+        ),
+      );
+    }
+
+    startQuizSession(newCriteria);
+  };
+
+  // Start quiz session with target criteria
+  const startQuizSession = (criteria: QuizFilterCriteria = filterCriteria) => {
+    if (criteria.songMode) {
+      const shuffledSongs = filterAndShuffleSongs(allSongs, criteria);
+      setSongs(shuffledSongs);
+    } else {
+      const shuffledMembers = filterAndShuffleMembers(allMembers, criteria);
+      setMembers(shuffledMembers);
+    }
 
     setCurrentIndex(0);
     setScore(0);
@@ -168,6 +295,15 @@ export function QuizContainer() {
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
     setFeedback('idle');
+    setViewMode('quiz');
+  };
+
+  const handleReturnToPortal = () => {
+    setViewMode('portal');
+    setIsFinished(false);
+    setFeedback('idle');
+    setSelectedLeft(undefined);
+    setSelectedRight(undefined);
   };
 
   // Handle color selection updates for live preview
@@ -184,7 +320,7 @@ export function QuizContainer() {
     setSelectedRight(undefined);
   };
 
-  // Handle final 2-tap answer
+  // Handle final answer (both Member & Song)
   const handleAnswer = ({
     leftColorId,
     rightColorId,
@@ -192,13 +328,31 @@ export function QuizContainer() {
     leftColorId: string;
     rightColorId: string;
   }) => {
-    const correctL = currentMember.penlight.left_color_id;
-    const correctR = currentMember.penlight.right_color_id;
+    let isCorrect = false;
 
-    // ADR-0019: Inverted orientation accepted (hand switch)
-    const isCorrect =
-      (leftColorId === correctL && rightColorId === correctR) ||
-      (leftColorId === correctR && rightColorId === correctL);
+    if (filterCriteria.songMode) {
+      if (!currentSong) return;
+      const c1 = currentSong.color1_id;
+      const c2 = currentSong.color2_id;
+
+      if (!c2) {
+        // 1-color song: exact match with leftColorId
+        isCorrect = leftColorId === c1;
+      } else {
+        // 2-color song: set-equality (unordered)
+        isCorrect =
+          (leftColorId === c1 && rightColorId === c2) ||
+          (leftColorId === c2 && rightColorId === c1);
+      }
+    } else {
+      if (!currentMember) return;
+      const correctL = currentMember.penlight?.left_color_id;
+      const correctR = currentMember.penlight?.right_color_id;
+
+      isCorrect =
+        (leftColorId === correctL && rightColorId === correctR) ||
+        (leftColorId === correctR && rightColorId === correctL);
+    }
 
     if (isCorrect) {
       setScore((s) => s + 1);
@@ -211,14 +365,14 @@ export function QuizContainer() {
     }
   };
 
-  // Move to next question (次へ押下でペンライト色をリセット)
+  // Move to next question
   const handleNextQuestion = () => {
     setFeedback('idle');
     setSelectedLeft(undefined);
     setSelectedRight(undefined);
     setActiveHand('left');
 
-    if (currentIndex + 1 < members.length) {
+    if (currentIndex + 1 < totalQuestions) {
       setCurrentIndex((i) => i + 1);
     } else {
       setIsFinished(true);
@@ -226,27 +380,116 @@ export function QuizContainer() {
   };
 
   const handleRestart = () => {
-    // Reshuffle current member pool for next round
-    setMembers((prev) => {
-      const reshuffled = [...prev];
-      for (let i = reshuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [reshuffled[i], reshuffled[j]] = [reshuffled[j], reshuffled[i]];
-      }
-      return reshuffled;
-    });
-    setCurrentIndex(0);
-    setScore(0);
-    setIsFinished(false);
-    setSelectedLeft(undefined);
-    setSelectedRight(undefined);
-    setFeedback('idle');
+    startQuizSession(filterCriteria);
   };
 
-  // Render selected layout component
-  const renderLayout = () => {
+  const handleLayoutModeChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    saveLayoutMode(mode);
+  };
+
+  const handleInputModeChange = (mode: InputMode) => {
+    setInputMode(mode);
+    saveInputMode(mode);
+  };
+
+  if (isLoading) {
+    return (
+      <Container
+        size="xs"
+        p="xl"
+        style={{
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}
+      >
+        <Loader size="lg" color="blue" />
+        <Text size="sm" c="dimmed">
+          マスターデータを読み込み中...
+        </Text>
+      </Container>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <Container
+        size="xs"
+        p="xl"
+        style={{
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}
+      >
+        <Text size="md" fw={700} c="red.6">
+          データの読み込みに失敗しました
+        </Text>
+        <Text size="xs" c="dimmed">
+          {loadError}
+        </Text>
+        <Button variant="light" onClick={() => window.location.reload()}>
+          再試行
+        </Button>
+      </Container>
+    );
+  }
+
+  // Render Portal View when viewMode is 'portal'
+  if (viewMode === 'portal') {
+    return (
+      <PortalView
+        series={allSeries}
+        groups={allGroups}
+        members={allMembers}
+        songs={allSongs}
+        colors={allColors}
+        selectedGroupId={filterCriteria.groupId}
+        songMode={filterCriteria.songMode}
+        onGroupChange={handleGroupChange}
+        onSongModeChange={handleSongModeChange}
+        onStartQuiz={() => startQuizSession(filterCriteria)}
+      />
+    );
+  }
+
+  // Quiz View (includes filter modal accessible from Header)
+  const isSongMode = filterCriteria.songMode;
+  const fillScreen =
+    !isSongMode && layoutMode === 'overlay' && inputMode === 'donut';
+
+  const requiredColorsCount: 1 | 2 =
+    isSongMode && currentSong ? (currentSong.color2_id ? 2 : 1) : 2;
+
+  const correctLeft = isSongMode
+    ? colorMap.get(currentSong?.color1_id || '')
+    : colorMap.get(currentMember?.penlight?.left_color_id || '');
+
+  const correctRight = isSongMode
+    ? currentSong?.color2_id
+      ? colorMap.get(currentSong.color2_id)
+      : undefined
+    : colorMap.get(currentMember?.penlight?.right_color_id || '');
+
+  const feedbackBar = (
+    <InlineFeedbackBar
+      isCorrect={feedback === 'correct'}
+      correctLeftColor={correctLeft}
+      correctRightColor={correctRight}
+      onNext={handleNextQuestion}
+    />
+  );
+
+  // Render member layout
+  const renderMemberLayout = () => {
     const handleOpenInput = (hand: 'left' | 'right') => {
-      // 「次へ」表示中 (解答済み) はカラーピッカーを開けない
       if (feedback !== 'idle') return;
       setActiveHand(hand);
       setIsDonutModalOpen(true);
@@ -279,86 +522,27 @@ export function QuizContainer() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <Container
-        size="xs"
-        p="xl"
-        style={{
-          minHeight: '100dvh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 16,
-        }}
-      >
-        <Loader size="lg" color="blue" />
-        <Text size="sm" c="dimmed">
-          マスターデータを読み込み中...
-        </Text>
-      </Container>
-    );
-  }
-
-  if (loadError || members.length === 0) {
-    return (
-      <Container
-        size="xs"
-        p="xl"
-        style={{
-          minHeight: '100dvh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 16,
-        }}
-      >
-        <Text size="md" fw={700} c="red.6">
-          データの読み込みに失敗しました
-        </Text>
-        <Text size="xs" c="dimmed">
-          {loadError || '有効な出題メンバーが見つかりません'}
-        </Text>
-        <Button variant="light" onClick={() => window.location.reload()}>
-          再試行
-        </Button>
-      </Container>
-    );
-  }
-
-  // 写真を下端まで敷き詰める全画面構成 (オーバーレイ＋ドーナツ)
-  const fillScreen = layoutMode === 'overlay' && inputMode === 'donut';
-
-  const feedbackBar = (
-    <InlineFeedbackBar
-      isCorrect={feedback === 'correct'}
-      correctLeftColor={colorMap.get(currentMember.penlight.left_color_id)}
-      correctRightColor={colorMap.get(currentMember.penlight.right_color_id)}
-      onNext={handleNextQuestion}
-    />
-  );
-
   return (
     <Container
       size="xs"
       p={0}
       style={{
-        // 全画面レイアウト時は画面高にぴったり収め、写真を下端まで敷き詰める
         ...(fillScreen ? { height: '100dvh' } : { minHeight: '100dvh' }),
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      {/* 共通ヘッダー */}
+      {/* 共通ヘッダー (ポータルへ戻るボタン & フィルター変更ボタン) */}
       <Header
         layoutMode={layoutMode}
-        onLayoutModeChange={setLayoutMode}
+        onLayoutModeChange={handleLayoutModeChange}
         inputMode={inputMode}
-        onInputModeChange={setInputMode}
+        onInputModeChange={handleInputModeChange}
         onOpenFilter={() => setIsFilterModalOpen(true)}
+        onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
+        groupName={currentGroup?.name}
+        isSongMode={isSongMode}
       />
 
       {/* 進行プログレスバー */}
@@ -372,14 +556,16 @@ export function QuizContainer() {
           }}
         >
           <Text size="xs" fw={700} c="dimmed">
-            第 {currentIndex + 1} 問 / 全 {members.length} 問
+            第 {currentIndex + 1} 問 / 全 {totalQuestions} 問
           </Text>
           <Badge size="xs" variant="outline" color="blue">
             スコア: {score}
           </Badge>
         </Box>
         <Progress
-          value={((currentIndex + 1) / members.length) * 100}
+          value={
+            totalQuestions > 0 ? ((currentIndex + 1) / totalQuestions) * 100 : 0
+          }
           size="xs"
           radius="xl"
           color="blue"
@@ -396,7 +582,7 @@ export function QuizContainer() {
         pb="sm"
         style={{ flexGrow: 1, minHeight: 0 }}
       >
-        {/* 出題カード (選択中レイアウト) */}
+        {/* 出題カード (楽曲クイズ vs メンバークイズ) */}
         <Box
           style={{
             width: '100%',
@@ -406,7 +592,30 @@ export function QuizContainer() {
             minHeight: fillScreen ? 0 : undefined,
           }}
         >
-          {renderLayout()}
+          {isSongMode ? (
+            currentSong ? (
+              <SongQuizArea
+                song={currentSong}
+                group={currentGroup}
+                selectedColor1={selectedLeft}
+                selectedColor2={selectedRight}
+                isCorrect={feedback === 'correct'}
+                onOpenInput={
+                  feedback === 'idle'
+                    ? (slot) => {
+                        setActiveHand(slot === 1 ? 'left' : 'right');
+                        setIsDonutModalOpen(true);
+                      }
+                    : undefined
+                }
+                footer={feedback !== 'idle' ? feedbackBar : undefined}
+              />
+            ) : (
+              <Text c="dimmed">出題可能な楽曲がありません</Text>
+            )
+          ) : (
+            currentMember && renderMemberLayout()
+          )}
         </Box>
 
         {/* 解答インターフェース: グリッド選択時のみ下部に常時表示 */}
@@ -418,14 +627,15 @@ export function QuizContainer() {
             disabled={feedback !== 'idle'}
             onColorSelect={handleColorSelect}
             onResetSelection={handleResetSelection}
+            requiredColorsCount={requiredColorsCount}
           />
         )}
 
-        {/* 解答直後の 1行インラインフィードバックバー (中央を邪魔せず最下部に表示) */}
-        {feedback !== 'idle' && !fillScreen && feedbackBar}
+        {/* 解答直後のインラインフィードバックバー (通常モード) */}
+        {feedback !== 'idle' && !fillScreen && !isSongMode && feedbackBar}
       </Stack>
 
-      {/* ドーナツリングカラー選択モーダル (完全透過 ＆ 2本のミニペンライトで左右を視覚化) */}
+      {/* ドーナツリングカラー選択モーダル */}
       <DonutRingModal
         opened={isDonutModalOpen && feedback === 'idle'}
         onClose={() => setIsDonutModalOpen(false)}
@@ -436,14 +646,17 @@ export function QuizContainer() {
         onColorSelect={handleColorSelect}
         disabled={feedback !== 'idle'}
         initialHand={activeHand}
+        requiredColorsCount={requiredColorsCount}
       />
 
-      {/* 絞り込みフィルターモーダル */}
+      {/* クイズページ用 絞り込みフィルターモーダル (ADR-0018, ADR-0029) */}
       <FilterModal
         opened={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
+        series={allSeries}
         groups={allGroups}
         allMembers={allMembers}
+        allSongs={allSongs}
         currentFilter={filterCriteria}
         onApply={handleApplyFilter}
       />
@@ -459,21 +672,35 @@ export function QuizContainer() {
         <Stack align="center" gap="md" py="md">
           <IconTrophy size={48} color="#fcc419" />
           <Text size="xl" fw={800}>
-            {score} / {members.length} 点
+            {score} / {totalQuestions} 点
           </Text>
           <Text size="sm" c="dimmed">
-            正答率: {((score / members.length) * 100).toFixed(1)}%
+            正答率:{' '}
+            {totalQuestions > 0
+              ? ((score / totalQuestions) * 100).toFixed(1)
+              : 0}
+            %
           </Text>
-          <Button
-            leftSection={<IconRotateClockwise size={16} />}
-            onClick={handleRestart}
-            variant="filled"
-            color="blue"
-            fullWidth
-            mt="sm"
-          >
-            もう一度挑戦する
-          </Button>
+          <MantineGroup gap="sm" style={{ width: '100%' }}>
+            <Button
+              leftSection={<IconRotateClockwise size={16} />}
+              onClick={handleRestart}
+              variant="filled"
+              color="blue"
+              style={{ flex: 1 }}
+            >
+              もう一度挑戦
+            </Button>
+            <Button
+              leftSection={<IconHome size={16} />}
+              onClick={handleReturnToPortal}
+              variant="light"
+              color="gray"
+              style={{ flex: 1 }}
+            >
+              トップへ戻る
+            </Button>
+          </MantineGroup>
         </Stack>
       </Modal>
     </Container>

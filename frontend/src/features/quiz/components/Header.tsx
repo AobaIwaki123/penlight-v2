@@ -2,6 +2,7 @@
 
 import {
   ActionIcon,
+  Badge,
   Box,
   Group,
   Menu,
@@ -10,11 +11,13 @@ import {
 } from '@mantine/core';
 import {
   IconCheck,
+  IconChevronLeft,
   IconCircleDot,
   IconColorSwatch,
   IconFilter,
   IconLayout,
   IconMoon,
+  IconMusic,
   IconSun,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
@@ -26,7 +29,10 @@ interface HeaderProps {
   inputMode: InputMode;
   onInputModeChange: (mode: InputMode) => void;
   onOpenFilter?: () => void;
+  onGoHome?: () => void;
   groupThemeColor?: string;
+  groupName?: string;
+  isSongMode?: boolean;
 }
 
 export function Header({
@@ -35,7 +41,10 @@ export function Header({
   inputMode,
   onInputModeChange,
   onOpenFilter,
+  onGoHome,
   groupThemeColor,
+  groupName,
+  isSongMode,
 }: HeaderProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === 'dark';
@@ -69,8 +78,21 @@ export function Header({
         borderBottom: '1px solid var(--mantine-color-default-border)',
       }}
     >
-      {/* 左: ロゴ & タイトル (旧版デザイン準拠) */}
+      {/* 左: ポータルへ戻るボタン または ロゴ */}
       <Group gap={8} align="center">
+        {onGoHome ? (
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="md"
+            radius="md"
+            onClick={onGoHome}
+            title="トップへ戻る"
+          >
+            <IconChevronLeft size={20} />
+          </ActionIcon>
+        ) : null}
+
         <Box
           style={{
             width: 28,
@@ -83,11 +105,21 @@ export function Header({
             color: '#fff',
           }}
         >
-          <IconColorSwatch size={18} />
+          {isSongMode ? <IconMusic size={18} /> : <IconColorSwatch size={18} />}
         </Box>
-        <Text size="md" fw={700} c="blue.7">
-          ペンライトクイズ
-        </Text>
+
+        <Box>
+          <Group gap={4} align="center">
+            <Text size="sm" fw={700} c="blue.7">
+              {groupName || 'ペンライトクイズ'}
+            </Text>
+            {isSongMode && (
+              <Badge size="xs" variant="dot" color="violet">
+                楽曲
+              </Badge>
+            )}
+          </Group>
+        </Box>
       </Group>
 
       {/* 右: レイアウト切替、フィルター、ダークモード切替 */}
@@ -193,19 +225,21 @@ export function Header({
           </>
         )}
 
-        {/* フィルターボタン (旧版準拠) */}
-        <ActionIcon
-          variant="light"
-          color="blue"
-          size="lg"
-          radius="md"
-          onClick={onOpenFilter}
-          title="絞り込みフィルター"
-        >
-          <IconFilter size={18} />
-        </ActionIcon>
+        {/* フィルターボタン (クイズ画面でのみ利用可能) */}
+        {onOpenFilter && (
+          <ActionIcon
+            variant="light"
+            color="blue"
+            size="lg"
+            radius="md"
+            onClick={onOpenFilter}
+            title="絞り込みフィルター"
+          >
+            <IconFilter size={18} />
+          </ActionIcon>
+        )}
 
-        {/* ダークモードボタン (旧版準拠) */}
+        {/* ダークモードボタン */}
         <ActionIcon
           variant="light"
           color={isDark ? 'yellow' : 'gray'}
