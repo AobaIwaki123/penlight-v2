@@ -6,7 +6,7 @@ INSERT INTO series (id, name, slug, display_order, created_at, updated_at)
 VALUES ('ser_ab02b408681458baa09985fffdb5b953', '坂道シリーズ', 'sakamichi', 1, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET name = excluded.name, slug = excluded.slug, display_order = excluded.display_order, updated_at = excluded.updated_at;
 INSERT INTO series (id, name, slug, display_order, created_at, updated_at)
-VALUES ('ser_a85c431708415b75bbba9ec624189d5c', '=LOVE系列', 'ikolove', 2, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
+VALUES ('ser_a85c431708415b75bbba9ec624189d5c', 'イコノイジョイ', 'ikolove', 2, '2026-10-04T00:00:00Z', '2026-10-04T00:00:00Z')
 ON CONFLICT(id) DO UPDATE SET name = excluded.name, slug = excluded.slug, display_order = excluded.display_order, updated_at = excluded.updated_at;
 
 -- Idol Groups

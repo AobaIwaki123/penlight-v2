@@ -348,11 +348,11 @@ export type Repository = any;
 // source: series.go
 
 /**
- * Series represents an idol franchise or series (e.g. "坂道シリーズ", "=LOVE系列").
+ * Series represents an idol franchise or series (e.g. "坂道シリーズ", "イコノイジョイ").
  */
 export interface Series {
   id: ID; // ser_... (UUID v7)
-  name: string; // Formal name, e.g. "坂道シリーズ", "=LOVE系列"
+  name: string; // Formal name, e.g. "坂道シリーズ", "イコノイジョイ"
   slug: string; // URL-safe identifier, e.g. "sakamichi", "ikolove"
   display_order: number /* int */; // UI sort order
   created_at: string;

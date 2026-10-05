@@ -6,7 +6,7 @@ PRAGMA foreign_keys = ON;
 -- 1. Idol Series / Franchises (Ref: ADR-0026)
 CREATE TABLE IF NOT EXISTS series (
     id TEXT PRIMARY KEY,                       -- ser_<uuidv7>
-    name TEXT NOT NULL,                        -- e.g. "坂道シリーズ", "=LOVE系列"
+    name TEXT NOT NULL,                        -- e.g. "坂道シリーズ", "イコノイジョイ"
     slug TEXT NOT NULL UNIQUE,                 -- e.g. "sakamichi", "ikolove"
     display_order INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL,                  -- ISO 8601 UTC
