@@ -86,3 +86,14 @@ func (m Member) DisambiguatedLabel() string {
 	}
 	return fmt.Sprintf("%s (%d期生)", m.FullName(), m.Generation)
 }
+
+// GetID returns the member's surrogate key ID (implements QuizTarget, Ref: ADR-0031).
+func (m Member) GetID() ID {
+	return m.ID
+}
+
+// GetCorrectColors returns the two penlight color IDs for the member (implements QuizTarget, Ref: ADR-0031).
+func (m Member) GetCorrectColors() []ID {
+	return []ID{m.Penlight.LeftColorID, m.Penlight.RightColorID}
+}
+

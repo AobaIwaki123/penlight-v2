@@ -2,11 +2,13 @@ package model
 
 import "time"
 
-// BootstrapResponse contains all master records required for offline PWA operation.
+// BootstrapResponse contains all master records required for offline PWA operation (Ref: ADR-0007, ADR-0026, ADR-0027).
 type BootstrapResponse struct {
+	Series      []Series  `json:"series"`
 	Groups      []Group   `json:"groups"`
 	Colors      []Color   `json:"colors"`
 	Members     []Member  `json:"members"`
+	Songs       []Song    `json:"songs"`
 	GeneratedAt time.Time `json:"generated_at"`
 }
 

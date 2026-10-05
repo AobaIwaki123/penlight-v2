@@ -55,15 +55,95 @@ func (r *SQLiteRepository) Close() error {
 	return r.db.Close()
 }
 
+// ListSeries returns all idol series ordered by display_order (Ref: ADR-0026).
+func (r *SQLiteRepository) ListSeries(ctx context.Context) ([]model.Series, error) {
+	const query = `
+		SELECT id, name, slug, display_order, created_at, updated_at
+		FROM series
+		ORDER BY display_order ASC;
+	`
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query series: %w", err)
+	}
+	defer rows.Close()
+
+	var seriesList []model.Series
+	for rows.Next() {
+		var s model.Series
+		var createdAtStr, updatedAtStr string
+		if err := rows.Scan(
+			&s.ID,
+			&s.Name,
+			&s.Slug,
+			&s.DisplayOrder,
+			&createdAtStr,
+			&updatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan series: %w", err)
+		}
+		s.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+		s.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		seriesList = append(seriesList, s)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error in series: %w", err)
+	}
+	return seriesList, nil
+}
+
+// GetSeries returns an idol series by ID (Ref: ADR-0026).
+func (r *SQLiteRepository) GetSeries(ctx context.Context, id model.ID) (*model.Series, error) {
+	const query = `
+		SELECT id, name, slug, display_order, created_at, updated_at
+		FROM series
+		WHERE id = ?;
+	`
+	var s model.Series
+	var createdAtStr, updatedAtStr string
+	err := r.db.QueryRowContext(ctx, query, string(id)).Scan(
+		&s.ID,
+		&s.Name,
+		&s.Slug,
+		&s.DisplayOrder,
+		&createdAtStr,
+		&updatedAtStr,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to get series: %w", err)
+	}
+	s.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+	s.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+	return &s, nil
+}
+
 // ListGroups returns all active groups ordered by display_order.
 func (r *SQLiteRepository) ListGroups(ctx context.Context) ([]model.Group, error) {
 	const query = `
-		SELECT id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at
+		SELECT id, series_id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at
 		FROM groups
 		WHERE is_active = 1
 		ORDER BY display_order ASC;
 	`
-	rows, err := r.db.QueryContext(ctx, query)
+	return r.queryGroups(ctx, query)
+}
+
+// ListGroupsBySeries returns active groups belonging to a specific series (Ref: ADR-0026).
+func (r *SQLiteRepository) ListGroupsBySeries(ctx context.Context, seriesID model.ID) ([]model.Group, error) {
+	const query = `
+		SELECT id, series_id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at
+		FROM groups
+		WHERE series_id = ? AND is_active = 1
+		ORDER BY display_order ASC;
+	`
+	return r.queryGroups(ctx, query, string(seriesID))
+}
+
+func (r *SQLiteRepository) queryGroups(ctx context.Context, query string, args ...any) ([]model.Group, error) {
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query groups: %w", err)
 	}
@@ -72,11 +152,13 @@ func (r *SQLiteRepository) ListGroups(ctx context.Context) ([]model.Group, error
 	var groups []model.Group
 	for rows.Next() {
 		var g model.Group
+		var seriesIDStr sql.NullString
 		var isActiveInt int
 		var createdAtStr, updatedAtStr string
 
 		if err := rows.Scan(
 			&g.ID,
+			&seriesIDStr,
 			&g.Name,
 			&g.ShortName,
 			&g.Slug,
@@ -89,6 +171,9 @@ func (r *SQLiteRepository) ListGroups(ctx context.Context) ([]model.Group, error
 			return nil, fmt.Errorf("failed to scan group: %w", err)
 		}
 
+		if seriesIDStr.Valid {
+			g.SeriesID = model.ID(seriesIDStr.String)
+		}
 		g.IsActive = isActiveInt == 1
 		g.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
 		g.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
@@ -220,6 +305,24 @@ func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model
 	return r.queryMembers(ctx, query, groupID)
 }
 
+// ListMembersBySeries returns non-graduated members belonging to a specific series with their primary image (Ref: ADR-0026).
+func (r *SQLiteRepository) ListMembersBySeries(ctx context.Context, seriesID model.ID) ([]model.Member, error) {
+	const query = `
+		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
+		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
+		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
+		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
+		FROM members m
+		JOIN groups g ON m.group_id = g.id
+		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
+		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
+		WHERE g.series_id = ? AND m.status != 'graduated'
+		ORDER BY m.generation ASC, m.family_name_kana ASC;
+	`
+	return r.queryMembers(ctx, query, seriesID)
+}
+
 // ListMemberImages returns all images associated with a member.
 func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.ID) ([]model.MemberImage, error) {
 	const query = `
@@ -297,6 +400,82 @@ func (r *SQLiteRepository) GetMasterVersion(ctx context.Context) (*model.MasterV
 	}
 	mv.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
 	return &mv, nil
+}
+
+// ListSongs returns all musical tracks ordered by group_id and title (Ref: ADR-0027).
+func (r *SQLiteRepository) ListSongs(ctx context.Context) ([]model.Song, error) {
+	const query = `
+		SELECT id, group_id, title, kana, color1_id, color2_id, created_at, updated_at
+		FROM songs
+		ORDER BY group_id ASC, title ASC;
+	`
+	return r.querySongs(ctx, query)
+}
+
+// ListSongsByGroup returns musical tracks belonging to a specific group (Ref: ADR-0027).
+func (r *SQLiteRepository) ListSongsByGroup(ctx context.Context, groupID model.ID) ([]model.Song, error) {
+	const query = `
+		SELECT id, group_id, title, kana, color1_id, color2_id, created_at, updated_at
+		FROM songs
+		WHERE group_id = ?
+		ORDER BY title ASC;
+	`
+	return r.querySongs(ctx, query, string(groupID))
+}
+
+// ListSongsBySeries returns musical tracks belonging to groups within a series (Ref: ADR-0026, ADR-0027).
+func (r *SQLiteRepository) ListSongsBySeries(ctx context.Context, seriesID model.ID) ([]model.Song, error) {
+	const query = `
+		SELECT s.id, s.group_id, s.title, s.kana, s.color1_id, s.color2_id, s.created_at, s.updated_at
+		FROM songs s
+		JOIN groups g ON s.group_id = g.id
+		WHERE g.series_id = ?
+		ORDER BY g.display_order ASC, s.title ASC;
+	`
+	return r.querySongs(ctx, query, string(seriesID))
+}
+
+func (r *SQLiteRepository) querySongs(ctx context.Context, query string, args ...any) ([]model.Song, error) {
+	rows, err := r.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query songs: %w", err)
+	}
+	defer rows.Close()
+
+	var songs []model.Song
+	for rows.Next() {
+		var s model.Song
+		var kanaStr, color2Str sql.NullString
+		var createdAtStr, updatedAtStr string
+
+		if err := rows.Scan(
+			&s.ID,
+			&s.GroupID,
+			&s.Title,
+			&kanaStr,
+			&s.Color1ID,
+			&color2Str,
+			&createdAtStr,
+			&updatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan song: %w", err)
+		}
+
+		if kanaStr.Valid {
+			s.Kana = &kanaStr.String
+		}
+		if color2Str.Valid {
+			c2 := model.ID(color2Str.String)
+			s.Color2ID = &c2
+		}
+		s.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+		s.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+		songs = append(songs, s)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error in songs: %w", err)
+	}
+	return songs, nil
 }
 
 func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args ...any) ([]model.Member, error) {

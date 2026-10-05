@@ -168,3 +168,144 @@ func TestFilterMembers(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterMembers_SeriesIsolation(t *testing.T) {
+	serSakamichi := model.ID("ser_sakamichi")
+	serIkolove := model.ID("ser_ikolove")
+
+	groups := []model.Group{
+		{ID: "grp_hinata", SeriesID: serSakamichi, Name: "日向坂46"},
+		{ID: "grp_sakura", SeriesID: serSakamichi, Name: "櫻坂46"},
+		{ID: "grp_equal", SeriesID: serIkolove, Name: "=LOVE"},
+	}
+
+	members := []model.Member{
+		{ID: "mem_h1", GroupID: "grp_hinata", Status: "active"},
+		{ID: "mem_h2", GroupID: "grp_hinata", Status: "active"},
+		{ID: "mem_s1", GroupID: "grp_sakura", Status: "active"},
+		{ID: "mem_s2", GroupID: "grp_sakura", Status: "active"},
+		{ID: "mem_e1", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e2", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e3", GroupID: "grp_equal", Status: "active"},
+		{ID: "mem_e4", GroupID: "grp_equal", Status: "active"},
+	}
+
+	t.Run("ADR-0026: Sakamichi series isolation filters out =LOVE members", func(t *testing.T) {
+		res, err := quiz.FilterMembers(members, model.QuizFilter{SeriesID: &serSakamichi}, groups...)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if len(res) != 4 {
+			t.Fatalf("expected 4 sakamichi members, got %d", len(res))
+		}
+		for _, m := range res {
+			if m.GroupID == "grp_equal" {
+				t.Fatalf("=LOVE member %s leaked into sakamichi pool", m.ID)
+			}
+		}
+	})
+
+	t.Run("ADR-0026: Ikolove series isolation filters out Sakamichi members", func(t *testing.T) {
+		res, err := quiz.FilterMembers(members, model.QuizFilter{SeriesID: &serIkolove}, groups...)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if len(res) != 4 {
+			t.Fatalf("expected 4 ikolove members, got %d", len(res))
+		}
+		for _, m := range res {
+			if m.GroupID != "grp_equal" {
+				t.Fatalf("non-ikolove member %s leaked into ikolove pool", m.ID)
+			}
+		}
+	})
+}
+
+func TestFilterSongs(t *testing.T) {
+	serSakamichi := model.ID("ser_sakamichi")
+	serIkolove := model.ID("ser_ikolove")
+
+	groups := []model.Group{
+		{ID: "grp_hinata", SeriesID: serSakamichi, Name: "日向坂46"},
+		{ID: "grp_equal", SeriesID: serIkolove, Name: "=LOVE"},
+	}
+
+	songs := []model.Song{
+		{ID: "sng_h1", GroupID: "grp_hinata", Title: "キュン", Color1ID: "col_sky"},
+		{ID: "sng_h2", GroupID: "grp_hinata", Title: "ドレミソラシド", Color1ID: "col_sky"},
+		{ID: "sng_h3", GroupID: "grp_hinata", Title: "こんなに好きになっちゃっていいの？", Color1ID: "col_sky"},
+		{ID: "sng_h4", GroupID: "grp_hinata", Title: "ソンナコトナイヨ", Color1ID: "col_sky"},
+		{ID: "sng_e1", GroupID: "grp_equal", Title: "絶対アイドル辞めないで", Color1ID: "col_pink"},
+		{ID: "sng_e2", GroupID: "grp_equal", Title: "あの子コンプレックス", Color1ID: "col_blue"},
+		{ID: "sng_e3", GroupID: "grp_equal", Title: "探せ ダイヤモンドリリー", Color1ID: "col_orange"},
+		{ID: "sng_e4", GroupID: "grp_equal", Title: "青春”サブリミナル”", Color1ID: "col_yellow"},
+	}
+
+	t.Run("ADR-0026 & ADR-0027: Filter songs by Series", func(t *testing.T) {
+		res, err := quiz.FilterSongs(songs, model.QuizFilter{SeriesID: &serSakamichi}, groups...)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if len(res) != 4 {
+			t.Fatalf("expected 4 sakamichi songs, got %d", len(res))
+		}
+		for _, s := range res {
+			if s.GroupID != "grp_hinata" {
+				t.Fatalf("leaked song from other series: %+v", s)
+			}
+		}
+	})
+
+	t.Run("Filter songs with insufficient candidates", func(t *testing.T) {
+		dummyGroup := model.ID("grp_dummy")
+		_, err := quiz.FilterSongs(songs, model.QuizFilter{GroupID: &dummyGroup}, groups...)
+		if err == nil {
+			t.Fatal("expected error for insufficient candidate songs")
+		}
+		appErr, ok := err.(model.AppError)
+		if !ok || appErr.Code != model.CodeInsufficientMembers {
+			t.Fatalf("expected CodeInsufficientMembers, got %v", err)
+		}
+	})
+}
+
+func TestFilterColorsBySeries(t *testing.T) {
+	serSakamichi := model.ID("ser_sakamichi")
+	serIkolove := model.ID("ser_ikolove")
+
+	grpSakamichi := model.ID("grp_hinata")
+	grpIkolove := model.ID("grp_equal")
+
+	groups := []model.Group{
+		{ID: grpSakamichi, SeriesID: serSakamichi},
+		{ID: grpIkolove, SeriesID: serIkolove},
+	}
+
+	colors := []model.Color{
+		{ID: "col_common_white", GroupID: nil, Name: "白"},
+		{ID: "col_hinata_sky", GroupID: &grpSakamichi, Name: "スカイブルー"},
+		{ID: "col_ikolove_pink", GroupID: &grpIkolove, Name: "イコラブピンク"},
+	}
+
+	t.Run("ADR-0026: Palette excludes other series colors", func(t *testing.T) {
+		sakamichiColors := quiz.FilterColorsBySeries(colors, groups, serSakamichi)
+		if len(sakamichiColors) != 2 {
+			t.Fatalf("expected 2 colors (common white + hinata sky), got %d", len(sakamichiColors))
+		}
+		for _, c := range sakamichiColors {
+			if c.ID == "col_ikolove_pink" {
+				t.Fatal("=LOVE color leaked into sakamichi palette")
+			}
+		}
+
+		ikoloveColors := quiz.FilterColorsBySeries(colors, groups, serIkolove)
+		if len(ikoloveColors) != 2 {
+			t.Fatalf("expected 2 colors (common white + ikolove pink), got %d", len(ikoloveColors))
+		}
+		for _, c := range ikoloveColors {
+			if c.ID == "col_hinata_sky" {
+				t.Fatal("hinata color leaked into ikolove palette")
+			}
+		}
+	})
+}
