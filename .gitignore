@@ -16,7 +16,7 @@
 *.sqlite
 *.sqlite3
 
-node_modules/
+node_modules
 /.next/
 /frontend/.next/
 /frontend/out/*
