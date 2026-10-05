@@ -8,6 +8,7 @@ import type { Color } from '@/types/generated';
 interface PaletteGridInputProps extends AnswerInputProps {
   onColorSelect?: (step: 'left' | 'right', color: Color) => void;
   onResetSelection?: () => void;
+  requiredColorsCount?: 1 | 2;
 }
 
 export function PaletteGridInput({
@@ -16,12 +17,19 @@ export function PaletteGridInput({
   disabled,
   onColorSelect,
   onResetSelection,
+  requiredColorsCount = 2,
 }: PaletteGridInputProps) {
   // Currently selected first color (left hand)
   const [firstColor, setFirstColor] = useState<Color | null>(null);
 
   const handleColorClick = (color: Color) => {
     if (disabled) return;
+
+    if (requiredColorsCount === 1) {
+      onColorSelect?.('left', color);
+      onAnswer({ leftColorId: color.id, rightColorId: '' });
+      return;
+    }
 
     if (!firstColor) {
       // Step 1: Set left hand color
@@ -46,6 +54,13 @@ export function PaletteGridInput({
     onResetSelection?.();
   };
 
+  const guideText =
+    requiredColorsCount === 1
+      ? '👉 指定ペンライト色をタップしてください'
+      : firstColor
+        ? '👉 2本目（右手）をタップしてください'
+        : '👉 1本目（左手）をタップしてください';
+
   return (
     <Box style={{ width: '100%', maxWidth: 420 }}>
       {/* 選択ガイドと取り消しボタン */}
@@ -58,9 +73,7 @@ export function PaletteGridInput({
         }}
       >
         <Text size="xs" fw={600} c={firstColor ? 'blue.6' : 'dimmed'}>
-          {firstColor
-            ? '👉 2本目（右手）をタップしてください'
-            : '👉 1本目（左手）をタップしてください'}
+          {guideText}
         </Text>
         {firstColor && (
           <Button

@@ -1,7 +1,7 @@
 # 09. マルチシリーズ階層分離・楽曲クイズ・ポータル画面開発ロードマップ
 
 - **作成日**: 2026-10-05
-- **ステータス**: Step 3 完了 / PR 作成 (次回: Step 4 着手)
+- **ステータス**: Step 4 完了 / PR 作成
 - **対象**: [ADR-0026](../../adr/0026-multi-series-hierarchy-and-isolation-architecture.md), [ADR-0027](../../adr/0027-song-penlight-color-data-structure.md), [ADR-0029](../../adr/0029-portal-and-filter-integrated-mode-architecture.md), [ADR-0030](../../adr/0030-portal-layout-and-visual-identity-ui.md), [ADR-0031](../../adr/0031-generic-quiz-engine-and-target-abstraction.md), [ADR-0032](../../adr/0032-answer-log-multi-target-polymorphism-architecture.md) の具現化、トップ画面新設、およびジェネリック出題抽象化
 
 ---
@@ -13,8 +13,8 @@
 |---|---|---|---|---|
 | **Step 1** | DBスキーマ & 正本Goモデル層拡張 | `feat/step1-db-schema-and-models` | 🟣 **Merged** | [PR #23](https://github.com/AobaIwaki123/penlight-v2/pull/23) |
 | **Step 2** | 出題エンジン & リポジトリ層拡張 | `feat/step2-quiz-engine-generics-and-repo` | 🟣 **Merged** | [PR #24](https://github.com/AobaIwaki123/penlight-v2/pull/24) |
-| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | ✅ **PR作成完了** | [PR #26](https://github.com/AobaIwaki123/penlight-v2/pull/26) |
-| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ⏳ **次期着手** | ポータル画面・楽曲解答UI |
+| **Step 3** | シードマスタデータ拡充 | `feat/step3-seed-data-and-verify` | 🟣 **Merged** | [PR #26](https://github.com/AobaIwaki123/penlight-v2/pull/26) |
+| **Step 4** | ポータル画面 & 楽曲クイズUI結合 | `feat/step4-portal-and-song-quiz-ui` | ✅ **実装完了 / PR作成** | [PR #27](https://github.com/AobaIwaki123/penlight-v2/pull/27) |
 
 ### 次回再開手順 (Quick Resume Guide)
 1. **PR #26 のマージ確認**:
@@ -132,20 +132,20 @@ flowchart TD
   - `frontend/src/features/quiz/components/QuizContainer.tsx` (楽曲クイズモード対応・ジェネリック出題連携)
   - `frontend/src/features/quiz/components/SongQuizArea.tsx` (新設: 楽曲タイトル・Kana・1色/2色解答パレット)
 - **作業チェックリスト**:
-  1. [ ] ポータル画面コンポーネント（`PortalView.tsx`）の新設
+  1. [x] ポータル画面コンポーネント（`PortalView.tsx`）の新設
      - シリーズ選択（「坂道シリーズ」 / 「=LOVE系列」）を Mantine の SegmentedControl またはビジュアルカードで提供
      - 選択中シリーズに応じた条件サマリー（対象グループ数、期生、クイズ種別）の表示
      - 「クイズをはじめる」CTA ボタン
-  2. [ ] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動
+  2. [x] フィルターモーダル（`FilterModal.tsx`）のシリーズ連動
      - 選択中シリーズに所属するグループのみを表示
      - 「楽曲カラークイズ」トグルの提供
-  3. [ ] 楽曲クイズ解答 UI の具体化（`SongQuizArea.tsx`）
+  3. [x] 楽曲クイズ解答 UI の具体化（`SongQuizArea.tsx`）
      - 楽曲出題（タイトル大きく、Kana 表示）
      - 1色 / 2色選択のパレット操作（当該シリーズの公式カラーのみを表示）
-  4. [ ] ヘッダーナビゲーションの改善（`Header.tsx`）
+  4. [x] ヘッダーナビゲーションの改善（`Header.tsx`）
      - 現在プレイ中のシリーズ名・グループ名の明示
      - 「トップ（ポータル）へ戻る」ボタンの設置
-  5. [ ] オフライン（Local-First / IndexedDB）同期とキャッシュ動作の確認
+  5. [x] オフライン（Local-First / IndexedDB）同期とキャッシュ動作の確認
 - **画面遷移および状態フロー**:
   ```mermaid
   flowchart TD

@@ -110,40 +110,42 @@ export function InlineFeedbackBar({
                 </Text>
               </Box>
             )}
-            <Text size="xs" fw={700} style={{ flexShrink: 0 }}>
-              ×
-            </Text>
             {correctRightColor && (
-              <Box
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  padding: '3px 7px',
-                  borderRadius: 8,
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}
-              >
+              <>
+                <Text size="xs" fw={700} style={{ flexShrink: 0 }}>
+                  ×
+                </Text>
                 <Box
                   style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    backgroundColor: correctRightColor.hex_code,
-                    border: '1px solid rgba(255,255,255,0.9)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    padding: '3px 7px',
+                    borderRadius: 8,
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                   }}
-                />
-                <Text
-                  size="11px"
-                  fw={700}
-                  style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
                 >
-                  {correctRightColor.name}
-                </Text>
-              </Box>
+                  <Box
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      backgroundColor: correctRightColor.hex_code,
+                      border: '1px solid rgba(255,255,255,0.9)',
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Text
+                    size="11px"
+                    fw={700}
+                    style={{ whiteSpace: 'nowrap', lineHeight: 1 }}
+                  >
+                    {correctRightColor.name}
+                  </Text>
+                </Box>
+              </>
             )}
           </Group>
         )}
