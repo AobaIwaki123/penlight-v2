@@ -14,7 +14,6 @@ import {
   IconChevronLeft,
   IconCircleDot,
   IconColorSwatch,
-  IconFilter,
   IconLayout,
   IconMoon,
   IconMusic,
@@ -28,7 +27,6 @@ interface HeaderProps {
   onLayoutModeChange: (mode: LayoutMode) => void;
   inputMode: InputMode;
   onInputModeChange: (mode: InputMode) => void;
-  onOpenFilter?: () => void;
   onGoHome?: () => void;
   groupThemeColor?: string;
   seriesName?: string;
@@ -41,7 +39,6 @@ export function Header({
   onLayoutModeChange,
   inputMode,
   onInputModeChange,
-  onOpenFilter,
   onGoHome,
   groupThemeColor,
   seriesName,
@@ -230,20 +227,6 @@ export function Header({
               </Menu.Dropdown>
             </Menu>
           </>
-        )}
-
-        {/* フィルターボタン */}
-        {onOpenFilter && (
-          <ActionIcon
-            variant="light"
-            color="blue"
-            size="lg"
-            radius="md"
-            onClick={onOpenFilter}
-            title="絞り込みフィルター"
-          >
-            <IconFilter size={18} />
-          </ActionIcon>
         )}
 
         {/* ダークモードボタン */}

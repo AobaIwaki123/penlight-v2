@@ -1,17 +1,20 @@
-import type { QuizFilterCriteria } from '@/features/quiz/components/FilterModal';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
 
+interface SavedQuizSettings {
+  groupId: string;
+  songMode: boolean;
+}
+
 const STORAGE_KEYS = {
-  FILTER: 'penlight_quiz_filter_v2',
+  SETTINGS: 'penlight_quiz_settings_v3',
   LAYOUT: 'penlight_layout_mode',
   INPUT: 'penlight_input_mode',
-  ACTIVE_VIEW: 'penlight_active_view',
 } as const;
 
-export function loadSavedFilter(): Partial<QuizFilterCriteria> | null {
+export function loadSavedSettings(): SavedQuizSettings | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.FILTER);
+    const raw = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -19,10 +22,10 @@ export function loadSavedFilter(): Partial<QuizFilterCriteria> | null {
   }
 }
 
-export function saveFilter(criteria: QuizFilterCriteria): void {
+export function saveSettings(settings: SavedQuizSettings): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEYS.FILTER, JSON.stringify(criteria));
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
   } catch {
     // Ignore storage quota errors
   }

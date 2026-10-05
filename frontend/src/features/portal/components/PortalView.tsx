@@ -8,6 +8,7 @@ import {
   Container,
   Group,
   Paper,
+  SegmentedControl,
   SimpleGrid,
   Stack,
   Text,
@@ -17,64 +18,56 @@ import {
 import {
   IconArrowRight,
   IconColorSwatch,
-  IconFilter,
   IconFlame,
   IconMusic,
   IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
-import type { QuizFilterCriteria } from '@/features/quiz/components/FilterModal';
 import type {
   Color,
   Group as IdolGroup,
   Member,
-  Series,
   Song,
 } from '@/types/generated';
 
 interface PortalViewProps {
-  series: Series[];
   groups: IdolGroup[];
   members: Member[];
   songs: Song[];
   colors: Color[];
-  criteria: QuizFilterCriteria;
+  selectedGroupId: string;
+  songMode: boolean;
   onGroupChange: (groupId: string) => void;
-  onOpenFilter: () => void;
+  onSongModeChange: (songMode: boolean) => void;
   onStartQuiz: () => void;
 }
 
 export function PortalView({
-  series,
   groups,
   members,
   songs,
-  criteria,
+  selectedGroupId,
+  songMode,
   onGroupChange,
-  onOpenFilter,
+  onSongModeChange,
   onStartQuiz,
 }: PortalViewProps) {
-  // Current active group and series (derived directly from group)
-  const activeGroup =
-    groups.find((g) => g.id === criteria.groupId) || groups[0];
+  const activeGroup = groups.find((g) => g.id === selectedGroupId) || groups[0];
 
-  // Candidates count
-  const matchingMembers = members.filter((m) => {
-    if (m.group_id !== activeGroup?.id) return false;
-    if (!criteria.includeGraduated && m.status !== 'active') return false;
-    if (!m.penlight?.left_color_id || !m.penlight?.right_color_id) return false;
-    return criteria.generations.includes(m.generation);
-  });
+  // Candidates: all active members with penlight colors or all songs for this group
+  const groupMembers = members.filter(
+    (m) =>
+      m.group_id === activeGroup?.id &&
+      m.status === 'active' &&
+      m.penlight?.left_color_id &&
+      m.penlight?.right_color_id,
+  );
+  const groupSongs = songs.filter((s) => s.group_id === activeGroup?.id);
 
-  const matchingSongs = songs.filter((s) => s.group_id === activeGroup?.id);
-
-  const candidateCount = criteria.songMode
-    ? matchingSongs.length
-    : matchingMembers.length;
-
-  const isInsufficient = criteria.songMode
-    ? matchingSongs.length === 0
-    : matchingMembers.length < 4;
+  const candidateCount = songMode ? groupSongs.length : groupMembers.length;
+  const isInsufficient = songMode
+    ? groupSongs.length === 0
+    : groupMembers.length === 0;
 
   return (
     <Container
@@ -110,7 +103,7 @@ export function PortalView({
                   ペンライトクイズ
                 </Text>
                 <Text size="xs" c="dimmed">
-                  アイドル推しメンカラー & 楽曲ペンライト当て
+                  推しメンカラー & 楽曲ペンライト当て
                 </Text>
               </Box>
             </Group>
@@ -125,21 +118,15 @@ export function PortalView({
           </Group>
         </Paper>
 
-        {/* グループ選択カード (1タップで直接選ぶミニマル設計) */}
+        {/* グループ選択 (系列表示なし・横並びグリッドで直接選択) */}
         <Stack gap="xs">
-          <Group justify="space-between" align="center">
-            <Text size="xs" fw={700} c="dimmed">
-              グループを選択
-            </Text>
-            <Text size="xs" c="dimmed">
-              {groups.length} グループ
-            </Text>
-          </Group>
+          <Text size="xs" fw={700} c="dimmed">
+            グループを選択
+          </Text>
 
           <SimpleGrid cols={3} spacing="xs">
             {groups.map((g) => {
               const isSelected = g.id === activeGroup?.id;
-              const seriesObj = series.find((s) => s.id === g.series_id);
               return (
                 <UnstyledButton
                   key={g.id}
@@ -153,12 +140,12 @@ export function PortalView({
                     backgroundColor: isSelected
                       ? `${g.theme_color_hex}15`
                       : 'var(--mantine-color-body)',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.15s ease',
                     textAlign: 'center',
                     cursor: 'pointer',
                   }}
                 >
-                  <Stack align="center" gap={4}>
+                  <Stack align="center" gap={6}>
                     <Box
                       style={{
                         width: 14,
@@ -183,11 +170,6 @@ export function PortalView({
                     >
                       {g.name}
                     </Text>
-                    {seriesObj && (
-                      <Text size="9px" c="dimmed" lh={1}>
-                        {seriesObj.name}
-                      </Text>
-                    )}
                   </Stack>
                 </UnstyledButton>
               );
@@ -195,68 +177,61 @@ export function PortalView({
           </SimpleGrid>
         </Stack>
 
-        {/* 現在のクイズ出題設定サマリー & 変更ボタン (ADR-0029) */}
-        <Card withBorder radius="md" p="md">
-          <Stack gap="sm">
-            <Group justify="space-between" align="center">
-              <Group gap="xs">
-                {criteria.songMode ? (
-                  <ThemeIcon color="violet" variant="light" size="sm">
-                    <IconMusic size={14} />
-                  </ThemeIcon>
-                ) : (
-                  <ThemeIcon color="blue" variant="light" size="sm">
-                    <IconUsers size={14} />
-                  </ThemeIcon>
-                )}
-                <Text size="sm" fw={700}>
-                  {criteria.songMode
-                    ? '楽曲カラークイズ'
-                    : 'メンバー推しメンカラー'}
-                </Text>
-              </Group>
-              <Button
-                variant="subtle"
-                size="compact-xs"
-                color="blue"
-                leftSection={<IconFilter size={14} />}
-                onClick={onOpenFilter}
-              >
-                条件を変更
-              </Button>
-            </Group>
+        {/* クイズ種別切替 (メンバー推しメンカラー vs 楽曲カラー) */}
+        <Stack gap="xs">
+          <Text size="xs" fw={700} c="dimmed">
+            クイズ形式
+          </Text>
+          <SegmentedControl
+            fullWidth
+            size="md"
+            radius="md"
+            value={songMode ? 'song' : 'member'}
+            onChange={(val) => onSongModeChange(val === 'song')}
+            data={[
+              {
+                value: 'member',
+                label: (
+                  <Group gap={6} justify="center">
+                    <IconUsers size={16} />
+                    <span>推しメンカラー</span>
+                  </Group>
+                ),
+              },
+              {
+                value: 'song',
+                label: (
+                  <Group gap={6} justify="center">
+                    <IconMusic size={16} />
+                    <span>楽曲カラー</span>
+                  </Group>
+                ),
+              },
+            ]}
+          />
+        </Stack>
 
-            <Group gap="xs">
-              <Badge variant="outline" color="gray" size="sm">
+        {/* 出題情報カード */}
+        <Card withBorder radius="md" p="md">
+          <Group justify="space-between" align="center">
+            <Box>
+              <Text size="sm" fw={700}>
                 {activeGroup?.name}
-              </Badge>
-              {!criteria.songMode ? (
-                <>
-                  <Badge variant="outline" color="blue" size="sm">
-                    {criteria.generations.length === 0
-                      ? '全期生'
-                      : `${criteria.generations.join(', ')} 期生`}
-                  </Badge>
-                  {criteria.includeGraduated && (
-                    <Badge variant="outline" color="orange" size="sm">
-                      卒業生含む
-                    </Badge>
-                  )}
-                </>
-              ) : (
-                <Badge variant="outline" color="violet" size="sm">
-                  代表曲
-                </Badge>
-              )}
-              <Badge
-                variant="light"
-                color={isInsufficient ? 'red' : 'green'}
-                size="sm"
-              >
-                出題対象: {candidateCount} {criteria.songMode ? '曲' : '名'}
-              </Badge>
-            </Group>
-          </Stack>
+              </Text>
+              <Text size="xs" c="dimmed">
+                {songMode
+                  ? '代表曲の指定カラー当て'
+                  : '現役メンバーの推しメンカラー当て'}
+              </Text>
+            </Box>
+            <Badge
+              variant="light"
+              color={isInsufficient ? 'red' : 'blue'}
+              size="lg"
+            >
+              全 {candidateCount} {songMode ? '曲' : '名'}
+            </Badge>
+          </Group>
         </Card>
 
         {/* クイズ開始 CTA ボタン */}
@@ -275,14 +250,14 @@ export function PortalView({
             onClick={onStartQuiz}
             disabled={isInsufficient}
           >
-            {criteria.songMode
+            {songMode
               ? `${activeGroup?.name} 楽曲クイズを開始`
-              : `${activeGroup?.name} 推しメンクイズを開始`}
+              : `${activeGroup?.name} クイズを開始`}
           </Button>
 
           {isInsufficient && (
             <Text size="xs" c="red.6" ta="center" mt="xs">
-              出題対象が不足しています（「条件を変更」から期生またはグループを選択してください）
+              出題対象データがありません（別のグループを選択してください）
             </Text>
           )}
         </Box>

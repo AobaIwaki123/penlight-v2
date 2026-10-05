@@ -16,10 +16,6 @@ import { IconHome, IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { PortalView } from '@/features/portal/components/PortalView';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
-import {
-  FilterModal,
-  type QuizFilterCriteria,
-} from '@/features/quiz/components/FilterModal';
 import { Header } from '@/features/quiz/components/Header';
 import { InlineFeedbackBar } from '@/features/quiz/components/InlineFeedbackBar';
 import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
@@ -30,26 +26,26 @@ import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay'
 import { SongQuizArea } from '@/features/quiz/components/SongQuizArea';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
 import {
-  loadSavedFilter,
   loadSavedInputMode,
   loadSavedLayoutMode,
-  saveFilter,
+  loadSavedSettings,
   saveInputMode,
   saveLayoutMode,
+  saveSettings,
 } from '@/features/quiz/utils/storage';
 import type { Color, Group, Member, Series, Song } from '@/types/generated';
 
 function filterAndShuffleMembers(
   sourceMembers: Member[],
-  filter: QuizFilterCriteria,
+  groupId: string,
 ): Member[] {
-  const filtered = sourceMembers.filter((m) => {
-    if (m.group_id !== filter.groupId) return false;
-    if (!filter.includeGraduated && m.status !== 'active') return false;
-    if (!m.penlight?.left_color_id || !m.penlight?.right_color_id) return false;
-    return filter.generations.includes(m.generation);
-  });
-  // Shuffle array using Fisher-Yates
+  const filtered = sourceMembers.filter(
+    (m) =>
+      m.group_id === groupId &&
+      m.status === 'active' &&
+      m.penlight?.left_color_id &&
+      m.penlight?.right_color_id,
+  );
   const shuffled = [...filtered];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -58,11 +54,8 @@ function filterAndShuffleMembers(
   return shuffled;
 }
 
-function filterAndShuffleSongs(
-  sourceSongs: Song[],
-  filter: QuizFilterCriteria,
-): Song[] {
-  const filtered = sourceSongs.filter((s) => s.group_id === filter.groupId);
+function filterAndShuffleSongs(sourceSongs: Song[], groupId: string): Song[] {
+  const filtered = sourceSongs.filter((s) => s.group_id === groupId);
   const shuffled = [...filtered];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -99,6 +92,10 @@ export function QuizContainer() {
   const [allSongs, setAllSongs] = useState<Song[]>([]);
   const [allColors, setAllColors] = useState<Color[]>([]);
 
+  // Selected quiz criteria
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const [songMode, setSongMode] = useState<boolean>(false);
+
   // Active quiz pool and colors
   const [members, setMembers] = useState<Member[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
@@ -106,22 +103,12 @@ export function QuizContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // View state: 'portal' or 'quiz' (ADR-0029, ADR-0030)
+  // View state: 'portal' or 'quiz'
   const [viewMode, setViewMode] = useState<'portal' | 'quiz'>('portal');
 
-  // Settings: presentation layout & input interface
+  // Presentation layout & input interface
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
-
-  // Filter criteria and modal state
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [filterCriteria, setFilterCriteria] = useState<QuizFilterCriteria>({
-    seriesId: '',
-    groupId: '',
-    generations: [],
-    includeGraduated: false,
-    songMode: false,
-  });
 
   // Modal state for Donut Ring Input
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
@@ -160,51 +147,26 @@ export function QuizContainer() {
         setAllSongs(rawSongs);
         setAllColors(rawColors);
 
-        // Load saved filter or fallback to default (Hinatazaka46 in sakamichi series)
-        const saved = loadSavedFilter();
-        const defaultSeries =
-          rawSeries.find((s) => s.id === saved?.seriesId) ||
-          rawSeries.find((s) => s.slug === 'sakamichi') ||
-          rawSeries[0];
-        const seriesGroups = rawGroups.filter(
-          (g) => g.series_id === defaultSeries?.id,
-        );
-
+        // Load saved settings or fallback to Hinatazaka46
+        const saved = loadSavedSettings();
         const defaultGroup =
-          seriesGroups.find((g) => g.id === saved?.groupId) ||
-          seriesGroups.find((g) => g.slug === 'hinatazaka46') ||
-          seriesGroups[0] ||
+          rawGroups.find((g) => g.id === saved?.groupId) ||
+          rawGroups.find((g) => g.slug === 'hinatazaka46') ||
           rawGroups[0];
         const defaultGroupId = defaultGroup ? defaultGroup.id : '';
 
-        // Extract generations for default group
-        const groupMembers = rawMembers.filter(
-          (m) => m.group_id === defaultGroupId,
-        );
-        const allGens = Array.from(
-          new Set(groupMembers.map((m) => m.generation)),
-        ).sort((a, b) => a - b);
+        setSelectedGroupId(defaultGroupId);
+        setSongMode(saved?.songMode ?? false);
 
-        const initialCriteria: QuizFilterCriteria = {
-          seriesId: defaultSeries ? defaultSeries.id : '',
-          groupId: defaultGroupId,
-          generations:
-            saved?.generations && saved.generations.length > 0
-              ? saved.generations
-              : allGens,
-          includeGraduated: saved?.includeGraduated ?? false,
-          songMode: saved?.songMode ?? false,
-        };
-
-        setFilterCriteria(initialCriteria);
-
-        const relevantColors = getRelevantColors(
-          rawColors,
-          defaultGroupId,
-          initialCriteria.seriesId,
-          rawGroups,
-        );
-        setColors(relevantColors);
+        if (defaultGroup) {
+          const relevantColors = getRelevantColors(
+            rawColors,
+            defaultGroupId,
+            defaultGroup.series_id,
+            rawGroups,
+          );
+          setColors(relevantColors);
+        }
 
         setIsLoading(false);
       })
@@ -214,64 +176,44 @@ export function QuizContainer() {
       });
   }, []);
 
-  const currentSeries = allSeries.find((s) => s.id === filterCriteria.seriesId);
-  const currentGroup = allGroups.find((g) => g.id === filterCriteria.groupId);
+  const currentGroup = allGroups.find((g) => g.id === selectedGroupId);
+  const currentSeries = allSeries.find((s) => s.id === currentGroup?.series_id);
   const colorMap = new Map<string, Color>(allColors.map((c) => [c.id, c]));
 
   // Total questions count depending on mode
-  const totalQuestions = filterCriteria.songMode
-    ? songs.length
-    : members.length;
+  const totalQuestions = songMode ? songs.length : members.length;
   const currentMember = members[currentIndex] || members[0];
   const currentSong = songs[currentIndex] || songs[0];
 
-  // Change group from Portal (directly updates group and auto-derives series)
+  // Change group from Portal
   const handleGroupChange = (groupId: string) => {
+    setSelectedGroupId(groupId);
+    saveSettings({ groupId, songMode });
+
     const targetGroup = allGroups.find((g) => g.id === groupId);
-    const targetSeriesId = targetGroup?.series_id || filterCriteria.seriesId;
-    const groupMembers = allMembers.filter((m) => m.group_id === groupId);
-    const gens = Array.from(
-      new Set(groupMembers.map((m) => m.generation)),
-    ).sort((a, b) => a - b);
-
-    const updated: QuizFilterCriteria = {
-      ...filterCriteria,
-      groupId,
-      seriesId: targetSeriesId,
-      generations: gens,
-    };
-    setFilterCriteria(updated);
-    saveFilter(updated);
-
-    setColors(getRelevantColors(allColors, groupId, targetSeriesId, allGroups));
-  };
-
-  // Handle filter submission: rebuild deck and reset quiz progress
-  const handleApplyFilter = (newCriteria: QuizFilterCriteria) => {
-    setFilterCriteria(newCriteria);
-    saveFilter(newCriteria);
-
-    const relevantColors = getRelevantColors(
-      allColors,
-      newCriteria.groupId,
-      newCriteria.seriesId,
-      allGroups,
-    );
-    setColors(relevantColors);
-
-    // If currently playing in quiz view, restart deck
-    if (viewMode === 'quiz') {
-      startQuizSession(newCriteria);
+    if (targetGroup) {
+      setColors(
+        getRelevantColors(allColors, groupId, targetGroup.series_id, allGroups),
+      );
     }
   };
 
-  // Start quiz session with target criteria
-  const startQuizSession = (criteria: QuizFilterCriteria = filterCriteria) => {
-    if (criteria.songMode) {
-      const shuffledSongs = filterAndShuffleSongs(allSongs, criteria);
+  // Change songMode from Portal
+  const handleSongModeChange = (newSongMode: boolean) => {
+    setSongMode(newSongMode);
+    saveSettings({ groupId: selectedGroupId, songMode: newSongMode });
+  };
+
+  // Start quiz session directly with current group and mode
+  const startQuizSession = () => {
+    if (songMode) {
+      const shuffledSongs = filterAndShuffleSongs(allSongs, selectedGroupId);
       setSongs(shuffledSongs);
     } else {
-      const shuffledMembers = filterAndShuffleMembers(allMembers, criteria);
+      const shuffledMembers = filterAndShuffleMembers(
+        allMembers,
+        selectedGroupId,
+      );
       setMembers(shuffledMembers);
     }
 
@@ -316,8 +258,7 @@ export function QuizContainer() {
   }) => {
     let isCorrect = false;
 
-    if (filterCriteria.songMode) {
-      // Song Quiz judgment (ADR-0027, ADR-0031)
+    if (songMode) {
       if (!currentSong) return;
       const c1 = currentSong.color1_id;
       const c2 = currentSong.color2_id;
@@ -332,7 +273,6 @@ export function QuizContainer() {
           (leftColorId === c2 && rightColorId === c1);
       }
     } else {
-      // Member Quiz judgment (ADR-0019)
       if (!currentMember) return;
       const correctL = currentMember.penlight?.left_color_id;
       const correctR = currentMember.penlight?.right_color_id;
@@ -368,7 +308,7 @@ export function QuizContainer() {
   };
 
   const handleRestart = () => {
-    startQuizSession(filterCriteria);
+    startQuizSession();
   };
 
   const handleLayoutModeChange = (mode: LayoutMode) => {
@@ -430,48 +370,35 @@ export function QuizContainer() {
     );
   }
 
-  // Render Portal View when viewMode is 'portal' (ADR-0029, ADR-0030)
+  // Render Portal View when viewMode is 'portal' (Simple & Clean)
   if (viewMode === 'portal') {
     return (
-      <>
-        <PortalView
-          series={allSeries}
-          groups={allGroups}
-          members={allMembers}
-          songs={allSongs}
-          colors={allColors}
-          criteria={filterCriteria}
-          onGroupChange={handleGroupChange}
-          onOpenFilter={() => setIsFilterModalOpen(true)}
-          onStartQuiz={() => startQuizSession(filterCriteria)}
-        />
-        <FilterModal
-          opened={isFilterModalOpen}
-          onClose={() => setIsFilterModalOpen(false)}
-          series={allSeries}
-          groups={allGroups}
-          allMembers={allMembers}
-          allSongs={allSongs}
-          currentFilter={filterCriteria}
-          onApply={handleApplyFilter}
-        />
-      </>
+      <PortalView
+        groups={allGroups}
+        members={allMembers}
+        songs={allSongs}
+        colors={allColors}
+        selectedGroupId={selectedGroupId}
+        songMode={songMode}
+        onGroupChange={handleGroupChange}
+        onSongModeChange={handleSongModeChange}
+        onStartQuiz={startQuizSession}
+      />
     );
   }
 
   // Quiz View
-  const isSongMode = filterCriteria.songMode;
   const fillScreen =
-    !isSongMode && layoutMode === 'overlay' && inputMode === 'donut';
+    !songMode && layoutMode === 'overlay' && inputMode === 'donut';
 
   const requiredColorsCount: 1 | 2 =
-    isSongMode && currentSong ? (currentSong.color2_id ? 2 : 1) : 2;
+    songMode && currentSong ? (currentSong.color2_id ? 2 : 1) : 2;
 
-  const correctLeft = isSongMode
+  const correctLeft = songMode
     ? colorMap.get(currentSong?.color1_id || '')
     : colorMap.get(currentMember?.penlight?.left_color_id || '');
 
-  const correctRight = isSongMode
+  const correctRight = songMode
     ? currentSong?.color2_id
       ? colorMap.get(currentSong.color2_id)
       : undefined
@@ -531,18 +458,17 @@ export function QuizContainer() {
         flexDirection: 'column',
       }}
     >
-      {/* 共通ヘッダー (ポータルへ戻るボタン・シリーズ/グループ名バッジ付き) */}
+      {/* 共通ヘッダー (ポータルへ戻るボタン・グループ名表示) */}
       <Header
         layoutMode={layoutMode}
         onLayoutModeChange={handleLayoutModeChange}
         inputMode={inputMode}
         onInputModeChange={handleInputModeChange}
-        onOpenFilter={() => setIsFilterModalOpen(true)}
         onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
         seriesName={currentSeries?.name}
         groupName={currentGroup?.name}
-        isSongMode={isSongMode}
+        isSongMode={songMode}
       />
 
       {/* 進行プログレスバー */}
@@ -592,7 +518,7 @@ export function QuizContainer() {
             minHeight: fillScreen ? 0 : undefined,
           }}
         >
-          {isSongMode ? (
+          {songMode ? (
             currentSong ? (
               <SongQuizArea
                 song={currentSong}
@@ -632,7 +558,7 @@ export function QuizContainer() {
         )}
 
         {/* 解答直後のインラインフィードバックバー (通常モード) */}
-        {feedback !== 'idle' && !fillScreen && !isSongMode && feedbackBar}
+        {feedback !== 'idle' && !fillScreen && !songMode && feedbackBar}
       </Stack>
 
       {/* ドーナツリングカラー選択モーダル */}
@@ -647,18 +573,6 @@ export function QuizContainer() {
         disabled={feedback !== 'idle'}
         initialHand={activeHand}
         requiredColorsCount={requiredColorsCount}
-      />
-
-      {/* 絞り込みフィルターモーダル */}
-      <FilterModal
-        opened={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        series={allSeries}
-        groups={allGroups}
-        allMembers={allMembers}
-        allSongs={allSongs}
-        currentFilter={filterCriteria}
-        onApply={handleApplyFilter}
       />
 
       {/* 結果発表モーダル */}
