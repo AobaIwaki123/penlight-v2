@@ -39,6 +39,7 @@
 | [0030](./0030-portal-layout-and-visual-identity-ui.md) | ポータル画面レイアウトおよびビジュアル・アイデンティティ重視UIの採用 | Accepted |
 | [0031](./0031-generic-quiz-engine-and-target-abstraction.md) | クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用 | Accepted |
 | [0032](./0032-answer-log-multi-target-polymorphism-architecture.md) | 回答ログにおけるマルチターゲット多態性永続化アーキテクチャの採用 | Accepted |
+| [0033](./0033-on-demand-cache-through-image-proxy.md) | 外部リファラ漏洩防止とゼロパージを実現するオンデマンド画像キャッシュプロキシアーキテクチャの採用 | Accepted |
 
 
 ---

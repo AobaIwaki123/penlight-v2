@@ -21,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <head>
+        <meta name="referrer" content="no-referrer" />
         <ColorSchemeScript defaultColorScheme="light" />
       </head>
       <body style={{ margin: 0, padding: 0, overflowX: 'hidden' }}>

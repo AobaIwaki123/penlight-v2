@@ -29,6 +29,7 @@ type Server struct {
 	repo         *repository.SQLiteRepository
 	imageMu      sync.RWMutex
 	imageSources map[string]string // image_key -> official CDN URL
+	httpClient   *http.Client
 	mux          *http.ServeMux
 }
 
@@ -109,10 +110,16 @@ func NewServer(cfg *config.Config) (*Server, error) {
 		cfg:          cfg,
 		repo:         repo,
 		imageSources: imageSources,
+		httpClient:   &http.Client{Timeout: 10 * time.Second},
 		mux:          http.NewServeMux(),
 	}
 	s.registerRoutes()
 	return s, nil
+}
+
+// SetHTTPClient sets a custom HTTP client (primarily for testing mock CDN endpoints).
+func (s *Server) SetHTTPClient(client *http.Client) {
+	s.httpClient = client
 }
 
 // Handler returns the HTTP handler with global middleware.
@@ -312,12 +319,12 @@ func (s *Server) getImageSourceURL(key string) (string, bool) {
 
 func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 	key := strings.TrimPrefix(r.URL.Path, "/images/")
-	if key == "" {
+	if key == "" || strings.Contains(key, "..") || strings.Contains(key, "/") {
 		http.NotFound(w, r)
 		return
 	}
 
-	// 1. Check if local asset file exists
+	// 1. Check if local asset file already exists
 	localPath := filepath.Join(s.cfg.AssetDir, key)
 	if _, err := os.Stat(localPath); err == nil {
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
@@ -325,14 +332,77 @@ func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 2. Fallback: redirect to official CDN URL from image_sources.json (with dynamic reload)
-	if cdnURL, ok := s.getImageSourceURL(key); ok {
-		w.Header().Set("Cache-Control", "public, max-age=86400")
-		http.Redirect(w, r, cdnURL, http.StatusFound)
+	// 2. On-demand cache-through proxy: fetch from official CDN URL without Referer (Ref: ADR-0033)
+	cdnURL, ok := s.getImageSourceURL(key)
+	if !ok {
+		http.NotFound(w, r)
 		return
 	}
 
-	http.NotFound(w, r)
+	client := s.httpClient
+	if client == nil {
+		client = &http.Client{Timeout: 10 * time.Second}
+	}
+
+	// Create request with context and ensure no Referer is sent
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, cdnURL, nil)
+	if err != nil {
+		http.Error(w, "failed to create upstream request", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Del("Referer")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, "upstream image fetch error", http.StatusBadGateway)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, fmt.Sprintf("upstream returned %d", resp.StatusCode), http.StatusBadGateway)
+		return
+	}
+
+	imgBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "failed to read upstream image", http.StatusBadGateway)
+		return
+	}
+
+	// 3. Atomically save to local storage (AssetDir) for subsequent 0ms requests
+	if err := os.MkdirAll(s.cfg.AssetDir, 0o755); err == nil {
+		tmpFile, err := os.CreateTemp(s.cfg.AssetDir, "img-tmp-*")
+		if err == nil {
+			tmpPath := tmpFile.Name()
+			if _, err := tmpFile.Write(imgBytes); err == nil {
+				_ = tmpFile.Close()
+				_ = os.Rename(tmpPath, localPath)
+			} else {
+				_ = tmpFile.Close()
+				_ = os.Remove(tmpPath)
+			}
+		}
+	}
+
+	// 4. Serve image directly from backend with immutable cache headers
+	contentType := resp.Header.Get("Content-Type")
+	if contentType == "" {
+		if strings.HasSuffix(key, ".webp") {
+			contentType = "image/webp"
+		} else if strings.HasSuffix(key, ".jpg") || strings.HasSuffix(key, ".jpeg") {
+			contentType = "image/jpeg"
+		} else if strings.HasSuffix(key, ".png") {
+			contentType = "image/png"
+		} else {
+			contentType = "application/octet-stream"
+		}
+	}
+
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(imgBytes)
 }
 
 func applyMigrations(db *sql.DB) error {
