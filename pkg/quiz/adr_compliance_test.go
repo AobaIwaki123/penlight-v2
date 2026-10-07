@@ -894,6 +894,131 @@ func TestADR0007_And_ADR0032_Compliance_OfflineBatchSync(t *testing.T) {
 	})
 }
 
+// =========================================================================
+// ADR-0034: Quiz Statistics and Weak Target Review Mode Compliance Tests
+// =========================================================================
+
+func TestADR0034_Compliance_QuizStatisticsAndReviewMode(t *testing.T) {
+	t.Run("ADR-0034/1: Statistics response and target models support JSON metadata/extra extensibility", func(t *testing.T) {
+		stat := model.TargetStat{
+			TargetID:              "mem_01",
+			TargetType:            model.TargetTypeMember,
+			GroupID:               "grp_01",
+			Name:                  "Test Member",
+			TotalAnswers:          10,
+			CorrectAnswers:        6,
+			AccuracyRate:          0.6,
+			AverageResponseTimeMs: 1200,
+			Metadata: map[string]any{
+				"streak":           3,
+				"last_answered_at": "2026-10-07T12:00:00Z",
+			},
+		}
+		if stat.Metadata["streak"] != 3 {
+			t.Fatalf("ADR-0034 Violation: TargetStat metadata streak not preserved")
+		}
+
+		resp := model.QuizStatisticsResponse{
+			TotalAnswers:          10,
+			TotalCorrect:          6,
+			AccuracyRate:          0.6,
+			AverageResponseTimeMs: 1200,
+			Extra: map[string]any{
+				"custom_score": 92.5,
+			},
+		}
+		if resp.Extra["custom_score"] != 92.5 {
+			t.Fatalf("ADR-0034 Violation: QuizStatisticsResponse extra not preserved")
+		}
+	})
+
+	t.Run("ADR-0034/2: Repository GetQuizStatistics fulfills core 3-tier metrics and weak targets sort", func(t *testing.T) {
+		ctx := context.Background()
+		repo, cleanup := setupRealSeedDB(t)
+		defer cleanup()
+
+		members, err := repo.ListMembers(ctx)
+		if err != nil || len(members) < 2 {
+			t.Fatalf("failed to list members: %v", err)
+		}
+		m1 := members[0].ID
+		m2 := members[1].ID
+
+		logs := []model.AnswerLog{
+			// m1: 1 correct, 2 wrong -> 33% accuracy
+			{
+				ID:             "ans_34_01",
+				QuizQuestionID: "quiz_34_01",
+				TargetMemberID: &m1,
+				GroupID:        members[0].GroupID,
+				IsCorrect:      false,
+				ResponseTimeMs: 2000,
+				AnsweredAt:     time.Now().UTC(),
+			},
+			{
+				ID:             "ans_34_02",
+				QuizQuestionID: "quiz_34_02",
+				TargetMemberID: &m1,
+				GroupID:        members[0].GroupID,
+				IsCorrect:      false,
+				ResponseTimeMs: 2200,
+				AnsweredAt:     time.Now().UTC(),
+			},
+			{
+				ID:             "ans_34_03",
+				QuizQuestionID: "quiz_34_03",
+				TargetMemberID: &m1,
+				GroupID:        members[0].GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1500,
+				AnsweredAt:     time.Now().UTC(),
+			},
+			// m2: 2 correct, 0 wrong -> 100% accuracy
+			{
+				ID:             "ans_34_04",
+				QuizQuestionID: "quiz_34_04",
+				TargetMemberID: &m2,
+				GroupID:        members[1].GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1100,
+				AnsweredAt:     time.Now().UTC(),
+			},
+			{
+				ID:             "ans_34_05",
+				QuizQuestionID: "quiz_34_05",
+				TargetMemberID: &m2,
+				GroupID:        members[1].GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1300,
+				AnsweredAt:     time.Now().UTC(),
+			},
+		}
+		if err := repo.BatchInsertAnswerLogs(ctx, logs); err != nil {
+			t.Fatalf("failed to insert logs: %v", err)
+		}
+
+		res, err := repo.GetQuizStatistics(ctx, model.QuizStatisticsFilter{Limit: 5})
+		if err != nil {
+			t.Fatalf("GetQuizStatistics failed: %v", err)
+		}
+
+		if res.TotalAnswers != 5 {
+			t.Fatalf("expected 5 total answers, got %d", res.TotalAnswers)
+		}
+		if res.TotalCorrect != 3 {
+			t.Fatalf("expected 3 total correct, got %d", res.TotalCorrect)
+		}
+		if len(res.WeakTargets) < 2 {
+			t.Fatalf("expected at least 2 weak targets, got %d", len(res.WeakTargets))
+		}
+		// m1 must be ranked first (worst accuracy)
+		if res.WeakTargets[0].TargetID != m1 {
+			t.Fatalf("expected m1 (%s) as weakest target, got %s", m1, res.WeakTargets[0].TargetID)
+		}
+	})
+}
+
+
 
 
 
