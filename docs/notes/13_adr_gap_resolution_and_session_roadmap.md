@@ -30,12 +30,11 @@
 flowchart TD
     S0["Session 0: ADRステータス是正 & 基礎コンプライアンステスト網羅<br/>(完了・PR #34)"]
     S1["Session 1: オフライン回答ログ同期 & 画像キャッシュ (手動フェッチ)<br/>(完了・PR #35)"]
-    S2["Session 2: バックエンド回答集計 API<br/>(完了・SQLite answer_logs 集計 & GET /api/v1/quiz/statistics)"]
-    S3["Session 3: 履歴・統計 UI & 苦手克服モード<br/>(IndexedDB 永続集計, 統計モーダル, 苦手デッキ出題・要人間UIレビュー)"]
+    S2["Session 2: バックエンド回答集計 API<br/>(完了・PR #37)"]
+    S3["Session 3: 履歴・統計 UI & 苦手克服モード<br/>(次回着手・IndexedDB 永続集計, 統計モーダル, 苦手デッキ出題・要人間UIレビュー)"]
 
     S0 --> S1 --> S2 --> S3
 ```
-
 
 ### Session 0: ADRステータス是正 & 基礎コンプライアンステスト網羅（完了・PR #34）
 - **ゴール**: 設計ドキュメントのステータス不整合を解消し、未テストの基礎ADRを網羅して CI で機械保証する。
@@ -57,17 +56,21 @@ flowchart TD
   - 機能提供トグル: コード内の設定定数（`frontend/src/config/features.ts`）で手軽にフェッチ機能提供の ON/OFF を切り替えられる設計。
   - 拡張性: 将来的なグループ絞り込みフェッチ（`groupId?: string`）を許容するインターフェース設計。
 
-### Session 2: バックエンド回答集計 API（完了・PR対象・Backend）
+### Session 2: バックエンド回答集計 API（完了・PR #37・Backend）
 - **ゴール**: SQLite に蓄積・同期された `answer_logs` から、正答率や苦手対象を抽出・集計する API を提供する。
-- **対象タスク**:
-  - リポジトリ: `pkg/repository/sqlite.go` に回答集計クエリ（`GetQuizStatistics`）を実装（全体・グループ別・多態性対象別の正答数・誤答数・平均応答時間、JSON `metadata` / `extra` 拡張フィールド対応）。
-  - サーバー: `GET /api/v1/quiz/statistics` エンドポイントを `pkg/server/server.go` に提供。
-  - テスト: 単体テストおよび ADR コンプライアンステスト（`ADR-0032/2`）の実装（機械的 CI 検証）。
+- **成果物**:
+  - モデル拡張: `TargetStat`, `GroupStat`, `QuizStatisticsResponse` を定義。将来の集計項目拡張に備え JSON `metadata` / `extra` フィールドを配備。
+  - リポジトリ: `pkg/repository/sqlite.go` に `GetQuizStatistics` を実装（全体サマリー、グループ別集計、メンバー・楽曲多態性ワーストN件抽出）。
+  - サーバー: `GET /api/v1/quiz/statistics` エンドポイントを `pkg/server/server.go` に提供（`group_id`, `user_id`, `target_type`, `limit` フィルタリング）。
+  - スキーマ同期: `api/openapi.yaml`、TS 型定義、ER 図の同期。
+  - テスト: 単体テストおよび ADR-0032/2 コンプライアンステストの網羅。
 
-### Session 3: 履歴・統計 UI & 苦手克服モード（次回セッション・Frontend・要人間レビュー）
+### Session 3: 履歴・統計 UI & 苦手克服モード（次回着手・Frontend・要人間レビュー）
 - **ゴール**: 蓄積された回答ログを活用し、正答率や苦手カラーの復習モードを直感的な UI で提供する。
 - **対象タスク**:
-  - ローカル履歴永続化: IndexedDB（`answer_history` ストア）により、同期後もローカルに最新回答ログを保持・集計。
-  - 統計モーダル UI: 総回答数、全体・グループ別正答率バッジ、苦手メンバー/楽曲ランキングの可視化。
-  - 苦手克服クイズモード: 誤答率の高いメンバー/楽曲を優先出題するデッキ生成。
+  - ローカル履歴永続化: IndexedDB（`answer_history` ストア・DB v2）により、同期後もローカルに最新回答ログを保持・集計。
+  - 統計モーダル UI: ヘッダー/ポータルに統計ボタンを配置し、総回答数、全体・グループ別正答率、苦手メンバー/楽曲ランキング（ワースト5件）を可視化。
+  - 苦手克服クイズモード: 誤答率の高いメンバー/楽曲を優先出題するデッキ生成（復習モード）。
+  - オンライン/オフライン協調: オンライン時は `GET /api/v1/quiz/statistics`、オフライン時は IndexedDB ローカル履歴からフォールバック集計。
   - 人間による UI/UX レビューの実施。
+
