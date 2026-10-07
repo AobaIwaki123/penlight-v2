@@ -7,6 +7,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+go run scripts/gen-proposal-migration.go
+
 echo "=== [1/4] Rebuilding Master Seed SQL from seeds/data/ ==="
 go run scripts/build_seed.go
 

@@ -2,6 +2,7 @@
 
 - **ステータス**: 進行中 (In Progress)
 - **日付**: 2026-10-08
+- **現在の実装方針**: [ADR-0036](../../adr/0036-admin-gallery-and-bootstrap-master-extension.md)、[ADR-0037](../../adr/0037-metadata-edit-proposal-storage-and-approval.md)。以下の旧Session 1〜4は検討履歴であり、実装は末尾のPR単位ロードマップに従う。
 - **関連 ADR**:
   - [ADR-0004: Go 構造体を唯一の Single Source of Truth とする型定義一元管理](../../adr/0004-go-schema-as-single-source-of-truth.md)
   - [ADR-0010: Google OIDC 認証とセッションセキュリティ (Deferred)](../../adr/0010-google-oidc-authentication-and-session-security.md)
@@ -92,3 +93,66 @@ flowchart TD
 ### Session 4: 将来的な `/admin` 保護（必要時対応・Infra / Security）
 - **方針**:
   - アプリ側コードに認証ロジックを抱え込まず、**Cloudflare Zero Trust / Access**（インフラ層）で `/admin` パスに Google 認証 / OTP メール認証を設定して完全遮断する。
+
+#### 調査結果（2026-10-08）
+
+- Cloudflare Access の Self-hosted application は、ホスト名全体だけでなく URL パス単位で保護できる。既存の `penlight.aooba.net` を維持したまま、管理画面だけを認証対象にできる。
+  - 公式: [Application paths](https://developers.cloudflare.com/cloudflare-one/access-controls/policies/app-paths/)
+- 管理画面と管理 API は別パスのため、次の両方を保護対象にする。
+  - `/admin` および `/admin/*`
+  - `/api/v1/admin` および `/api/v1/admin/*`
+- `/admin/*` のワイルドカードは親パス `/admin` を含まないため、親パスも明示的に保護する。管理 API も画面と同じ Access ポリシーを適用する。
+- 通常のクイズ画面・クイズ API は公開のまま維持する。ホスト全体を保護すると Local-First のゲスト利用を壊すため採用しない。
+- 認証方式は、Cloudflare 側に Google IdP を設定して管理者メールアドレスを Allow する方式を基本とする。少人数の協力者向けには、許可メールアドレスへ Cloudflare が送る One-time PIN を併用できる。
+  - 公式: [Google IdP](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/google/)
+  - 公式: [One-time PIN](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/one-time-pin/)
+- Cloudflare Access は認証済みの HTTP リクエストだけを origin へ転送する。origin 迂回時も拒否できるよう、Cloudflare Tunnel の `Protect with Access` または origin 側の Access token 検証を有効化する。
+  - 公式: [Self-hosted public application](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/)
+- この方式では管理画面専用の `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` や Go 側の認証実装を追加しない。Cloudflare Access の設定は Cloudflare 側で管理し、既存の最小環境変数方針を維持する。
+
+#### Session 4 の暫定仕様
+
+> Cloudflare Access のパスベース保護を採用し、`/admin`、`/admin/*`、`/api/v1/admin`、`/api/v1/admin/*` を Google 認証または One-time PIN で保護する。通常のクイズ機能は公開のまま維持する。
+
+#### 未実施事項
+
+- Cloudflare Zero Trust 側の Access application、Allow ポリシー、Google IdP または One-time PIN の実設定。
+- Tunnel の `Protect with Access` 設定および未認証状態での画面・管理 API の疎通確認。
+- Cloudflare 側設定を Terraform/API 等で Git 管理するかどうかの決定。
+
+---
+
+## 4. PR単位ロードマップ（2026-10-08 更新）
+
+1 PRを1セッションとして進める。ユーザー編集を提案として蓄積し、`/admin`で承認・却下する。初期は画面と管理APIの認証・認可を導入しない。PRのマージはユーザーが判断する。
+
+| PR | 範囲 | 完了条件 |
+|---|---|---|
+| 1（今回） | ADR-0036/0037確定、提案保存のDB基盤 | migration 000004、型付き変更前後、`prp_`、メンバー・公開マスタのrevision、生成物同期、DB制約・移行・再起動テスト |
+| 2 | 提案・承認BackendとBootstrap同期 | 送信・一覧・承認・却下、直接更新APIの置換、`include_graduated`・`photo_types`、条件別ETag、全マスタ更新経路のrevision整合 |
+| 3 | ユーザー編集提案UI | 色・順序・期生・状態・代表写真・衣装タグの変更前後確認、同じ提案IDでの再送、承認待ちの表示 |
+| 4 | `/admin`承認専用UI | 提案の変更前後・状態・競合表示、承認・却下、判断後の再取得 |
+| 5 | 手動スナップショットとシード逆同期 | 整合性のあるSQLite snapshotを入力に、承認済みマスタだけを決定的に出力。取得と変換の分離、同じ入力の再実行・往復同期で不要な差分なし |
+
+### PR 2で検証する境界
+
+- 同一ID・同一内容の再送は既存結果、内容違いは拒否する。JSONキー順・画像変更配列の順序を正規化して比較する。
+- 承認状態・公開マスタ・revisionを同一トランザクションで更新する。再承認・同時承認・revision競合・途中失敗で二重反映と部分更新がない。
+- 未承認・却下では公開マスタとETagが変化しない。承認後は取得条件ごとに再取得できる。
+- seed同期は同一内容の再適用でrevisionを増やさない。既存の画像全削除・再登録と`master_versions`の置換がrevisionをリセット／過剰更新しないよう整合させる。
+- seedバージョンは起動時の同期判定に維持し、DB更新用の`data_revision`を分離する。Bootstrap本体とETagは同じDB状態から取得する。
+
+### PR 5で検証する境界
+
+- TypeID、左右順序、代表写真、衣装タグ、確認日時が往復で維持される。欠落した画像URLを架空のURLで補完しない。
+- 出力の並び順はTypeID等で確定し、実行時刻を差分へ混入させない。pending・rejected・提案履歴をシードへ含めない。
+- 変換処理は入力snapshotを更新しない。Kubernetes Job化は別ADRで決定する。
+
+### 次セッションの引き継ぎ
+
+- 起点: PR 1のマージ後の`main`から、PR 2用のトピックブランチを作成する。
+- 保存基盤: `pkg/model/metadata_edit_proposal.go`、`migrations/000004_add_metadata_edit_proposals.up.sql`。DDLは`scripts/gen-proposal-migration.go`でモデルから生成する。
+- 現状の制約: 提案Repository・API・UIは未実装。既存の直接更新API、Bootstrapの固定ETag、seed同期・`export_seeds.go`は旧実装であり、PR 1時点で承認フローが完成したとは扱わない。
+- 旧WIP: 管理者向けメンバー／PhotoType一覧APIと`ListAllMembers`は取り下げた。参照はBootstrapの既存経路を拡張する。
+- 生成パイプライン: TS型・ER図・今回のDDLを生成する。OpenAPIの自動生成経路はまだ存在しないため、PR 2のAPI契約変更時にADR-0004との同期方法を整備する。
+- 別ADR: `/admin`・管理APIの保護、snapshot取得のKubernetes Job化。旧Session 4のCloudflare調査はその材料として保持する。

@@ -7,7 +7,8 @@ const CurrentMasterVersion = "2026.10.05-3"
 
 // MasterVersion tracks the current master data synchronization version (Ref: ADR-0021).
 type MasterVersion struct {
-	ID        string    `json:"id"`         // "current"
-	Version   string    `json:"version"`    // Git commit hash or semantic version
-	UpdatedAt time.Time `json:"updated_at"`
+	DataRevision int       `json:"data_revision" db:"data_revision" sql:"INTEGER NOT NULL DEFAULT 1 CHECK (data_revision >= 1)"`
+	ID           string    `json:"id"`      // "current"
+	Version      string    `json:"version"` // Git commit hash or semantic version
+	UpdatedAt    time.Time `json:"updated_at"`
 }

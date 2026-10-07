@@ -14,6 +14,7 @@ const (
 	PrefixQuiz      Prefix = "quiz" // Quiz Question: quiz_<uuidv7>
 	PrefixUser      Prefix = "usr"  // User: usr_<uuidv7>
 	PrefixAnswer    Prefix = "ans"  // Answer Log: ans_<uuidv7>
+	PrefixProposal  Prefix = "prp"  // Metadata edit proposal (ADR-0037)
 )
 
 // ID represents a prefixed UUID v7 identifier (e.g., mem_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8b).

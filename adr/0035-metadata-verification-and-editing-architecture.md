@@ -1,7 +1,7 @@
 ---
 id: ADR-0035
 title: メタデータ確認・編集 API および GitOps 逆同期アーキテクチャの採用
-status: Accepted
+status: Superseded
 scope: System
 primary_category: DAT
 categories: [DAT, APP, DEV]
@@ -12,8 +12,9 @@ date: 2026-10-08
 
 # 0035. メタデータ確認・編集 API および GitOps 逆同期アーキテクチャの採用 (0035-metadata-verification-and-editing-architecture.md)
 
-- **ステータス**: 承認 (Accepted)
+- **ステータス**: 置換済み (Superseded)
 - **日付**: 2026-10-08
+- **後継 ADR**: [ADR-0036](./0036-admin-gallery-and-bootstrap-master-extension.md), [ADR-0037](./0037-metadata-edit-proposal-storage-and-approval.md)
 
 ---
 

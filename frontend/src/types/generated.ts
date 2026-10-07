@@ -288,6 +288,7 @@ export const PrefixPhotoType: Prefix = "pht"; // Photo Type: pht_<uuidv7>
 export const PrefixQuiz: Prefix = "quiz"; // Quiz Question: quiz_<uuidv7>
 export const PrefixUser: Prefix = "usr"; // User: usr_<uuidv7>
 export const PrefixAnswer: Prefix = "ans"; // Answer Log: ans_<uuidv7>
+export const PrefixProposal: Prefix = "prp"; // Metadata edit proposal (ADR-0037)
 /**
  * ID represents a prefixed UUID v7 identifier (e.g., mem_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8b).
  * The prefix prevents accidental misuse across entity types, while UUID v7 provides
@@ -306,6 +307,7 @@ export const CurrentMasterVersion = "2026.10.05-3";
  * MasterVersion tracks the current master data synchronization version (Ref: ADR-0021).
  */
 export interface MasterVersion {
+  data_revision: number /* int */;
   id: string; // "current"
   version: string; // Git commit hash or semantic version
   updated_at: string;
@@ -348,6 +350,7 @@ export interface MemberImage {
  * Natural keys (names) are never used as identifiers to prevent collisions on homonyms or name changes.
  */
 export interface Member {
+  metadata_revision: number /* int */;
   id: ID; // mem_... (UUID v7 immutable surrogate key)
   group_id: ID; // grp_...
   family_name: string; // e.g. "加藤"
@@ -363,6 +366,70 @@ export interface Member {
   verified_at?: string; // Timestamp when metadata was verified
   created_at: string;
   updated_at: string;
+}
+
+//////////
+// source: metadata_edit_proposal.go
+
+/**
+ * MetadataEditProposalStatus is the immutable decision state (Ref: ADR-0037).
+ */
+export type MetadataEditProposalStatus = string;
+export const ProposalPending: MetadataEditProposalStatus = "pending";
+export const ProposalApproved: MetadataEditProposalStatus = "approved";
+export const ProposalRejected: MetadataEditProposalStatus = "rejected";
+/**
+ * PenlightChange records the complete color pair before and after an edit.
+ */
+export interface PenlightChange {
+  before: PenlightPair;
+  after: PenlightPair;
+}
+export interface GenerationChange {
+  before: number /* int */;
+  after: number /* int */;
+}
+export interface MemberStatusChange {
+  before: MemberStatus;
+  after: MemberStatus;
+}
+/**
+ * PrimaryImageChange permits an initially unset primary image.
+ */
+export interface PrimaryImageChange {
+  before?: ID;
+  after: ID;
+}
+export interface ImagePhotoTypeChange {
+  image_id: ID;
+  before: ID;
+  after: ID;
+}
+/**
+ * MetadataEditChanges contains only the fields allowed by ADR-0036/0037.
+ */
+export interface MetadataEditChanges {
+  penlight?: PenlightChange;
+  generation?: GenerationChange;
+  status?: MemberStatusChange;
+  primary_image_id?: PrimaryImageChange;
+  image_photo_types?: ImagePhotoTypeChange[];
+}
+/**
+ * MetadataEditProposal retains a submission and its final decision (Ref: ADR-0037).
+ */
+export interface MetadataEditProposal {
+  id: ID;
+  member_id: ID;
+  base_revision: number /* int */;
+  changes: MetadataEditChanges;
+  status: MetadataEditProposalStatus;
+  submitted_at: string;
+  approved_at?: string;
+  rejected_at?: string;
+  proposer_user_id?: ID;
+  approver_user_id?: ID;
+  rejection_reason?: string;
 }
 
 //////////

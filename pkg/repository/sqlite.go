@@ -14,7 +14,6 @@ import (
 	_ "modernc.org/sqlite" // Pure Go SQLite driver (CGO_ENABLED=0 compatible, Ref: ADR-0005)
 )
 
-
 var _ model.Repository = (*SQLiteRepository)(nil)
 
 // SQLiteRepository implements model.Repository using modernc.org/sqlite in WAL mode.
@@ -279,7 +278,7 @@ func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, err
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at, m.metadata_revision,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -296,7 +295,7 @@ func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at, m.metadata_revision,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -313,7 +312,7 @@ func (r *SQLiteRepository) ListMembersBySeries(ctx context.Context, seriesID mod
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at, m.metadata_revision,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -388,13 +387,13 @@ func (r *SQLiteRepository) ListMemberImages(ctx context.Context, memberID model.
 // GetMasterVersion returns the current master data synchronization version (Ref: ADR-0021).
 func (r *SQLiteRepository) GetMasterVersion(ctx context.Context) (*model.MasterVersion, error) {
 	const query = `
-		SELECT id, version, updated_at
+		SELECT id, version, updated_at, data_revision
 		FROM master_versions
 		WHERE id = 'current';
 	`
 	var mv model.MasterVersion
 	var updatedAtStr string
-	err := r.db.QueryRowContext(ctx, query).Scan(&mv.ID, &mv.Version, &updatedAtStr)
+	err := r.db.QueryRowContext(ctx, query).Scan(&mv.ID, &mv.Version, &updatedAtStr, &mv.DataRevision)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -516,6 +515,7 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 			&verifiedAtStr,
 			&createdAtStr,
 			&updatedAtStr,
+			&m.MetadataRevision,
 			&imgID,
 			&imgPhotoTypeID,
 			&imgKey,
@@ -586,8 +586,6 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 	}
 	return members, nil
 }
-
-
 
 // InsertAnswerLog inserts an individual quiz answer record idempotently (Ref: ADR-0007, ADR-0032).
 func (r *SQLiteRepository) InsertAnswerLog(ctx context.Context, log model.AnswerLog) error {
@@ -944,7 +942,7 @@ func (r *SQLiteRepository) GetMember(ctx context.Context, id model.ID) (*model.M
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at, m.metadata_revision
 		FROM members m
 		WHERE m.id = ?;
 	`
@@ -970,6 +968,7 @@ func (r *SQLiteRepository) GetMember(ctx context.Context, id model.ID) (*model.M
 		&verifiedAtStr,
 		&createdAtStr,
 		&updatedAtStr,
+		&m.MetadataRevision,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -1158,5 +1157,3 @@ func (r *SQLiteRepository) UpdateMemberImagePhotoType(ctx context.Context, image
 	}
 	return nil
 }
-
-

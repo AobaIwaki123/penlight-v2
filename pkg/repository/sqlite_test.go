@@ -22,7 +22,7 @@ func setupTestDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 	}
 
 	// Apply migration schemas
-	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql"} {
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql", "000004_add_metadata_edit_proposals.up.sql"} {
 		schemaBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
 		if err != nil {
 			t.Fatalf("failed to read migration file %s: %v", migrationFile, err)
@@ -124,7 +124,6 @@ func TestSQLiteRepository_MasterDataAndAnswerLogs(t *testing.T) {
 	if members[0].PrimaryImage().PhotoType == nil || members[0].PrimaryImage().PhotoType.Name != "13th制服" {
 		t.Fatalf("expected photo type for primary image, got %+v", members[0].PrimaryImage().PhotoType)
 	}
-
 
 	// 4. Insert AnswerLog (idempotent, polymorphic Ref: ADR-0032)
 	targetMemID := model.ID("mem_01")
@@ -663,8 +662,3 @@ func TestSQLiteRepository_MetadataMutations(t *testing.T) {
 		t.Fatal("expected to find img_02")
 	}
 }
-
-
-
-
-
