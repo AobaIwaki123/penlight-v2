@@ -83,6 +83,9 @@ make restart-back   # バックエンドのみ再起動
 make up-front       # フロントエンドのみ起動 (:3000)
 make down-front     # フロントエンドのみ停止
 make restart-front  # フロントエンドのみ再起動
+make up-argocd      # ArgoCD Application を適用・起動
+make down-argocd    # ArgoCD Application を削除・停止
+make restart-argocd # ArgoCD Application を再作成・再起動
 
 # 開発・検証ショートカット
 make verify         # 全自動一括検証 (詳細ログ表示)

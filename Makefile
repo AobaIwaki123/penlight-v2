@@ -1,4 +1,4 @@
-.PHONY: help up down restart status logs up-back down-back restart-back up-front down-front restart-front logs-back logs-front verify verify-ai test gen
+.PHONY: help up down restart status logs up-back down-back restart-back up-front down-front restart-front up-argocd down-argocd restart-argocd logs-back logs-front verify verify-ai test gen
 
 RUN_DIR := .run
 BACK_PID := $(RUN_DIR)/backend.pid
@@ -7,6 +7,7 @@ BACK_LOG := $(RUN_DIR)/backend.log
 FRONT_LOG := $(RUN_DIR)/frontend.log
 BACK_PORT := 8080
 FRONT_PORT := 3000
+ARGOCD_APP_FILE := deploy/argocd/app.yml
 
 help: ## コマンド一覧を表示
 	@echo "利用可能な Make コマンド:"
@@ -90,6 +91,21 @@ restart-front: down-front ## フロントエンドを再起動
 	@sleep 1
 	@$(MAKE) up-front
 
+up-argocd: ## ArgoCD Application を適用・起動
+	@echo "ArgoCD Application を適用しています..."
+	@kubectl apply -f $(ARGOCD_APP_FILE)
+	@echo "ArgoCD Application のステータス:"
+	@kubectl get application penlight -n argocd
+
+down-argocd: ## ArgoCD Application を削除・停止
+	@echo "ArgoCD Application を削除しています..."
+	@kubectl delete -f $(ARGOCD_APP_FILE) --ignore-not-found=true
+	@echo "ArgoCD Application を削除しました。"
+
+restart-argocd: down-argocd ## ArgoCD Application を再作成・再起動
+	@sleep 1
+	@$(MAKE) up-argocd
+
 status: ## 起動状態を確認
 	@echo "=== プロセスステータス ==="
 	@if lsof -Pi :$(BACK_PORT) -sTCP:LISTEN -t >/dev/null 2>&1 ; then \
@@ -101,6 +117,13 @@ status: ## 起動状態を確認
 		echo "  Frontend: \033[32mRUNNING\033[0m (PID: $$(lsof -ti :$(FRONT_PORT) | tr '\n' ' ')) -> http://localhost:$(FRONT_PORT)"; \
 	else \
 		echo "  Frontend: \033[31mSTOPPED\033[0m"; \
+	fi
+	@if kubectl get application penlight -n argocd >/dev/null 2>&1 ; then \
+		SYNC_STATUS=$$(kubectl get application penlight -n argocd -o jsonpath='{.status.sync.status}' 2>/dev/null); \
+		HEALTH_STATUS=$$(kubectl get application penlight -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null); \
+		echo "  ArgoCD  : \033[32mRUNNING\033[0m (Sync: $${SYNC_STATUS}, Health: $${HEALTH_STATUS})"; \
+	else \
+		echo "  ArgoCD  : \033[31mSTOPPED\033[0m"; \
 	fi
 
 logs: ## 全ログをリアルタイム表示
