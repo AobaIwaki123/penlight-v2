@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ActionIcon,
   Badge,
   Box,
   Button,
@@ -17,11 +18,13 @@ import {
 } from '@mantine/core';
 import {
   IconArrowRight,
+  IconChartBar,
   IconColorSwatch,
   IconFlame,
   IconMusic,
   IconUsers,
 } from '@tabler/icons-react';
+
 import { useEffect, useState } from 'react';
 import { GroupLogo } from '@/features/portal/components/GroupLogo';
 import type {
@@ -43,6 +46,7 @@ interface PortalViewProps {
   onGroupChange: (groupId: string) => void;
   onSongModeChange: (songMode: boolean) => void;
   onStartQuiz: () => void;
+  onOpenStatistics?: () => void;
 }
 
 export function PortalView({
@@ -55,6 +59,7 @@ export function PortalView({
   onGroupChange,
   onSongModeChange,
   onStartQuiz,
+  onOpenStatistics,
 }: PortalViewProps) {
   const activeGroup = groups.find((g) => g.id === selectedGroupId) || groups[0];
 
@@ -110,25 +115,40 @@ export function PortalView({
             borderColor: `${activeGroup?.theme_color_hex || '#7CC7E8'}40`,
           }}
         >
-          <Group justify="flex-start" align="center">
-            <ThemeIcon
-              size={38}
-              radius="md"
-              style={{
-                backgroundColor: activeGroup?.theme_color_hex || '#7CC7E8',
-                color: '#ffffff',
-              }}
-            >
-              <IconColorSwatch size={22} />
-            </ThemeIcon>
-            <Box>
-              <Text fw={800} size="lg" style={{ letterSpacing: '0.02em' }}>
-                ペンライトクイズ
-              </Text>
-              <Text size="xs" c="dimmed">
-                推しメンカラー & 楽曲ペンライトクイズ
-              </Text>
-            </Box>
+          <Group justify="space-between" align="center">
+            <Group justify="flex-start" align="center">
+              <ThemeIcon
+                size={38}
+                radius="md"
+                style={{
+                  backgroundColor: activeGroup?.theme_color_hex || '#7CC7E8',
+                  color: '#ffffff',
+                }}
+              >
+                <IconColorSwatch size={22} />
+              </ThemeIcon>
+              <Box>
+                <Text fw={800} size="lg" style={{ letterSpacing: '0.02em' }}>
+                  ペンライトクイズ
+                </Text>
+                <Text size="xs" c="dimmed">
+                  推しメンカラー & 楽曲ペンライトクイズ
+                </Text>
+              </Box>
+            </Group>
+
+            {onOpenStatistics && (
+              <ActionIcon
+                variant="light"
+                color="blue"
+                size="lg"
+                radius="md"
+                onClick={onOpenStatistics}
+                title="成績・統計分析"
+              >
+                <IconChartBar size={20} />
+              </ActionIcon>
+            )}
           </Group>
         </Paper>
 

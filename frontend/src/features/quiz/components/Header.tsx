@@ -10,6 +10,7 @@ import {
   useMantineColorScheme,
 } from '@mantine/core';
 import {
+  IconChartBar,
   IconCheck,
   IconChevronLeft,
   IconCircleDot,
@@ -21,6 +22,7 @@ import {
   IconMusic,
   IconSun,
 } from '@tabler/icons-react';
+
 import { useEffect, useState } from 'react';
 import { FEATURES } from '@/config/features';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
@@ -32,6 +34,7 @@ interface HeaderProps {
   onInputModeChange: (mode: InputMode) => void;
   onOpenFilter?: () => void;
   onOpenOfflineModal?: () => void;
+  onOpenStatistics?: () => void;
   onGoHome?: () => void;
   groupThemeColor?: string;
   groupName?: string;
@@ -45,6 +48,7 @@ export function Header({
   onInputModeChange,
   onOpenFilter,
   onOpenOfflineModal,
+  onOpenStatistics,
   onGoHome,
   groupThemeColor,
   groupName,
@@ -254,6 +258,20 @@ export function Header({
             title="絞り込みフィルター"
           >
             <IconFilter size={18} />
+          </ActionIcon>
+        )}
+
+        {/* 成績・統計ボタン */}
+        {onOpenStatistics && (
+          <ActionIcon
+            variant="light"
+            color="indigo"
+            size="lg"
+            radius="md"
+            onClick={onOpenStatistics}
+            title="成績・統計分析"
+          >
+            <IconChartBar size={18} />
           </ActionIcon>
         )}
 
