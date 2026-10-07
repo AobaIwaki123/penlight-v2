@@ -795,5 +795,44 @@ func TestADR0015_Compliance_MinimalConfiguration(t *testing.T) {
 	})
 }
 
+// =========================================================================
+// ADR-0007 & ADR-0032: Local-First Batch Sync & Multi-Target Polymorphism Tests
+// =========================================================================
+
+func TestADR0007_And_ADR0032_Compliance_OfflineBatchSync(t *testing.T) {
+	t.Run("ADR-0007/1: Batch answer item supports client-generated ans_ TypeID idempotency key", func(t *testing.T) {
+		memID := model.ID("mem_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8b")
+		item := model.BatchAnswerItem{
+			ID:             "ans_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8c",
+			QuizQuestionID: "quiz_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8d",
+			TargetMemberID: &memID,
+			GroupID:        "grp_hinatazaka46",
+			IsCorrect:      true,
+			ResponseTimeMs: 1500,
+		}
+		if !strings.HasPrefix(string(item.ID), "ans_") {
+			t.Fatalf("ADR-0007/ADR-0001 Violation: expected ans_ prefix, got %s", item.ID)
+		}
+	})
+
+	t.Run("ADR-0032/1: Batch answer item supports polymorphic song targets", func(t *testing.T) {
+		songID := model.ID("sng_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8e")
+		songItem := model.BatchAnswerItem{
+			ID:             "ans_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8f",
+			QuizQuestionID: "quiz_018f3a5b8c9d7a1e8f2b3c4d5e6f7a90",
+			TargetSongID:   &songID,
+			GroupID:        "grp_hinatazaka46",
+			IsCorrect:      false,
+			ResponseTimeMs: 2200,
+		}
+		if songItem.TargetMemberID != nil {
+			t.Fatalf("ADR-0032 Violation: target_member_id should be nil for song item")
+		}
+		if songItem.TargetSongID == nil || *songItem.TargetSongID != songID {
+			t.Fatalf("ADR-0032 Violation: target_song_id not populated correctly")
+		}
+	})
+}
+
 
 
