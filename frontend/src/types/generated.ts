@@ -5,6 +5,37 @@
  */
 
 //////////
+// source: admin.go
+
+/**
+ * UpdateMemberPenlightRequest represents the payload to update a member's penlight colors.
+ */
+export interface UpdateMemberPenlightRequest {
+  left_color_id: ID;
+  right_color_id: ID;
+  ordered: boolean;
+}
+/**
+ * UpdateMemberStatusRequest represents the payload to update a member's activity status and/or generation.
+ */
+export interface UpdateMemberStatusRequest {
+  status?: MemberStatus;
+  generation?: number /* int */;
+}
+/**
+ * SetPrimaryMemberImageRequest represents the payload to set a member's primary/default image.
+ */
+export interface SetPrimaryMemberImageRequest {
+  image_id: ID;
+}
+/**
+ * UpdateMemberImagePhotoTypeRequest represents the payload to update a member image's costume/photo category.
+ */
+export interface UpdateMemberImagePhotoTypeRequest {
+  photo_type_id: ID;
+}
+
+//////////
 // source: answer.go
 
 /**
@@ -329,6 +360,7 @@ export interface Member {
   images?: MemberImage[]; // Associated images (1:N, Ref: ADR-0021)
   joined_at?: string; // Optional joining date
   graduated_at?: string; // Optional graduation date
+  verified_at?: string; // Timestamp when metadata was verified
   created_at: string;
   updated_at: string;
 }

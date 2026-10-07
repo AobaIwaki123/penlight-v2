@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -278,7 +279,7 @@ func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, err
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -295,7 +296,7 @@ func (r *SQLiteRepository) ListMembersByGroup(ctx context.Context, groupID model
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -312,7 +313,7 @@ func (r *SQLiteRepository) ListMembersBySeries(ctx context.Context, seriesID mod
 	const query = `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
-		       m.joined_at, m.graduated_at, m.created_at, m.updated_at,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at,
 		       mi.id, mi.photo_type_id, mi.image_key, mi.is_primary, mi.display_order, mi.created_at, mi.updated_at,
 		       pt.id, pt.group_id, pt.slug, pt.name, pt.display_order, pt.created_at, pt.updated_at
 		FROM members m
@@ -491,7 +492,7 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 	for rows.Next() {
 		var m model.Member
 		var orderedInt int
-		var joinedAtStr, graduatedAtStr sql.NullString
+		var joinedAtStr, graduatedAtStr, verifiedAtStr sql.NullString
 		var createdAtStr, updatedAtStr string
 		var imgID, imgPhotoTypeID, imgKey, imgCreatedAtStr, imgUpdatedAtStr sql.NullString
 		var imgIsPrimary, imgDisplayOrder sql.NullInt64
@@ -512,6 +513,7 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 			&orderedInt,
 			&joinedAtStr,
 			&graduatedAtStr,
+			&verifiedAtStr,
 			&createdAtStr,
 			&updatedAtStr,
 			&imgID,
@@ -540,6 +542,10 @@ func (r *SQLiteRepository) queryMembers(ctx context.Context, query string, args 
 		if graduatedAtStr.Valid {
 			t, _ := time.Parse(time.RFC3339, graduatedAtStr.String)
 			m.GraduatedAt = &t
+		}
+		if verifiedAtStr.Valid {
+			t, _ := time.Parse(time.RFC3339, verifiedAtStr.String)
+			m.VerifiedAt = &t
 		}
 		m.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
 		m.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
@@ -932,4 +938,225 @@ func (r *SQLiteRepository) GetQuizStatistics(ctx context.Context, filter model.Q
 	resp.WeakTargets = weakTargets
 	return resp, nil
 }
+
+// GetMember returns a single member by ID (including graduated), along with all associated images.
+func (r *SQLiteRepository) GetMember(ctx context.Context, id model.ID) (*model.Member, error) {
+	const query = `
+		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
+		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
+		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at
+		FROM members m
+		WHERE m.id = ?;
+	`
+	var m model.Member
+	var orderedInt int
+	var joinedAtStr, graduatedAtStr, verifiedAtStr sql.NullString
+	var createdAtStr, updatedAtStr string
+
+	err := r.db.QueryRowContext(ctx, query, string(id)).Scan(
+		&m.ID,
+		&m.GroupID,
+		&m.FamilyName,
+		&m.GivenName,
+		&m.FamilyNameKana,
+		&m.GivenNameKana,
+		&m.Generation,
+		&m.Status,
+		&m.Penlight.LeftColorID,
+		&m.Penlight.RightColorID,
+		&orderedInt,
+		&joinedAtStr,
+		&graduatedAtStr,
+		&verifiedAtStr,
+		&createdAtStr,
+		&updatedAtStr,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to get member: %w", err)
+	}
+
+	m.Penlight.Ordered = orderedInt == 1
+	if joinedAtStr.Valid {
+		t, _ := time.Parse(time.RFC3339, joinedAtStr.String)
+		m.JoinedAt = &t
+	}
+	if graduatedAtStr.Valid {
+		t, _ := time.Parse(time.RFC3339, graduatedAtStr.String)
+		m.GraduatedAt = &t
+	}
+	if verifiedAtStr.Valid {
+		t, _ := time.Parse(time.RFC3339, verifiedAtStr.String)
+		m.VerifiedAt = &t
+	}
+	m.CreatedAt, _ = time.Parse(time.RFC3339, createdAtStr)
+	m.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAtStr)
+
+	// Fetch all images for member
+	images, err := r.ListMemberImages(ctx, m.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list member images: %w", err)
+	}
+	m.Images = images
+
+	return &m, nil
+}
+
+// UpdateMemberPenlight updates the penlight colors and order for a member.
+// If markVerified is true, verified_at is set to current UTC time.
+func (r *SQLiteRepository) UpdateMemberPenlight(ctx context.Context, id model.ID, penlight model.PenlightPair, markVerified bool) error {
+	now := time.Now().UTC().Format(time.RFC3339)
+	orderedInt := 0
+	if penlight.Ordered {
+		orderedInt = 1
+	}
+
+	var query string
+	var args []any
+	if markVerified {
+		query = `
+			UPDATE members
+			SET left_color_id = ?, right_color_id = ?, ordered = ?, verified_at = ?, updated_at = ?
+			WHERE id = ?;
+		`
+		args = []any{string(penlight.LeftColorID), string(penlight.RightColorID), orderedInt, now, now, string(id)}
+	} else {
+		query = `
+			UPDATE members
+			SET left_color_id = ?, right_color_id = ?, ordered = ?, updated_at = ?
+			WHERE id = ?;
+		`
+		args = []any{string(penlight.LeftColorID), string(penlight.RightColorID), orderedInt, now, string(id)}
+	}
+
+	res, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("failed to update member penlight: %w", err)
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
+// UpdateMemberStatus updates the activity status and optionally generation for a member.
+func (r *SQLiteRepository) UpdateMemberStatus(ctx context.Context, id model.ID, status model.MemberStatus, generation *int) error {
+	now := time.Now().UTC().Format(time.RFC3339)
+	var query string
+	var args []any
+	if generation != nil {
+		query = `
+			UPDATE members
+			SET status = ?, generation = ?, updated_at = ?
+			WHERE id = ?;
+		`
+		args = []any{string(status), *generation, now, string(id)}
+	} else {
+		query = `
+			UPDATE members
+			SET status = ?, updated_at = ?
+			WHERE id = ?;
+		`
+		args = []any{string(status), now, string(id)}
+	}
+
+	res, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("failed to update member status: %w", err)
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
+// MarkMemberVerified updates the member's verified_at timestamp to now.
+func (r *SQLiteRepository) MarkMemberVerified(ctx context.Context, id model.ID) error {
+	now := time.Now().UTC().Format(time.RFC3339)
+	const query = `
+		UPDATE members
+		SET verified_at = ?, updated_at = ?
+		WHERE id = ?;
+	`
+	res, err := r.db.ExecContext(ctx, query, now, now, string(id))
+	if err != nil {
+		return fmt.Errorf("failed to mark member verified: %w", err)
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
+// SetPrimaryMemberImage marks the specified image as primary for the member and resets other images.
+func (r *SQLiteRepository) SetPrimaryMemberImage(ctx context.Context, memberID model.ID, imageID model.ID) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	now := time.Now().UTC().Format(time.RFC3339)
+
+	// Verify image belongs to member
+	var count int
+	err = tx.QueryRowContext(ctx, "SELECT COUNT(*) FROM member_images WHERE id = ? AND member_id = ?;", string(imageID), string(memberID)).Scan(&count)
+	if err != nil {
+		return fmt.Errorf("failed to verify member image: %w", err)
+	}
+	if count == 0 {
+		return sql.ErrNoRows
+	}
+
+	// Reset existing primary images for this member
+	_, err = tx.ExecContext(ctx, "UPDATE member_images SET is_primary = 0, updated_at = ? WHERE member_id = ?;", now, string(memberID))
+	if err != nil {
+		return fmt.Errorf("failed to reset primary images: %w", err)
+	}
+
+	// Set target image as primary
+	_, err = tx.ExecContext(ctx, "UPDATE member_images SET is_primary = 1, updated_at = ? WHERE id = ?;", now, string(imageID))
+	if err != nil {
+		return fmt.Errorf("failed to set target primary image: %w", err)
+	}
+
+	return tx.Commit()
+}
+
+// UpdateMemberImagePhotoType updates the costume/photo type category for a member image.
+func (r *SQLiteRepository) UpdateMemberImagePhotoType(ctx context.Context, imageID model.ID, photoTypeID model.ID) error {
+	now := time.Now().UTC().Format(time.RFC3339)
+	const query = `
+		UPDATE member_images
+		SET photo_type_id = ?, updated_at = ?
+		WHERE id = ?;
+	`
+	res, err := r.db.ExecContext(ctx, query, string(photoTypeID), now, string(imageID))
+	if err != nil {
+		return fmt.Errorf("failed to update member image photo type: %w", err)
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to check rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -130,7 +131,7 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, If-None-Match")
 
 		if r.Method == http.MethodOptions {
@@ -147,6 +148,14 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/api/v1/quiz/answers/batch", s.handleBatchAnswers)
 	s.mux.HandleFunc("/api/v1/quiz/statistics", s.handleQuizStatistics)
 	s.mux.HandleFunc("/images/", s.handleImage)
+
+	// Admin metadata operations (Ref: ADR-0014, ADR-0017, docs/notes/10)
+	s.mux.HandleFunc("GET /api/v1/admin/members/{id}", s.handleAdminGetMember)
+	s.mux.HandleFunc("POST /api/v1/admin/members/{id}/verify", s.handleAdminVerifyMember)
+	s.mux.HandleFunc("PATCH /api/v1/admin/members/{id}/penlight", s.handleAdminUpdateMemberPenlight)
+	s.mux.HandleFunc("PATCH /api/v1/admin/members/{id}/status", s.handleAdminUpdateMemberStatus)
+	s.mux.HandleFunc("PUT /api/v1/admin/members/{id}/images/primary", s.handleAdminSetPrimaryMemberImage)
+	s.mux.HandleFunc("PATCH /api/v1/admin/images/{id}/photo-type", s.handleAdminUpdateImagePhotoType)
 
 	// Embedded frontend static SPA handler (Ref: ADR-0002, ADR-0011)
 	if assets, err := frontend.Assets(); err == nil {
@@ -411,6 +420,229 @@ func (s *Server) handleQuizStatistics(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(stats)
 }
 
+func (s *Server) handleAdminGetMember(w http.ResponseWriter, r *http.Request) {
+	id := model.ID(r.PathValue("id"))
+	if id == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	m, err := s.repo.GetMember(ctx, id)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+	if m == nil {
+		writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(m)
+}
+
+func (s *Server) handleAdminVerifyMember(w http.ResponseWriter, r *http.Request) {
+	id := model.ID(r.PathValue("id"))
+	if id == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.MarkMemberVerified(ctx, id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
+			return
+		}
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	m, err := s.repo.GetMember(ctx, id)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(m)
+}
+
+func (s *Server) handleAdminUpdateMemberPenlight(w http.ResponseWriter, r *http.Request) {
+	id := model.ID(r.PathValue("id"))
+	if id == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+		return
+	}
+
+	var req model.UpdateMemberPenlightRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+		return
+	}
+
+	if req.LeftColorID == "" || req.RightColorID == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "Both left_color_id and right_color_id are required")
+		return
+	}
+
+	penlight := model.PenlightPair{
+		LeftColorID:  req.LeftColorID,
+		RightColorID: req.RightColorID,
+		Ordered:      req.Ordered,
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.UpdateMemberPenlight(ctx, id, penlight, true); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
+			return
+		}
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	m, err := s.repo.GetMember(ctx, id)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(m)
+}
+
+func (s *Server) handleAdminUpdateMemberStatus(w http.ResponseWriter, r *http.Request) {
+	id := model.ID(r.PathValue("id"))
+	if id == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+		return
+	}
+
+	var req model.UpdateMemberStatusRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+		return
+	}
+
+	if req.Status == nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "status is required")
+		return
+	}
+	status := *req.Status
+	if status != model.StatusActive && status != model.StatusGraduated && status != model.StatusHiatus {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Status", "status must be 'active', 'graduated', or 'hiatus'")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.UpdateMemberStatus(ctx, id, status, req.Generation); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
+			return
+		}
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	m, err := s.repo.GetMember(ctx, id)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(m)
+}
+
+func (s *Server) handleAdminSetPrimaryMemberImage(w http.ResponseWriter, r *http.Request) {
+	id := model.ID(r.PathValue("id"))
+	if id == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+		return
+	}
+
+	var req model.SetPrimaryMemberImageRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+		return
+	}
+
+	if req.ImageID == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "image_id is required")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.SetPrimaryMemberImage(ctx, id, req.ImageID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Image Not Found", fmt.Sprintf("Image %q belonging to member %q was not found", req.ImageID, id))
+			return
+		}
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	m, err := s.repo.GetMember(ctx, id)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(m)
+}
+
+func (s *Server) handleAdminUpdateImagePhotoType(w http.ResponseWriter, r *http.Request) {
+	imageID := model.ID(r.PathValue("id"))
+	if imageID == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Image ID", "Image ID is required")
+		return
+	}
+
+	var req model.UpdateMemberImagePhotoTypeRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+		return
+	}
+
+	if req.PhotoTypeID == "" {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "photo_type_id is required")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.UpdateMemberImagePhotoType(ctx, imageID, req.PhotoTypeID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Image Not Found", fmt.Sprintf("Image with ID %q was not found", imageID))
+			return
+		}
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"status":        "ok",
+		"image_id":      imageID,
+		"photo_type_id": req.PhotoTypeID,
+	})
+}
+
+
 
 func (s *Server) getImageSourceURL(key string) (string, bool) {
 	s.imageMu.RLock()
@@ -554,6 +786,7 @@ func applyMigrations(db *sql.DB) error {
 	migrationFiles := []string{
 		"000001_init.up.sql",
 		"000002_add_series_and_songs.up.sql",
+		"000003_add_member_verified_at.up.sql",
 	}
 
 	for _, filename := range migrationFiles {

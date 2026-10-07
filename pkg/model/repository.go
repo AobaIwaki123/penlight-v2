@@ -30,5 +30,13 @@ type Repository interface {
 	InsertAnswerLog(ctx context.Context, log AnswerLog) error
 	BatchInsertAnswerLogs(ctx context.Context, logs []AnswerLog) error
 	GetQuizStatistics(ctx context.Context, filter QuizStatisticsFilter) (*QuizStatisticsResponse, error)
+
+	// Member lookups and metadata mutations (Ref: ADR-0017, docs/notes/10)
+	GetMember(ctx context.Context, id ID) (*Member, error)
+	UpdateMemberPenlight(ctx context.Context, id ID, penlight PenlightPair, markVerified bool) error
+	UpdateMemberStatus(ctx context.Context, id ID, status MemberStatus, generation *int) error
+	MarkMemberVerified(ctx context.Context, id ID) error
+	SetPrimaryMemberImage(ctx context.Context, memberID ID, imageID ID) error
+	UpdateMemberImagePhotoType(ctx context.Context, imageID ID, photoTypeID ID) error
 }
 
