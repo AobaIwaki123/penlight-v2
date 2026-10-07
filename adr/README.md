@@ -40,9 +40,11 @@
 | [0031](./0031-generic-quiz-engine-and-target-abstraction.md) | クイズ出題・判定エンジンのジェネリック抽象化アーキテクチャの採用 | Accepted |
 | [0032](./0032-answer-log-multi-target-polymorphism-architecture.md) | 回答ログにおけるマルチターゲット多態性永続化アーキテクチャの採用 | Accepted |
 | [0033](./0033-on-demand-cache-through-image-proxy.md) | 外部リファラ漏洩防止とゼロパージを実現するオンデマンド画像キャッシュプロキシアーキテクチャの採用 | Accepted |
+| [0034](./0034-quiz-statistics-and-weak-target-review-architecture.md) | クイズ回答統計集計と苦手克服復習デッキアーキテクチャの採用 | Accepted |
 
 
 ---
+
 
 ## 2. メタデータ規約 (Frontmatter)
 
