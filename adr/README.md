@@ -15,8 +15,8 @@
 | [0006](./0006-domain-schema-and-typeid-structure.md) | プレフィックス付きサロゲートキーと動的ドメインスキーマ構成の採用 | Accepted |
 | [0007](./0007-local-first-offline-pwa-architecture.md) | ライブ会場での完全動作を保証する Local-First / オフライン PWA アーキテクチャの採用 | Accepted |
 | [0008](./0008-immutable-image-caching-and-zero-purge.md) | 画像アセットの永久不変キャッシュ (RFC 8246 immutable) とゼロパージ運用の採用 | Accepted |
-| [0009](./0009-quiz-generation-strategy-pattern.md) | クイズ出題アルゴリズムにおける Strategy パターンの採用 | Proposed |
-| [0010](./0010-google-oidc-authentication-and-session-security.md) | Google OIDC 認証と HttpOnly セッション Cookie の採用 | Accepted |
+| [0009](./0009-quiz-generation-strategy-pattern.md) | クイズ出題アルゴリズムにおける Strategy パターンの採用 | Superseded |
+| [0010](./0010-google-oidc-authentication-and-session-security.md) | Google OIDC 認証と HttpOnly セッション Cookie の採用 | Deferred |
 | [0011](./0011-directory-structure-and-responsibility-boundaries.md) | プロジェクトディレクトリ構成および責務境界の策定 | Accepted |
 | [0012](./0012-kubernetes-deployment-and-gitops-architecture.md) | Kubernetes デプロイおよび ArgoCD GitOps アーキテクチャの採用 | Accepted |
 | [0013](./0013-typescript-ai-agent-driven-development-toolchain.md) | AI 駆動開発を支える機械的支援ツールチェーンおよび超高速自律修復サイクルの採用 | Accepted |

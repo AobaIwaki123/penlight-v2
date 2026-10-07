@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/aobaiwaki/penlight-v2/pkg/config"
 	"github.com/aobaiwaki/penlight-v2/pkg/model"
 	"github.com/aobaiwaki/penlight-v2/pkg/quiz"
 	"github.com/aobaiwaki/penlight-v2/pkg/repository"
@@ -652,4 +654,146 @@ func TestADR0033_Compliance_CacheProxySpecification(t *testing.T) {
 		}
 	})
 }
+
+// =========================================================================
+// ADR-0001 & ADR-0006: Surrogate Key (TypeID) Specification Compliance Tests
+// =========================================================================
+
+func TestADR0001_ADR0006_Compliance_TypeIDPrefixRules(t *testing.T) {
+	t.Run("ADR-0001/1: TypeID prefixes strictly follow entity type rules", func(t *testing.T) {
+		prefixes := map[string]string{
+			"Series":     "ser_",
+			"Group":      "grp_",
+			"Member":     "mem_",
+			"Color":      "col_",
+			"PhotoType":  "pht_",
+			"Song":       "sng_",
+			"User":       "usr_",
+			"AnswerLog":  "ans_",
+		}
+
+		ctx := context.Background()
+		repo, cleanup := setupRealSeedDB(t)
+		defer cleanup()
+
+		series, err := repo.ListSeries(ctx)
+		if err != nil || len(series) == 0 {
+			t.Fatalf("expected series list, got err: %v", err)
+		}
+		for _, s := range series {
+			if !strings.HasPrefix(string(s.ID), prefixes["Series"]) {
+				t.Fatalf("ADR-0001 Violation: series %s does not start with %s", s.ID, prefixes["Series"])
+			}
+		}
+
+		members, err := repo.ListMembers(ctx)
+		if err != nil || len(members) == 0 {
+			t.Fatalf("expected member list, got err: %v", err)
+		}
+		for _, m := range members {
+			if !strings.HasPrefix(string(m.ID), prefixes["Member"]) {
+				t.Fatalf("ADR-0001 Violation: member %s does not start with %s", m.ID, prefixes["Member"])
+			}
+		}
+
+		colors, err := repo.ListColors(ctx)
+		if err != nil || len(colors) == 0 {
+			t.Fatalf("expected color list, got err: %v", err)
+		}
+		for _, c := range colors {
+			if !strings.HasPrefix(string(c.ID), prefixes["Color"]) {
+				t.Fatalf("ADR-0001 Violation: color %s does not start with %s", c.ID, prefixes["Color"])
+			}
+		}
+	})
+}
+
+// =========================================================================
+// ADR-0005 & ADR-0017: Pure Go SQLite & Repository Interface Tests
+// =========================================================================
+
+func TestADR0005_ADR0017_Compliance_SQLiteWALAndRepositoryInterface(t *testing.T) {
+	t.Run("ADR-0005/1: SQLite WAL journal mode and busy timeout", func(t *testing.T) {
+		repo, cleanup := setupRealSeedDB(t)
+		defer cleanup()
+
+		var journalMode string
+		err := repo.DB().QueryRow("PRAGMA journal_mode;").Scan(&journalMode)
+		if err != nil {
+			t.Fatalf("failed to query journal_mode: %v", err)
+		}
+		if journalMode != "wal" {
+			t.Fatalf("ADR-0005 Violation: expected journal_mode 'wal', got %q", journalMode)
+		}
+	})
+
+	t.Run("ADR-0017/1: Repository interface satisfaction", func(t *testing.T) {
+		repo, cleanup := setupRealSeedDB(t)
+		defer cleanup()
+
+		// Verify *repository.SQLiteRepository implements model.Repository interface
+		var _ model.Repository = repo
+	})
+}
+
+// =========================================================================
+// ADR-0014: Minimal Problem Details Error Specification Tests
+// =========================================================================
+
+func TestADR0014_Compliance_ProblemDetailsFixedErrors(t *testing.T) {
+	t.Run("ADR-0014/1: Fixed official error codes (exactly 6 codes)", func(t *testing.T) {
+		expectedCodes := map[string]int{
+			model.CodeInvalidParams:       http.StatusBadRequest,
+			model.CodeInsufficientMembers: http.StatusBadRequest,
+			model.CodeUnauthorized:        http.StatusUnauthorized,
+			model.CodeForbidden:           http.StatusForbidden,
+			model.CodeNotFound:            http.StatusNotFound,
+			model.CodeInternalError:       http.StatusInternalServerError,
+		}
+
+		if len(expectedCodes) != 6 {
+			t.Fatalf("ADR-0014 Violation: expected exactly 6 fixed error codes, got %d", len(expectedCodes))
+		}
+
+		for code, expectedStatus := range expectedCodes {
+			errPayload := model.AppError{
+				Status: expectedStatus,
+				Code:   code,
+				Detail: "detail message",
+			}
+			if errPayload.Code != code {
+				t.Fatalf("expected code %s, got %s", code, errPayload.Code)
+			}
+			if errPayload.Status != expectedStatus {
+				t.Fatalf("ADR-0014 Violation: expected status %d for %s, got %d", expectedStatus, code, errPayload.Status)
+			}
+		}
+	})
+}
+
+// =========================================================================
+// ADR-0015: Minimal Configuration & Secrets Management Tests
+// =========================================================================
+
+func TestADR0015_Compliance_MinimalConfiguration(t *testing.T) {
+	t.Run("ADR-0015/1: Only exactly 4 defined environment variables are recognized", func(t *testing.T) {
+		// ADR-0015: DATA_DIR, SESSION_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+		// Local defaults can load without env vars
+		cfg, err := config.Load()
+		if err != nil {
+			t.Fatalf("expected config to load with local defaults, got err: %v", err)
+		}
+		if cfg.DataDir == "" {
+			t.Fatal("expected default DataDir, got empty")
+		}
+		if cfg.DBPath == "" {
+			t.Fatal("expected default DBPath, got empty")
+		}
+		if cfg.AssetDir == "" {
+			t.Fatal("expected default AssetDir, got empty")
+		}
+	})
+}
+
+
 

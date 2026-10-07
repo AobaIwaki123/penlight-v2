@@ -1,7 +1,7 @@
 # 0009. クイズ出題アルゴリズムにおける Strategy パターンの採用 (0009-quiz-generation-strategy-pattern.md)
 
-- **ステータス**: 提案中 (Proposed) - ※Strategyパターン自体は現時点ではfixせず実装前に壁打ち決定
-- **日付**: 2026-10-03
+- **ステータス**: 代替・廃止 (Superseded by [ADR-0019](./0019-quiz-format-strategy-and-color-palette-architecture.md))
+- **日付**: 2026-10-03 (更新: 2026-10-07)
 
 ---
 
