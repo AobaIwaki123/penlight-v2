@@ -552,7 +552,7 @@ components:
 
     BatchAnswerItem:
       type: object
-      required: [id, quiz_question_id, target_member_id, group_id, is_correct, response_time_ms, answered_at]
+      required: [id, quiz_question_id, group_id, is_correct, response_time_ms, answered_at]
       properties:
         id:
           $ref: "#/components/schemas/ID"
@@ -561,6 +561,10 @@ components:
           $ref: "#/components/schemas/ID"
         target_member_id:
           $ref: "#/components/schemas/ID"
+          description: 出題対象メンバーID (mem_...)
+        target_song_id:
+          $ref: "#/components/schemas/ID"
+          description: 出題対象楽曲ID (sng_...)
         group_id:
           $ref: "#/components/schemas/ID"
         is_correct:

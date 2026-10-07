@@ -13,6 +13,7 @@ import {
   IconCheck,
   IconChevronLeft,
   IconCircleDot,
+  IconCloudDownload,
   IconColorSwatch,
   IconFilter,
   IconLayout,
@@ -21,6 +22,7 @@ import {
   IconSun,
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { FEATURES } from '@/config/features';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
 
 interface HeaderProps {
@@ -29,6 +31,7 @@ interface HeaderProps {
   inputMode: InputMode;
   onInputModeChange: (mode: InputMode) => void;
   onOpenFilter?: () => void;
+  onOpenOfflineModal?: () => void;
   onGoHome?: () => void;
   groupThemeColor?: string;
   groupName?: string;
@@ -41,6 +44,7 @@ export function Header({
   inputMode,
   onInputModeChange,
   onOpenFilter,
+  onOpenOfflineModal,
   onGoHome,
   groupThemeColor,
   groupName,
@@ -223,6 +227,20 @@ export function Header({
               </Menu.Dropdown>
             </Menu>
           </>
+        )}
+
+        {/* オフライン画像準備ボタン (手軽なトグル切り替え対応) */}
+        {FEATURES.ENABLE_OFFLINE_IMAGE_FETCH && onOpenOfflineModal && (
+          <ActionIcon
+            variant="light"
+            color="teal"
+            size="lg"
+            radius="md"
+            onClick={onOpenOfflineModal}
+            title="オフライン画像準備"
+          >
+            <IconCloudDownload size={18} />
+          </ActionIcon>
         )}
 
         {/* フィルターボタン (クイズ画面でのみ利用可能) */}

@@ -40,11 +40,13 @@ type SubmitAnswerResponse struct {
 	AnswerLogID     ID   `json:"answer_log_id"`
 }
 
-// BatchAnswerItem represents an offline queued answer record.
+// BatchAnswerItem represents an offline queued answer record (Ref: ADR-0007, ADR-0032).
 type BatchAnswerItem struct {
 	ID             ID        `json:"id"` // Pre-generated ans_<uuidv7> (idempotency key)
+	UserID         ID        `json:"user_id,omitempty"`
 	QuizQuestionID ID        `json:"quiz_question_id"`
-	TargetMemberID ID        `json:"target_member_id"`
+	TargetMemberID *ID       `json:"target_member_id,omitempty"` // mem_... (メンバー問題時)
+	TargetSongID   *ID       `json:"target_song_id,omitempty"`   // sng_... (楽曲問題時)
 	GroupID        ID        `json:"group_id"`
 	IsCorrect      bool      `json:"is_correct"`
 	ResponseTimeMs int       `json:"response_time_ms"`

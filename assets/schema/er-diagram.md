@@ -26,7 +26,9 @@ erDiagram
     SERIES ||--o{ GROUP : "series_id"
     SERIES ||--o{ QUIZ_FILTER : "series_id"
     SONG ||--o{ ANSWER_LOG : "target_song_id"
+    SONG ||--o{ BATCH_ANSWER_ITEM : "target_song_id"
     USER ||--o{ ANSWER_LOG : "user_id"
+    USER ||--o{ BATCH_ANSWER_ITEM : "user_id"
 
     GROUP {
         string id PK "grp_... (UUID v7)"

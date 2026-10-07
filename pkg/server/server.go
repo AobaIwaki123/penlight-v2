@@ -144,6 +144,7 @@ func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/healthz", s.handleHealthz)
 	s.mux.HandleFunc("/api/v1/sync/bootstrap", s.handleBootstrap)
+	s.mux.HandleFunc("/api/v1/quiz/answers/batch", s.handleBatchAnswers)
 	s.mux.HandleFunc("/images/", s.handleImage)
 
 	// Embedded frontend static SPA handler (Ref: ADR-0002, ADR-0011)
@@ -281,6 +282,85 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("ETag", etag)
 	}
 	_ = json.NewEncoder(w).Encode(resp)
+}
+
+func writeProblemDetails(w http.ResponseWriter, status int, code, title, detail string) {
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(model.AppError{
+		Status: status,
+		Code:   code,
+		Title:  title,
+		Detail: detail,
+	})
+}
+
+func (s *Server) handleBatchAnswers(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeProblemDetails(w, http.StatusMethodNotAllowed, model.CodeInvalidParams, "Method Not Allowed", "POST is required")
+		return
+	}
+
+	var req model.BatchAnswerRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+		return
+	}
+
+	if len(req.Answers) == 0 {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(model.BatchAnswerResponse{
+			SyncedCount: 0,
+			SyncedIDs:   []model.ID{},
+		})
+		return
+	}
+
+	logs := make([]model.AnswerLog, 0, len(req.Answers))
+	syncedIDs := make([]model.ID, 0, len(req.Answers))
+
+	for _, item := range req.Answers {
+		if !strings.HasPrefix(string(item.ID), string(model.PrefixAnswer)+"_") {
+			writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Answer ID", "ID must have prefix "+string(model.PrefixAnswer)+"_")
+			return
+		}
+		if (item.TargetMemberID == nil && item.TargetSongID == nil) || (item.TargetMemberID != nil && item.TargetSongID != nil) {
+			writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Target", "Exactly one of target_member_id or target_song_id must be provided")
+			return
+		}
+
+		answeredAt := item.AnsweredAt
+		if answeredAt.IsZero() {
+			answeredAt = time.Now().UTC()
+		}
+
+		logs = append(logs, model.AnswerLog{
+			ID:             item.ID,
+			UserID:         item.UserID,
+			QuizQuestionID: item.QuizQuestionID,
+			TargetMemberID: item.TargetMemberID,
+			TargetSongID:   item.TargetSongID,
+			GroupID:        item.GroupID,
+			IsCorrect:      item.IsCorrect,
+			ResponseTimeMs: item.ResponseTimeMs,
+			AnsweredAt:     answeredAt,
+		})
+		syncedIDs = append(syncedIDs, item.ID)
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	if err := s.repo.BatchInsertAnswerLogs(ctx, logs); err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(model.BatchAnswerResponse{
+		SyncedCount: len(logs),
+		SyncedIDs:   syncedIDs,
+	})
 }
 
 func (s *Server) getImageSourceURL(key string) (string, bool) {

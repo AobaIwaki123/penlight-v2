@@ -16,6 +16,7 @@ import { IconHome, IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { PortalView } from '@/features/portal/components/PortalView';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
+import { syncPendingAnswers } from '@/features/quiz/api/outbox';
 import {
   FilterModal,
   type QuizFilterCriteria,
@@ -27,8 +28,15 @@ import { PaletteGridInput } from '@/features/quiz/components/inputs/PaletteGridI
 import { LayoutClassic } from '@/features/quiz/components/layouts/LayoutClassic';
 import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact';
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
+import { OfflineModal } from '@/features/quiz/components/OfflineModal';
 import { SongQuizArea } from '@/features/quiz/components/SongQuizArea';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
+import {
+  generateAnswerID,
+  generateQuizQuestionID,
+} from '@/features/quiz/utils/id';
+import { enqueueAnswer } from '@/features/quiz/utils/idb';
+import { registerImageServiceWorker } from '@/features/quiz/utils/imageCache';
 import {
   loadSavedInputMode,
   loadSavedLayoutMode,
@@ -37,7 +45,14 @@ import {
   saveLayoutMode,
   saveSettings,
 } from '@/features/quiz/utils/storage';
-import type { Color, Group, Member, Series, Song } from '@/types/generated';
+import type {
+  BatchAnswerItem,
+  Color,
+  Group,
+  Member,
+  Series,
+  Song,
+} from '@/types/generated';
 
 function filterAndShuffleMembers(
   sourceMembers: Member[],
@@ -129,8 +144,9 @@ export function QuizContainer() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
 
-  // Modal state for Donut Ring Input
+  // Modal state for Donut Ring Input & Offline Cache
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
+  const [isOfflineModalOpen, setIsOfflineModalOpen] = useState(false);
   const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
 
   // Session state
@@ -146,6 +162,19 @@ export function QuizContainer() {
   );
 
   useEffect(() => {
+    // Register image service worker for runtime caching
+    registerImageServiceWorker();
+
+    // Trigger background synchronization of any pending offline answers
+    syncPendingAnswers();
+
+    const handleOnline = () => {
+      syncPendingAnswers();
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', handleOnline);
+    }
+
     // Restore saved layout and input mode
     const savedLayout = loadSavedLayoutMode();
     if (savedLayout) setLayoutMode(savedLayout);
@@ -214,6 +243,12 @@ export function QuizContainer() {
         setLoadError(err instanceof Error ? err.message : String(err));
         setIsLoading(false);
       });
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('online', handleOnline);
+      }
+    };
   }, []);
 
   const currentGroup = allGroups.find((g) => g.id === filterCriteria.groupId);
@@ -363,6 +398,21 @@ export function QuizContainer() {
     } else {
       setFeedback('wrong');
     }
+
+    // Save answer log to local IndexedDB outbox and trigger background sync (ADR-0007, ADR-0032)
+    const answerItem: BatchAnswerItem = {
+      id: generateAnswerID(),
+      quiz_question_id: generateQuizQuestionID(),
+      target_member_id: filterCriteria.songMode ? undefined : currentMember?.id,
+      target_song_id: filterCriteria.songMode ? currentSong?.id : undefined,
+      group_id: filterCriteria.groupId,
+      is_correct: isCorrect,
+      response_time_ms: 1000,
+      answered_at: new Date().toISOString(),
+    };
+    enqueueAnswer(answerItem)
+      .then(() => syncPendingAnswers())
+      .catch((err) => console.warn('Failed to enqueue answer:', err));
   };
 
   // Move to next question
@@ -539,6 +589,7 @@ export function QuizContainer() {
         inputMode={inputMode}
         onInputModeChange={handleInputModeChange}
         onOpenFilter={() => setIsFilterModalOpen(true)}
+        onOpenOfflineModal={() => setIsOfflineModalOpen(true)}
         onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
         groupName={currentGroup?.name}
@@ -703,6 +754,13 @@ export function QuizContainer() {
           </MantineGroup>
         </Stack>
       </Modal>
+
+      {/* オフライン画像準備モーダル */}
+      <OfflineModal
+        opened={isOfflineModalOpen}
+        onClose={() => setIsOfflineModalOpen(false)}
+        members={allMembers}
+      />
     </Container>
   );
 }

@@ -86,12 +86,14 @@ export interface SubmitAnswerResponse {
   answer_log_id: ID;
 }
 /**
- * BatchAnswerItem represents an offline queued answer record.
+ * BatchAnswerItem represents an offline queued answer record (Ref: ADR-0007, ADR-0032).
  */
 export interface BatchAnswerItem {
   id: ID; // Pre-generated ans_<uuidv7> (idempotency key)
+  user_id?: ID;
   quiz_question_id: ID;
-  target_member_id: ID;
+  target_member_id?: ID; // mem_... (メンバー問題時)
+  target_song_id?: ID; // sng_... (楽曲問題時)
   group_id: ID;
   is_correct: boolean;
   response_time_ms: number /* int */;

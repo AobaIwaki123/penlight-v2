@@ -204,3 +204,110 @@ func TestServer_EmbeddedFrontendSPA(t *testing.T) {
 		t.Fatalf("expected application/json for API route, got %s", wAPI.Header().Get("Content-Type"))
 	}
 }
+
+func TestServer_BatchAnswers(t *testing.T) {
+	srv, _ := setupTestServer(t)
+
+	// 1. Method Not Allowed for GET
+	reqGet := httptest.NewRequest(http.MethodGet, "/api/v1/quiz/answers/batch", nil)
+	wGet := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wGet, reqGet)
+	if wGet.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405 Method Not Allowed, got %d", wGet.Code)
+	}
+
+	// First fetch bootstrap to get valid member, song, and group IDs from seeds
+	reqBS := httptest.NewRequest(http.MethodGet, "/api/v1/sync/bootstrap", nil)
+	wBS := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wBS, reqBS)
+	var bs model.BootstrapResponse
+	if err := json.Unmarshal(wBS.Body.Bytes(), &bs); err != nil {
+		t.Fatalf("failed to decode bootstrap: %v", err)
+	}
+	if len(bs.Members) == 0 || len(bs.Songs) == 0 {
+		t.Fatal("expected seed members and songs to be available")
+	}
+
+	validMember := bs.Members[0]
+	validSong := bs.Songs[0]
+
+	// 2. Successful batch submission with polymorphic targets (Member & Song)
+	memID := validMember.ID
+	songID := validSong.ID
+	batchPayload := model.BatchAnswerRequest{
+		Answers: []model.BatchAnswerItem{
+			{
+				ID:             "ans_0192534a-9b41-715a-b9c1-111111111111",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-222222222222",
+				TargetMemberID: &memID,
+				GroupID:        validMember.GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1200,
+			},
+			{
+				ID:             "ans_0192534a-9b41-715a-b9c1-333333333333",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-444444444444",
+				TargetSongID:   &songID,
+				GroupID:        validSong.GroupID,
+				IsCorrect:      false,
+				ResponseTimeMs: 2500,
+			},
+		},
+	}
+
+	jsonBytes, err := json.Marshal(batchPayload)
+	if err != nil {
+		t.Fatalf("failed to marshal batch request: %v", err)
+	}
+
+	reqPost := httptest.NewRequest(http.MethodPost, "/api/v1/quiz/answers/batch", strings.NewReader(string(jsonBytes)))
+	reqPost.Header.Set("Content-Type", "application/json")
+	wPost := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wPost, reqPost)
+
+	if wPost.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for batch answers, got %d: %s", wPost.Code, wPost.Body.String())
+	}
+
+	var batchResp model.BatchAnswerResponse
+	if err := json.Unmarshal(wPost.Body.Bytes(), &batchResp); err != nil {
+		t.Fatalf("failed to unmarshal batch response: %v", err)
+	}
+	if batchResp.SyncedCount != 2 {
+		t.Fatalf("expected SyncedCount=2, got %d", batchResp.SyncedCount)
+	}
+	if len(batchResp.SyncedIDs) != 2 {
+		t.Fatalf("expected 2 SyncedIDs, got %d", len(batchResp.SyncedIDs))
+	}
+
+	// 3. Idempotent re-submission (INSERT OR IGNORE) should succeed without error
+	reqIdempotent := httptest.NewRequest(http.MethodPost, "/api/v1/quiz/answers/batch", strings.NewReader(string(jsonBytes)))
+	reqIdempotent.Header.Set("Content-Type", "application/json")
+	wIdempotent := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wIdempotent, reqIdempotent)
+
+	if wIdempotent.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for idempotent batch resubmission, got %d: %s", wIdempotent.Code, wIdempotent.Body.String())
+	}
+
+	// 4. Invalid Answer ID prefix
+	invalidPayload := model.BatchAnswerRequest{
+		Answers: []model.BatchAnswerItem{
+			{
+				ID:             "mem_invalid_prefix",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-222222222222",
+				TargetMemberID: &memID,
+				GroupID:        validMember.GroupID,
+			},
+		},
+	}
+	invalidBytes, _ := json.Marshal(invalidPayload)
+	reqInvalid := httptest.NewRequest(http.MethodPost, "/api/v1/quiz/answers/batch", strings.NewReader(string(invalidBytes)))
+	reqInvalid.Header.Set("Content-Type", "application/json")
+	wInvalid := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wInvalid, reqInvalid)
+
+	if wInvalid.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 Bad Request for invalid prefix, got %d", wInvalid.Code)
+	}
+}
