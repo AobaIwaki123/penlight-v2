@@ -43,6 +43,9 @@ space/penlight-v2/
 
 1. **単方向コード生成フロー**: `backend/pkg/model` (正本) ──► `frontend/src/types/generated.ts`（逆流や手書き編集は禁止）。
 2. **単一バイナリ Pod 運用**: フロントエンド静的アセットを `backend/embedded/` で内包し、1 Pod で完結。
+3. **実行ランタイムと責務境界の厳格な分離**:
+   - **サーバーサイド (Go)**: 自宅 k8s 上で稼働。DB管理、静的アセット・画像プロキシ配信、OIDC認証、オフライン回答ログのバッチ受付・永続化を担う（端末・クライアント内では動作しない）。
+   - **クライアントサイド (TypeScript / Next.js PWA)**: ユーザーのブラウザ（端末）上で稼働。IndexedDB マスタデータを用いた Local-First 完全オフライン出題・採点、UIレンダリング、Service Worker キャッシュを担う。
 
 ---
 
