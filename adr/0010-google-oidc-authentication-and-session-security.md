@@ -1,7 +1,7 @@
 # 0010. Google OIDC 認証と HttpOnly セッション Cookie の採用 (0010-google-oidc-authentication-and-session-security.md)
 
-- **ステータス**: 承認 (Accepted)
-- **日付**: 2026-10-03
+- **ステータス**: 保留 (Deferred) - ※ゲスト完結Local-Firstを優先し、アカウント連携は後続フェーズへ延期
+- **日付**: 2026-10-03 (更新: 2026-10-07)
 
 ---
 
