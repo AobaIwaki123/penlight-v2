@@ -198,6 +198,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/v1/quiz/statistics:
+    get:
+      summary: クイズ回答統計および苦手分析データ取得
+      description: 回答ログから全体・グループ別・苦手対象別の正答率・平均回答時間を集計して返却します。
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/ID"
+        - name: group_id
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/ID"
+        - name: target_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [member, song]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 5
+      responses:
+        "200":
+          description: 回答統計データ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuizStatisticsResponse"
+
+
   /api/v1/user/statistics:
     get:
       summary: ユーザー回答統計・分析データ取得
@@ -613,6 +649,83 @@ components:
         average_response_time_ms:
           type: integer
           example: 1450
+
+    TargetStat:
+      type: object
+      required: [target_id, target_type, group_id, name, total_answers, correct_answers, accuracy_rate, average_response_time_ms]
+      properties:
+        target_id:
+          $ref: "#/components/schemas/ID"
+        target_type:
+          type: string
+          enum: [member, song]
+        group_id:
+          $ref: "#/components/schemas/ID"
+        name:
+          type: string
+        total_answers:
+          type: integer
+        correct_answers:
+          type: integer
+        accuracy_rate:
+          type: number
+          format: float
+        average_response_time_ms:
+          type: integer
+        metadata:
+          type: object
+          additionalProperties: true
+
+    GroupStat:
+      type: object
+      required: [group_id, group_name, total_answers, correct_answers, accuracy_rate, average_response_time_ms]
+      properties:
+        group_id:
+          $ref: "#/components/schemas/ID"
+        group_name:
+          type: string
+        total_answers:
+          type: integer
+        correct_answers:
+          type: integer
+        accuracy_rate:
+          type: number
+          format: float
+        average_response_time_ms:
+          type: integer
+        metadata:
+          type: object
+          additionalProperties: true
+
+    QuizStatisticsResponse:
+      type: object
+      required: [total_answers, total_correct, accuracy_rate, average_response_time_ms]
+      properties:
+        total_answers:
+          type: integer
+          example: 120
+        total_correct:
+          type: integer
+          example: 102
+        accuracy_rate:
+          type: number
+          format: float
+          example: 0.85
+        average_response_time_ms:
+          type: integer
+          example: 1450
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroupStat"
+        weak_targets:
+          type: array
+          items:
+            $ref: "#/components/schemas/TargetStat"
+        extra:
+          type: object
+          additionalProperties: true
+
 
     CreateGroupRequest:
       type: object

@@ -145,6 +145,7 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/healthz", s.handleHealthz)
 	s.mux.HandleFunc("/api/v1/sync/bootstrap", s.handleBootstrap)
 	s.mux.HandleFunc("/api/v1/quiz/answers/batch", s.handleBatchAnswers)
+	s.mux.HandleFunc("/api/v1/quiz/statistics", s.handleQuizStatistics)
 	s.mux.HandleFunc("/images/", s.handleImage)
 
 	// Embedded frontend static SPA handler (Ref: ADR-0002, ADR-0011)
@@ -362,6 +363,54 @@ func (s *Server) handleBatchAnswers(w http.ResponseWriter, r *http.Request) {
 		SyncedIDs:   syncedIDs,
 	})
 }
+
+func (s *Server) handleQuizStatistics(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeProblemDetails(w, http.StatusMethodNotAllowed, model.CodeInvalidParams, "Method Not Allowed", "GET is required")
+		return
+	}
+
+	filter := model.QuizStatisticsFilter{
+		Limit: 5,
+	}
+
+	q := r.URL.Query()
+	if uid := q.Get("user_id"); uid != "" {
+		u := model.ID(uid)
+		filter.UserID = &u
+	}
+	if gid := q.Get("group_id"); gid != "" {
+		g := model.ID(gid)
+		filter.GroupID = &g
+	}
+	if tt := q.Get("target_type"); tt != "" {
+		targetType := model.TargetType(tt)
+		if targetType != model.TargetTypeMember && targetType != model.TargetTypeSong {
+			writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Target Type", "target_type must be 'member' or 'song'")
+			return
+		}
+		filter.TargetType = &targetType
+	}
+	if limitStr := q.Get("limit"); limitStr != "" {
+		var l int
+		if _, err := fmt.Sscanf(limitStr, "%d", &l); err == nil && l > 0 {
+			filter.Limit = l
+		}
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+
+	stats, err := s.repo.GetQuizStatistics(ctx, filter)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(stats)
+}
+
 
 func (s *Server) getImageSourceURL(key string) (string, bool) {
 	s.imageMu.RLock()

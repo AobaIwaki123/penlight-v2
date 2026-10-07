@@ -71,3 +71,55 @@ type UserStatisticsResponse struct {
 	AccuracyRate          float64 `json:"accuracy_rate"`
 	AverageResponseTimeMs int     `json:"average_response_time_ms"`
 }
+
+// TargetType indicates the entity type for quiz statistics (member / song / etc.).
+type TargetType string
+
+const (
+	TargetTypeMember TargetType = "member"
+	TargetTypeSong   TargetType = "song"
+)
+
+// TargetStat represents performance statistics for a specific target.
+type TargetStat struct {
+	TargetID              ID             `json:"target_id"`              // mem_... or sng_...
+	TargetType            TargetType     `json:"target_type"`            // member / song
+	GroupID               ID             `json:"group_id"`               // grp_...
+	Name                  string         `json:"name"`                   // メンバー名 / 楽曲名
+	TotalAnswers          int            `json:"total_answers"`
+	CorrectAnswers        int            `json:"correct_answers"`
+	AccuracyRate          float64        `json:"accuracy_rate"`          // 0.0 ~ 1.0
+	AverageResponseTimeMs int            `json:"average_response_time_ms"`
+	Metadata              map[string]any `json:"metadata,omitempty"`     // 任意付加情報 (kana, last_answered_at, streak等)
+}
+
+// GroupStat represents aggregated metrics for an idol group.
+type GroupStat struct {
+	GroupID               ID             `json:"group_id"`
+	GroupName             string         `json:"group_name"`
+	TotalAnswers          int            `json:"total_answers"`
+	CorrectAnswers        int            `json:"correct_answers"`
+	AccuracyRate          float64        `json:"accuracy_rate"`
+	AverageResponseTimeMs int            `json:"average_response_time_ms"`
+	Metadata              map[string]any `json:"metadata,omitempty"`     // 任意付加情報 (series_id, rank等)
+}
+
+// QuizStatisticsFilter specifies criteria for filtering quiz statistics.
+type QuizStatisticsFilter struct {
+	UserID     *ID
+	GroupID    *ID
+	TargetType *TargetType
+	Limit      int // limit for weak targets (default: 5)
+}
+
+// QuizStatisticsResponse holds core analytical data and flexible extras (Ref: ADR-0032).
+type QuizStatisticsResponse struct {
+	TotalAnswers          int            `json:"total_answers"`
+	TotalCorrect          int            `json:"total_correct"`
+	AccuracyRate          float64        `json:"accuracy_rate"`
+	AverageResponseTimeMs int            `json:"average_response_time_ms"`
+	Groups                []GroupStat    `json:"groups,omitempty"`
+	WeakTargets           []TargetStat   `json:"weak_targets,omitempty"` // 苦手克服向けワーストN件
+	Extra                 map[string]any `json:"extra,omitempty"`        // 将来の拡張・実験的集計データ
+}
+

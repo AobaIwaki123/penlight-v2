@@ -121,6 +121,59 @@ export interface UserStatisticsResponse {
   accuracy_rate: number /* float64 */;
   average_response_time_ms: number /* int */;
 }
+/**
+ * TargetType indicates the entity type for quiz statistics (member / song / etc.).
+ */
+export type TargetType = string;
+export const TargetTypeMember: TargetType = "member";
+export const TargetTypeSong: TargetType = "song";
+/**
+ * TargetStat represents performance statistics for a specific target.
+ */
+export interface TargetStat {
+  target_id: ID; // mem_... or sng_...
+  target_type: TargetType; // member / song
+  group_id: ID; // grp_...
+  name: string; // メンバー名 / 楽曲名
+  total_answers: number /* int */;
+  correct_answers: number /* int */;
+  accuracy_rate: number /* float64 */; // 0.0 ~ 1.0
+  average_response_time_ms: number /* int */;
+  metadata?: { [key: string]: any}; // 任意付加情報 (kana, last_answered_at, streak等)
+}
+/**
+ * GroupStat represents aggregated metrics for an idol group.
+ */
+export interface GroupStat {
+  group_id: ID;
+  group_name: string;
+  total_answers: number /* int */;
+  correct_answers: number /* int */;
+  accuracy_rate: number /* float64 */;
+  average_response_time_ms: number /* int */;
+  metadata?: { [key: string]: any}; // 任意付加情報 (series_id, rank等)
+}
+/**
+ * QuizStatisticsFilter specifies criteria for filtering quiz statistics.
+ */
+export interface QuizStatisticsFilter {
+  UserID?: ID;
+  GroupID?: ID;
+  TargetType?: TargetType;
+  Limit: number /* int */; // limit for weak targets (default: 5)
+}
+/**
+ * QuizStatisticsResponse holds core analytical data and flexible extras (Ref: ADR-0032).
+ */
+export interface QuizStatisticsResponse {
+  total_answers: number /* int */;
+  total_correct: number /* int */;
+  accuracy_rate: number /* float64 */;
+  average_response_time_ms: number /* int */;
+  groups?: GroupStat[];
+  weak_targets?: TargetStat[]; // 苦手克服向けワーストN件
+  extra?: { [key: string]: any}; // 将来の拡張・実験的集計データ
+}
 
 //////////
 // source: error.go
