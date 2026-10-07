@@ -334,6 +334,200 @@ paths:
                 type: string
                 example: ok
 
+  /api/v1/admin/members/{id}:
+    get:
+      summary: メンバー詳細メタデータ取得
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      responses:
+        "200":
+          description: メンバー詳細
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: メンバーが存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/admin/members/{id}/verify:
+    post:
+      summary: メンバーメタデータの確認完了 (OKマーク)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      responses:
+        "200":
+          description: 更新後メンバー詳細
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: メンバーが存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/admin/members/{id}/penlight:
+    patch:
+      summary: ペンライトカラー・順序の更新
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMemberPenlightRequest"
+      responses:
+        "200":
+          description: 更新後メンバー詳細
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          description: パラメータ不正
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: メンバーが存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/admin/members/{id}/status:
+    patch:
+      summary: メンバーステータス・期生の更新
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMemberStatusRequest"
+      responses:
+        "200":
+          description: 更新後メンバー詳細
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          description: パラメータ不正
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: メンバーが存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/admin/members/{id}/images/primary:
+    put:
+      summary: 代表写真 (プライマリ画像) の切り替え
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetPrimaryMemberImageRequest"
+      responses:
+        "200":
+          description: 更新後メンバー詳細
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "400":
+          description: パラメータ不正
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: 画像またはメンバーが存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/admin/images/{id}/photo-type:
+    patch:
+      summary: 写真衣装・種別の更新
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMemberImagePhotoTypeRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  image_id:
+                    $ref: "#/components/schemas/ID"
+                  photo_type_id:
+                    $ref: "#/components/schemas/ID"
+        "400":
+          description: パラメータ不正
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: 画像が存在しない
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     ID:
@@ -454,6 +648,10 @@ components:
         graduated_at:
           type: string
           format: date-time
+        verified_at:
+          type: string
+          format: date-time
+          description: Timestamp when metadata was verified
         created_at:
           type: string
           format: date-time
@@ -805,4 +1003,39 @@ components:
               message:
                 type: string
                 example: Must be a valid TypeID starting with 'mem_'
+
+    UpdateMemberPenlightRequest:
+      type: object
+      required: [left_color_id, right_color_id, ordered]
+      properties:
+        left_color_id:
+          $ref: "#/components/schemas/ID"
+        right_color_id:
+          $ref: "#/components/schemas/ID"
+        ordered:
+          type: boolean
+          example: false
+
+    UpdateMemberStatusRequest:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/MemberStatus"
+        generation:
+          type: integer
+          example: 1
+
+    SetPrimaryMemberImageRequest:
+      type: object
+      required: [image_id]
+      properties:
+        image_id:
+          $ref: "#/components/schemas/ID"
+
+    UpdateMemberImagePhotoTypeRequest:
+      type: object
+      required: [photo_type_id]
+      properties:
+        photo_type_id:
+          $ref: "#/components/schemas/ID"
 

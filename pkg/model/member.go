@@ -50,6 +50,7 @@ type Member struct {
 	Images         []MemberImage `json:"images,omitempty"`       // Associated images (1:N, Ref: ADR-0021)
 	JoinedAt       *time.Time    `json:"joined_at,omitempty"`    // Optional joining date
 	GraduatedAt    *time.Time    `json:"graduated_at,omitempty"` // Optional graduation date
+	VerifiedAt     *time.Time    `json:"verified_at,omitempty"`  // Timestamp when metadata was verified
 	CreatedAt      time.Time     `json:"created_at"`
 	UpdatedAt      time.Time     `json:"updated_at"`
 }

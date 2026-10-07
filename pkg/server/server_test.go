@@ -431,3 +431,134 @@ func TestServer_QuizStatistics(t *testing.T) {
 	}
 }
 
+func TestServer_AdminMetadataOperations(t *testing.T) {
+	srv, _ := setupTestServer(t)
+
+	// Fetch a member from bootstrap endpoint to test with
+	reqBootstrap := httptest.NewRequest(http.MethodGet, "/api/v1/sync/bootstrap", nil)
+	wBootstrap := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wBootstrap, reqBootstrap)
+	if wBootstrap.Code != http.StatusOK {
+		t.Fatalf("bootstrap failed with %d", wBootstrap.Code)
+	}
+	var bootstrapData struct {
+		Members []model.Member    `json:"members"`
+		Colors  []model.Color     `json:"colors"`
+		Photos  []model.PhotoType `json:"photo_types"`
+	}
+	if err := json.Unmarshal(wBootstrap.Body.Bytes(), &bootstrapData); err != nil {
+		t.Fatalf("failed to decode bootstrap: %v", err)
+	}
+	if len(bootstrapData.Members) == 0 {
+		t.Fatal("no members found in seed")
+	}
+	targetMember := bootstrapData.Members[0]
+
+	// 1. GET /api/v1/admin/members/{id}
+	reqGet := httptest.NewRequest(http.MethodGet, "/api/v1/admin/members/"+string(targetMember.ID), nil)
+	wGet := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wGet, reqGet)
+	if wGet.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d", wGet.Code)
+	}
+	var mGet model.Member
+	if err := json.Unmarshal(wGet.Body.Bytes(), &mGet); err != nil {
+		t.Fatalf("failed to decode member: %v", err)
+	}
+	if mGet.ID != targetMember.ID {
+		t.Fatalf("expected ID=%s, got %s", targetMember.ID, mGet.ID)
+	}
+
+	// 2. POST /api/v1/admin/members/{id}/verify
+	reqVerify := httptest.NewRequest(http.MethodPost, "/api/v1/admin/members/"+string(targetMember.ID)+"/verify", nil)
+	wVerify := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wVerify, reqVerify)
+	if wVerify.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d", wVerify.Code)
+	}
+	var mVerified model.Member
+	if err := json.Unmarshal(wVerify.Body.Bytes(), &mVerified); err != nil {
+		t.Fatalf("failed to decode verified member: %v", err)
+	}
+	if mVerified.VerifiedAt == nil {
+		t.Fatal("expected VerifiedAt to be set after verify")
+	}
+
+	// 3. PATCH /api/v1/admin/members/{id}/penlight
+	if len(bootstrapData.Colors) >= 2 {
+		c1 := bootstrapData.Colors[0].ID
+		c2 := bootstrapData.Colors[1].ID
+		payload := `{"left_color_id":"` + string(c1) + `","right_color_id":"` + string(c2) + `","ordered":true}`
+		reqPenlight := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/members/"+string(targetMember.ID)+"/penlight", strings.NewReader(payload))
+		reqPenlight.Header.Set("Content-Type", "application/json")
+		wPenlight := httptest.NewRecorder()
+		srv.Handler().ServeHTTP(wPenlight, reqPenlight)
+		if wPenlight.Code != http.StatusOK {
+			t.Fatalf("expected 200 OK, got %d: %s", wPenlight.Code, wPenlight.Body.String())
+		}
+		var mPenlight model.Member
+		if err := json.Unmarshal(wPenlight.Body.Bytes(), &mPenlight); err != nil {
+			t.Fatalf("failed to decode updated penlight: %v", err)
+		}
+		if mPenlight.Penlight.LeftColorID != c1 || mPenlight.Penlight.RightColorID != c2 || !mPenlight.Penlight.Ordered {
+			t.Fatalf("unexpected penlight update: %+v", mPenlight.Penlight)
+		}
+	}
+
+	// 4. PATCH /api/v1/admin/members/{id}/status
+	statusPayload := `{"status":"hiatus"}`
+	reqStatus := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/members/"+string(targetMember.ID)+"/status", strings.NewReader(statusPayload))
+	reqStatus.Header.Set("Content-Type", "application/json")
+	wStatus := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wStatus, reqStatus)
+	if wStatus.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d: %s", wStatus.Code, wStatus.Body.String())
+	}
+	var mStatus model.Member
+	if err := json.Unmarshal(wStatus.Body.Bytes(), &mStatus); err != nil {
+		t.Fatalf("failed to decode updated status: %v", err)
+	}
+	if mStatus.Status != model.StatusHiatus {
+		t.Fatalf("expected hiatus, got %s", mStatus.Status)
+	}
+
+	// 5. PUT /api/v1/admin/members/{id}/images/primary
+	if len(targetMember.Images) > 0 {
+		imgID := targetMember.Images[0].ID
+		imgPayload := `{"image_id":"` + string(imgID) + `"}`
+		reqImg := httptest.NewRequest(http.MethodPut, "/api/v1/admin/members/"+string(targetMember.ID)+"/images/primary", strings.NewReader(imgPayload))
+		reqImg.Header.Set("Content-Type", "application/json")
+		wImg := httptest.NewRecorder()
+		srv.Handler().ServeHTTP(wImg, reqImg)
+		if wImg.Code != http.StatusOK {
+			t.Fatalf("expected 200 OK, got %d: %s", wImg.Code, wImg.Body.String())
+		}
+
+		// 6. PATCH /api/v1/admin/images/{id}/photo-type
+		if len(bootstrapData.Photos) > 0 {
+			phtID := bootstrapData.Photos[0].ID
+			ptPayload := `{"photo_type_id":"` + string(phtID) + `"}`
+			reqPT := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/images/"+string(imgID)+"/photo-type", strings.NewReader(ptPayload))
+			reqPT.Header.Set("Content-Type", "application/json")
+			wPT := httptest.NewRecorder()
+			srv.Handler().ServeHTTP(wPT, reqPT)
+			if wPT.Code != http.StatusOK {
+				t.Fatalf("expected 200 OK, got %d: %s", wPT.Code, wPT.Body.String())
+			}
+		}
+	}
+
+	// 7. Test CORS preflight allows PATCH and PUT
+	reqOptions := httptest.NewRequest(http.MethodOptions, "/api/v1/admin/members/"+string(targetMember.ID)+"/penlight", nil)
+	wOptions := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wOptions, reqOptions)
+	if wOptions.Code != http.StatusNoContent {
+		t.Fatalf("expected 204 No Content for OPTIONS, got %d", wOptions.Code)
+	}
+	allowMethods := wOptions.Header().Get("Access-Control-Allow-Methods")
+	if !strings.Contains(allowMethods, "PATCH") || !strings.Contains(allowMethods, "PUT") {
+		t.Fatalf("expected PATCH and PUT in Access-Control-Allow-Methods, got %q", allowMethods)
+	}
+}
+
+

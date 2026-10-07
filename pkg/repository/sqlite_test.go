@@ -22,7 +22,7 @@ func setupTestDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 	}
 
 	// Apply migration schemas
-	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql"} {
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql"} {
 		schemaBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
 		if err != nil {
 			t.Fatalf("failed to read migration file %s: %v", migrationFile, err)
@@ -501,6 +501,169 @@ func TestSQLiteRepository_SeriesAndSongs(t *testing.T) {
 		t.Fatalf("unexpected weakest target: %+v", stats.WeakTargets[0])
 	}
 }
+
+func TestSQLiteRepository_MetadataMutations(t *testing.T) {
+	ctx := context.Background()
+	repo, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	now := time.Now().UTC().Truncate(time.Second)
+
+	// Fixtures: group, colors, photo types, member, and primary image
+	_, err := repo.DB().ExecContext(ctx, `
+		INSERT INTO groups (id, name, short_name, slug, theme_color_hex, display_order, is_active, created_at, updated_at)
+		VALUES ('grp_01', '日向坂46', '日向坂', 'hinatazaka46', '#7CC7E8', 1, 1, ?, ?);
+		INSERT INTO colors (id, group_id, name, hex_code, display_order, created_at, updated_at)
+		VALUES 
+			('col_01', 'grp_01', 'パステルブルー', '#7CC7E8', 1, ?, ?),
+			('col_02', 'grp_01', 'ホワイト', '#FFFFFF', 2, ?, ?);
+		INSERT INTO photo_types (id, group_id, name, slug, display_order, created_at, updated_at)
+		VALUES 
+			('pht_01', 'grp_01', '13th制服', '13th-uniform', 1, ?, ?),
+			('pht_02', 'grp_01', '14th制服', '14th-uniform', 2, ?, ?);
+		INSERT INTO members (
+			id, group_id, family_name, given_name, family_name_kana, given_name_kana,
+			generation, status, left_color_id, right_color_id, ordered,
+			created_at, updated_at
+		) VALUES (
+			'mem_01', 'grp_01', '正源司', '陽子', 'しょうげんじ', 'ようこ',
+			4, 'active', 'col_01', 'col_02', 0,
+			?, ?
+		);
+		INSERT INTO member_images (
+			id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at
+		) VALUES (
+			'img_01', 'mem_01', 'pht_01', 'img_01.webp', 1, 0, ?, ?
+		);
+	`,
+		now.Format(time.RFC3339), now.Format(time.RFC3339),
+		now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339),
+		now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339), now.Format(time.RFC3339),
+		now.Format(time.RFC3339), now.Format(time.RFC3339),
+		now.Format(time.RFC3339), now.Format(time.RFC3339),
+	)
+	if err != nil {
+		t.Fatalf("failed to insert fixtures: %v", err)
+	}
+
+	// 1. GetMember before verification
+	m, err := repo.GetMember(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("GetMember failed: %v", err)
+	}
+	if m == nil {
+		t.Fatal("expected mem_01 to exist, got nil")
+	}
+	if m.VerifiedAt != nil {
+		t.Fatalf("expected VerifiedAt to be nil initially, got %v", m.VerifiedAt)
+	}
+
+	// 2. UpdateMemberPenlight with markVerified=true
+	newPenlight := model.PenlightPair{
+		LeftColorID:  "col_02",
+		RightColorID: "col_01",
+		Ordered:      true,
+	}
+	err = repo.UpdateMemberPenlight(ctx, "mem_01", newPenlight, true)
+	if err != nil {
+		t.Fatalf("UpdateMemberPenlight failed: %v", err)
+	}
+
+	mUpdated, err := repo.GetMember(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("GetMember after penlight update failed: %v", err)
+	}
+	if mUpdated.Penlight.LeftColorID != "col_02" || mUpdated.Penlight.RightColorID != "col_01" || !mUpdated.Penlight.Ordered {
+		t.Fatalf("unexpected penlight pair: %+v", mUpdated.Penlight)
+	}
+	if mUpdated.VerifiedAt == nil {
+		t.Fatal("expected VerifiedAt to be populated after markVerified=true")
+	}
+
+	// 3. MarkMemberVerified
+	firstVerifiedAt := *mUpdated.VerifiedAt
+	err = repo.MarkMemberVerified(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("MarkMemberVerified failed: %v", err)
+	}
+	mReverified, err := repo.GetMember(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("GetMember after MarkMemberVerified failed: %v", err)
+	}
+	if mReverified.VerifiedAt == nil || mReverified.VerifiedAt.Before(firstVerifiedAt) {
+		t.Fatalf("expected VerifiedAt to be >= firstVerifiedAt, got %v vs %v", mReverified.VerifiedAt, firstVerifiedAt)
+	}
+
+	// 4. UpdateMemberStatus
+	newGen := 2
+	err = repo.UpdateMemberStatus(ctx, "mem_01", model.StatusGraduated, &newGen)
+	if err != nil {
+		t.Fatalf("UpdateMemberStatus failed: %v", err)
+	}
+	mStatus, err := repo.GetMember(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("GetMember after status update failed: %v", err)
+	}
+	if mStatus.Status != model.StatusGraduated || mStatus.Generation != 2 {
+		t.Fatalf("unexpected status/gen: status=%s, gen=%d", mStatus.Status, mStatus.Generation)
+	}
+
+	// 5. SetPrimaryMemberImage
+	// Insert an extra image for mem_01 to test switching primary image
+	_, err = repo.DB().Exec(`
+		INSERT INTO member_images (id, member_id, photo_type_id, image_key, is_primary, display_order, created_at, updated_at)
+		VALUES ('img_02', 'mem_01', 'pht_01', 'img_second.webp', 0, 1, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z');
+	`)
+	if err != nil {
+		t.Fatalf("failed to insert second test image: %v", err)
+	}
+
+	err = repo.SetPrimaryMemberImage(ctx, "mem_01", "img_02")
+	if err != nil {
+		t.Fatalf("SetPrimaryMemberImage failed: %v", err)
+	}
+	images, err := repo.ListMemberImages(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("ListMemberImages failed: %v", err)
+	}
+	for _, img := range images {
+		if img.ID == "img_02" && !img.IsPrimary {
+			t.Fatalf("expected img_02 to be primary")
+		}
+		if img.ID == "img_01" && img.IsPrimary {
+			t.Fatalf("expected img_01 to NOT be primary")
+		}
+	}
+
+	// Setting non-existent or cross-member image should fail
+	err = repo.SetPrimaryMemberImage(ctx, "mem_01", "img_nonexistent")
+	if err == nil {
+		t.Fatal("expected error for non-existent image, got nil")
+	}
+
+	// 6. UpdateMemberImagePhotoType
+	err = repo.UpdateMemberImagePhotoType(ctx, "img_02", "pht_02")
+	if err != nil {
+		t.Fatalf("UpdateMemberImagePhotoType failed: %v", err)
+	}
+	imagesUpdated, err := repo.ListMemberImages(ctx, "mem_01")
+	if err != nil {
+		t.Fatalf("ListMemberImages failed: %v", err)
+	}
+	var foundUpdated bool
+	for _, img := range imagesUpdated {
+		if img.ID == "img_02" {
+			foundUpdated = true
+			if img.PhotoTypeID != "pht_02" {
+				t.Fatalf("expected photo_type_id=pht_02, got %s", img.PhotoTypeID)
+			}
+		}
+	}
+	if !foundUpdated {
+		t.Fatal("expected to find img_02")
+	}
+}
+
 
 
 

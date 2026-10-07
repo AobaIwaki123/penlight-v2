@@ -28,7 +28,7 @@ func setupRealSeedDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 		t.Fatalf("failed to create sqlite repo: %v", err)
 	}
 
-	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql"} {
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql"} {
 		migrationBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
 		if err != nil {
 			t.Fatalf("failed to read migration %s: %v", migrationFile, err)
