@@ -832,7 +832,68 @@ func TestADR0007_And_ADR0032_Compliance_OfflineBatchSync(t *testing.T) {
 			t.Fatalf("ADR-0032 Violation: target_song_id not populated correctly")
 		}
 	})
+
+	t.Run("ADR-0032/2: Polymorphic answer statistics aggregation calculates overall, group, and weak targets", func(t *testing.T) {
+		ctx := context.Background()
+		repo, cleanup := setupRealSeedDB(t)
+		defer cleanup()
+
+		memID := model.ID("mem_018f3a5b8c9d7a1e8f2b3c4d5e6f7a8b") // Valid seed member or dummy in isolated test
+		members, err := repo.ListMembers(ctx)
+		if err != nil || len(members) == 0 {
+			t.Fatalf("failed to list members: %v", err)
+		}
+		memID = members[0].ID
+
+		songs, err := repo.ListSongs(ctx)
+		if err != nil || len(songs) == 0 {
+			t.Fatalf("failed to list songs: %v", err)
+		}
+		songID := songs[0].ID
+
+		items := []model.AnswerLog{
+			{
+				ID:             "ans_018f3a5b8c9d7a1e8f2b3c4d5e6f7a91",
+				QuizQuestionID: "quiz_018f3a5b8c9d7a1e8f2b3c4d5e6f7a92",
+				TargetMemberID: &memID,
+				GroupID:        members[0].GroupID,
+				IsCorrect:      false,
+				ResponseTimeMs: 2500,
+				AnsweredAt:     time.Now().UTC(),
+			},
+			{
+				ID:             "ans_018f3a5b8c9d7a1e8f2b3c4d5e6f7a93",
+				QuizQuestionID: "quiz_018f3a5b8c9d7a1e8f2b3c4d5e6f7a94",
+				TargetSongID:   &songID,
+				GroupID:        songs[0].GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1400,
+				AnsweredAt:     time.Now().UTC(),
+			},
+		}
+		if err := repo.BatchInsertAnswerLogs(ctx, items); err != nil {
+			t.Fatalf("BatchInsertAnswerLogs failed: %v", err)
+		}
+
+		stats, err := repo.GetQuizStatistics(ctx, model.QuizStatisticsFilter{Limit: 5})
+		if err != nil {
+			t.Fatalf("GetQuizStatistics failed: %v", err)
+		}
+		if stats.TotalAnswers != 2 {
+			t.Fatalf("expected 2 answers, got %d", stats.TotalAnswers)
+		}
+		if stats.TotalCorrect != 1 {
+			t.Fatalf("expected 1 correct, got %d", stats.TotalCorrect)
+		}
+		if len(stats.WeakTargets) < 2 {
+			t.Fatalf("expected weak targets for both member and song, got %d", len(stats.WeakTargets))
+		}
+		if stats.WeakTargets[0].TargetType != model.TargetTypeMember {
+			t.Fatalf("expected weakest target to be member with 0 accuracy, got %s", stats.WeakTargets[0].TargetType)
+		}
+	})
 }
+
 
 
 

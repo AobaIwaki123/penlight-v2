@@ -29,4 +29,6 @@ type Repository interface {
 	// Answer log operations
 	InsertAnswerLog(ctx context.Context, log AnswerLog) error
 	BatchInsertAnswerLogs(ctx context.Context, logs []AnswerLog) error
+	GetQuizStatistics(ctx context.Context, filter QuizStatisticsFilter) (*QuizStatisticsResponse, error)
 }
+

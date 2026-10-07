@@ -311,3 +311,123 @@ func TestServer_BatchAnswers(t *testing.T) {
 		t.Fatalf("expected 400 Bad Request for invalid prefix, got %d", wInvalid.Code)
 	}
 }
+
+func TestServer_QuizStatistics(t *testing.T) {
+	srv, _ := setupTestServer(t)
+
+	// 1. Fetch valid members and songs from bootstrap
+	reqBoot := httptest.NewRequest(http.MethodGet, "/api/v1/sync/bootstrap", nil)
+	wBoot := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wBoot, reqBoot)
+	var boot model.BootstrapResponse
+	if err := json.Unmarshal(wBoot.Body.Bytes(), &boot); err != nil {
+		t.Fatalf("failed to decode bootstrap: %v", err)
+	}
+
+	validMember := boot.Members[0]
+	validSong := boot.Songs[0]
+
+	// 2. Insert batch answers: 1 correct member, 1 wrong member, 1 correct song
+	batchPayload := model.BatchAnswerRequest{
+		Answers: []model.BatchAnswerItem{
+			{
+				ID:             "ans_0192534a-9b41-715a-b9c1-333333333331",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-444444444441",
+				TargetMemberID: &validMember.ID,
+				GroupID:        validMember.GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1200,
+			},
+			{
+				ID:             "ans_0192534a-9b41-715a-b9c1-333333333332",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-444444444442",
+				TargetMemberID: &validMember.ID,
+				GroupID:        validMember.GroupID,
+				IsCorrect:      false,
+				ResponseTimeMs: 2400,
+			},
+			{
+				ID:             "ans_0192534a-9b41-715a-b9c1-333333333333",
+				QuizQuestionID: "quiz_0192534a-9b41-715a-b9c1-444444444443",
+				TargetSongID:   &validSong.ID,
+				GroupID:        validSong.GroupID,
+				IsCorrect:      true,
+				ResponseTimeMs: 1800,
+			},
+		},
+	}
+	jsonBytes, _ := json.Marshal(batchPayload)
+	reqPost := httptest.NewRequest(http.MethodPost, "/api/v1/quiz/answers/batch", strings.NewReader(string(jsonBytes)))
+	reqPost.Header.Set("Content-Type", "application/json")
+	wPost := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wPost, reqPost)
+	if wPost.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK from batch insert, got %d: %s", wPost.Code, wPost.Body.String())
+	}
+
+	// 3. GET /api/v1/quiz/statistics
+	reqStats := httptest.NewRequest(http.MethodGet, "/api/v1/quiz/statistics", nil)
+	wStats := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wStats, reqStats)
+
+	if wStats.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK from quiz statistics, got %d: %s", wStats.Code, wStats.Body.String())
+	}
+
+	var stats model.QuizStatisticsResponse
+	if err := json.Unmarshal(wStats.Body.Bytes(), &stats); err != nil {
+		t.Fatalf("failed to unmarshal statistics: %v", err)
+	}
+
+	if stats.TotalAnswers != 3 {
+		t.Fatalf("expected TotalAnswers=3, got %d", stats.TotalAnswers)
+	}
+	if stats.TotalCorrect != 2 {
+		t.Fatalf("expected TotalCorrect=2, got %d", stats.TotalCorrect)
+	}
+	expectedAccuracy := 2.0 / 3.0
+	if stats.AccuracyRate < expectedAccuracy-0.01 || stats.AccuracyRate > expectedAccuracy+0.01 {
+		t.Fatalf("expected AccuracyRate ~ 0.667, got %f", stats.AccuracyRate)
+	}
+	if len(stats.Groups) == 0 {
+		t.Fatal("expected at least 1 group stat, got empty")
+	}
+	if len(stats.WeakTargets) == 0 {
+		t.Fatal("expected weak targets, got empty")
+	}
+
+	// Member target accuracy is 50% (1/2), Song target accuracy is 100% (1/1)
+	// Weakest should be the member
+	if stats.WeakTargets[0].TargetID != validMember.ID {
+		t.Fatalf("expected weakest target to be member %s, got %s", validMember.ID, stats.WeakTargets[0].TargetID)
+	}
+	if stats.WeakTargets[0].AccuracyRate != 0.5 {
+		t.Fatalf("expected member accuracy 0.5, got %f", stats.WeakTargets[0].AccuracyRate)
+	}
+
+	// 4. Test target_type filtering: target_type=song
+	reqSongStats := httptest.NewRequest(http.MethodGet, "/api/v1/quiz/statistics?target_type=song", nil)
+	wSongStats := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wSongStats, reqSongStats)
+	if wSongStats.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d", wSongStats.Code)
+	}
+	var songStats model.QuizStatisticsResponse
+	if err := json.Unmarshal(wSongStats.Body.Bytes(), &songStats); err != nil {
+		t.Fatalf("failed to decode song statistics: %v", err)
+	}
+	for _, wt := range songStats.WeakTargets {
+		if wt.TargetType != model.TargetTypeSong {
+			t.Fatalf("expected target_type=song, got %s", wt.TargetType)
+		}
+	}
+
+	// 5. Test invalid target_type returns 400
+	reqInvalidTT := httptest.NewRequest(http.MethodGet, "/api/v1/quiz/statistics?target_type=invalid", nil)
+	wInvalidTT := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(wInvalidTT, reqInvalidTT)
+	if wInvalidTT.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400 Bad Request, got %d", wInvalidTT.Code)
+	}
+}
+

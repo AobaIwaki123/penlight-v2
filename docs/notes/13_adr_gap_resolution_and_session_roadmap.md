@@ -30,11 +30,12 @@
 flowchart TD
     S0["Session 0: ADRステータス是正 & 基礎コンプライアンステスト網羅<br/>(完了・PR #34)"]
     S1["Session 1: オフライン回答ログ同期 & 画像キャッシュ (手動フェッチ)<br/>(完了・PR #35)"]
-    S2["Session 2: バックエンド回答集計 API<br/>(SQLite answer_logs 集計 & GET /api/v1/quiz/statistics)"]
+    S2["Session 2: バックエンド回答集計 API<br/>(完了・SQLite answer_logs 集計 & GET /api/v1/quiz/statistics)"]
     S3["Session 3: 履歴・統計 UI & 苦手克服モード<br/>(IndexedDB 永続集計, 統計モーダル, 苦手デッキ出題・要人間UIレビュー)"]
 
     S0 --> S1 --> S2 --> S3
 ```
+
 
 ### Session 0: ADRステータス是正 & 基礎コンプライアンステスト網羅（完了・PR #34）
 - **ゴール**: 設計ドキュメントのステータス不整合を解消し、未テストの基礎ADRを網羅して CI で機械保証する。
@@ -56,14 +57,14 @@ flowchart TD
   - 機能提供トグル: コード内の設定定数（`frontend/src/config/features.ts`）で手軽にフェッチ機能提供の ON/OFF を切り替えられる設計。
   - 拡張性: 将来的なグループ絞り込みフェッチ（`groupId?: string`）を許容するインターフェース設計。
 
-### Session 2: バックエンド回答集計 API（次回セッション・Backend）
+### Session 2: バックエンド回答集計 API（完了・PR対象・Backend）
 - **ゴール**: SQLite に蓄積・同期された `answer_logs` から、正答率や苦手対象を抽出・集計する API を提供する。
 - **対象タスク**:
-  - リポジトリ: `pkg/repository/sqlite.go` に回答集計クエリ（`GetAnswerStatistics`）を実装（全体・グループ別・対象別の正答数・誤答数・平均応答時間）。
+  - リポジトリ: `pkg/repository/sqlite.go` に回答集計クエリ（`GetQuizStatistics`）を実装（全体・グループ別・多態性対象別の正答数・誤答数・平均応答時間、JSON `metadata` / `extra` 拡張フィールド対応）。
   - サーバー: `GET /api/v1/quiz/statistics` エンドポイントを `pkg/server/server.go` に提供。
-  - テスト: 単体テストおよび ADR コンプライアンステストの実装（機械的 CI 検証）。
+  - テスト: 単体テストおよび ADR コンプライアンステスト（`ADR-0032/2`）の実装（機械的 CI 検証）。
 
-### Session 3: 履歴・統計 UI & 苦手克服モード（次々回セッション・Frontend・要人間レビュー）
+### Session 3: 履歴・統計 UI & 苦手克服モード（次回セッション・Frontend・要人間レビュー）
 - **ゴール**: 蓄積された回答ログを活用し、正答率や苦手カラーの復習モードを直感的な UI で提供する。
 - **対象タスク**:
   - ローカル履歴永続化: IndexedDB（`answer_history` ストア）により、同期後もローカルに最新回答ログを保持・集計。

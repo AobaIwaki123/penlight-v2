@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/aobaiwaki/penlight-v2/pkg/model"
 	_ "modernc.org/sqlite" // Pure Go SQLite driver (CGO_ENABLED=0 compatible, Ref: ADR-0005)
 )
+
 
 var _ model.Repository = (*SQLiteRepository)(nil)
 
@@ -688,3 +690,246 @@ func (r *SQLiteRepository) BatchInsertAnswerLogs(ctx context.Context, logs []mod
 	}
 	return nil
 }
+
+// GetQuizStatistics calculates core aggregate statistics and weak targets (Ref: ADR-0032).
+func (r *SQLiteRepository) GetQuizStatistics(ctx context.Context, filter model.QuizStatisticsFilter) (*model.QuizStatisticsResponse, error) {
+	resp := &model.QuizStatisticsResponse{
+		Groups:      make([]model.GroupStat, 0),
+		WeakTargets: make([]model.TargetStat, 0),
+		Extra:       make(map[string]any),
+	}
+
+	// 1. Overall summary
+	var overallWhere []string
+	var overallArgs []any
+
+	if filter.UserID != nil {
+		overallWhere = append(overallWhere, "user_id = ?")
+		overallArgs = append(overallArgs, string(*filter.UserID))
+	}
+	if filter.GroupID != nil {
+		overallWhere = append(overallWhere, "group_id = ?")
+		overallArgs = append(overallArgs, string(*filter.GroupID))
+	}
+
+	whereClause := ""
+	if len(overallWhere) > 0 {
+		whereClause = "WHERE " + strings.Join(overallWhere, " AND ")
+	}
+
+	overallQuery := fmt.Sprintf(`
+		SELECT
+			COUNT(*) AS total_answers,
+			COALESCE(SUM(is_correct), 0) AS total_correct,
+			COALESCE(AVG(response_time_ms), 0) AS avg_time
+		FROM answer_logs
+		%s;
+	`, whereClause)
+
+	var avgTimeFloat float64
+	err := r.db.QueryRowContext(ctx, overallQuery, overallArgs...).Scan(
+		&resp.TotalAnswers,
+		&resp.TotalCorrect,
+		&avgTimeFloat,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query overall statistics: %w", err)
+	}
+	resp.AverageResponseTimeMs = int(avgTimeFloat)
+	if resp.TotalAnswers > 0 {
+		resp.AccuracyRate = float64(resp.TotalCorrect) / float64(resp.TotalAnswers)
+	}
+
+	// 2. Group statistics (joined with groups table)
+	groupWhere := make([]string, 0)
+	groupArgs := make([]any, 0)
+	if filter.UserID != nil {
+		groupWhere = append(groupWhere, "a.user_id = ?")
+		groupArgs = append(groupArgs, string(*filter.UserID))
+	}
+	if filter.GroupID != nil {
+		groupWhere = append(groupWhere, "a.group_id = ?")
+		groupArgs = append(groupArgs, string(*filter.GroupID))
+	}
+
+	groupWhereClause := ""
+	if len(groupWhere) > 0 {
+		groupWhereClause = "WHERE " + strings.Join(groupWhere, " AND ")
+	}
+
+	groupQuery := fmt.Sprintf(`
+		SELECT
+			g.id,
+			g.name,
+			COUNT(a.id) AS total_answers,
+			COALESCE(SUM(a.is_correct), 0) AS total_correct,
+			COALESCE(AVG(a.response_time_ms), 0) AS avg_time
+		FROM answer_logs a
+		JOIN groups g ON a.group_id = g.id
+		%s
+		GROUP BY g.id, g.name
+		ORDER BY total_answers DESC, g.display_order ASC;
+	`, groupWhereClause)
+
+	gRows, err := r.db.QueryContext(ctx, groupQuery, groupArgs...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query group statistics: %w", err)
+	}
+	defer gRows.Close()
+
+	for gRows.Next() {
+		var gs model.GroupStat
+		var gidStr string
+		var gAvgTime float64
+		if err := gRows.Scan(&gidStr, &gs.GroupName, &gs.TotalAnswers, &gs.CorrectAnswers, &gAvgTime); err != nil {
+			return nil, fmt.Errorf("failed to scan group statistics: %w", err)
+		}
+		gs.GroupID = model.ID(gidStr)
+		gs.AverageResponseTimeMs = int(gAvgTime)
+		if gs.TotalAnswers > 0 {
+			gs.AccuracyRate = float64(gs.CorrectAnswers) / float64(gs.TotalAnswers)
+		}
+		resp.Groups = append(resp.Groups, gs)
+	}
+
+	// 3. Weak targets (polymorphic: members and songs)
+	limit := filter.Limit
+	if limit <= 0 {
+		limit = 5
+	}
+	if limit > 50 {
+		limit = 50
+	}
+
+	var weakTargets []model.TargetStat
+
+	// 3a. Member targets
+	if filter.TargetType == nil || *filter.TargetType == model.TargetTypeMember {
+		mWhere := []string{"a.target_member_id IS NOT NULL"}
+		mArgs := []any{}
+		if filter.UserID != nil {
+			mWhere = append(mWhere, "a.user_id = ?")
+			mArgs = append(mArgs, string(*filter.UserID))
+		}
+		if filter.GroupID != nil {
+			mWhere = append(mWhere, "a.group_id = ?")
+			mArgs = append(mArgs, string(*filter.GroupID))
+		}
+
+		mQuery := fmt.Sprintf(`
+			SELECT
+				m.id,
+				(m.family_name || ' ' || m.given_name) AS full_name,
+				m.group_id,
+				COUNT(a.id) AS total_answers,
+				COALESCE(SUM(a.is_correct), 0) AS total_correct,
+				COALESCE(AVG(a.response_time_ms), 0) AS avg_time
+			FROM answer_logs a
+			JOIN members m ON a.target_member_id = m.id
+			WHERE %s
+			GROUP BY m.id, full_name, m.group_id
+			HAVING total_answers > 0
+			ORDER BY (CAST(total_correct AS REAL) / total_answers) ASC, total_answers DESC
+			LIMIT ?;
+		`, strings.Join(mWhere, " AND "))
+
+		mArgs = append(mArgs, limit)
+		mRows, err := r.db.QueryContext(ctx, mQuery, mArgs...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to query member statistics: %w", err)
+		}
+		defer mRows.Close()
+
+		for mRows.Next() {
+			var ts model.TargetStat
+			var tidStr, gidStr string
+			var avgTime float64
+			if err := mRows.Scan(&tidStr, &ts.Name, &gidStr, &ts.TotalAnswers, &ts.CorrectAnswers, &avgTime); err != nil {
+				return nil, fmt.Errorf("failed to scan member stat: %w", err)
+			}
+			ts.TargetID = model.ID(tidStr)
+			ts.TargetType = model.TargetTypeMember
+			ts.GroupID = model.ID(gidStr)
+			ts.AverageResponseTimeMs = int(avgTime)
+			if ts.TotalAnswers > 0 {
+				ts.AccuracyRate = float64(ts.CorrectAnswers) / float64(ts.TotalAnswers)
+			}
+			weakTargets = append(weakTargets, ts)
+		}
+	}
+
+	// 3b. Song targets
+	if filter.TargetType == nil || *filter.TargetType == model.TargetTypeSong {
+		sWhere := []string{"a.target_song_id IS NOT NULL"}
+		sArgs := []any{}
+		if filter.UserID != nil {
+			sWhere = append(sWhere, "a.user_id = ?")
+			sArgs = append(sArgs, string(*filter.UserID))
+		}
+		if filter.GroupID != nil {
+			sWhere = append(sWhere, "a.group_id = ?")
+			sArgs = append(sArgs, string(*filter.GroupID))
+		}
+
+		sQuery := fmt.Sprintf(`
+			SELECT
+				s.id,
+				s.title,
+				s.group_id,
+				COUNT(a.id) AS total_answers,
+				COALESCE(SUM(a.is_correct), 0) AS total_correct,
+				COALESCE(AVG(a.response_time_ms), 0) AS avg_time
+			FROM answer_logs a
+			JOIN songs s ON a.target_song_id = s.id
+			WHERE %s
+			GROUP BY s.id, s.title, s.group_id
+			HAVING total_answers > 0
+			ORDER BY (CAST(total_correct AS REAL) / total_answers) ASC, total_answers DESC
+			LIMIT ?;
+		`, strings.Join(sWhere, " AND "))
+
+		sArgs = append(sArgs, limit)
+		sRows, err := r.db.QueryContext(ctx, sQuery, sArgs...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to query song statistics: %w", err)
+		}
+		defer sRows.Close()
+
+		for sRows.Next() {
+			var ts model.TargetStat
+			var tidStr, gidStr string
+			var avgTime float64
+			if err := sRows.Scan(&tidStr, &ts.Name, &gidStr, &ts.TotalAnswers, &ts.CorrectAnswers, &avgTime); err != nil {
+				return nil, fmt.Errorf("failed to scan song stat: %w", err)
+			}
+			ts.TargetID = model.ID(tidStr)
+			ts.TargetType = model.TargetTypeSong
+			ts.GroupID = model.ID(gidStr)
+			ts.AverageResponseTimeMs = int(avgTime)
+			if ts.TotalAnswers > 0 {
+				ts.AccuracyRate = float64(ts.CorrectAnswers) / float64(ts.TotalAnswers)
+			}
+			weakTargets = append(weakTargets, ts)
+		}
+	}
+
+	// Sort combined weak targets by accuracy ascending, then total answers descending
+	if filter.TargetType == nil && len(weakTargets) > 1 {
+		for i := 0; i < len(weakTargets)-1; i++ {
+			for j := i + 1; j < len(weakTargets); j++ {
+				// sort by accuracy ascending, then total answers descending
+				if weakTargets[i].AccuracyRate > weakTargets[j].AccuracyRate ||
+					(weakTargets[i].AccuracyRate == weakTargets[j].AccuracyRate && weakTargets[i].TotalAnswers < weakTargets[j].TotalAnswers) {
+					weakTargets[i], weakTargets[j] = weakTargets[j], weakTargets[i]
+				}
+			}
+		}
+		if len(weakTargets) > limit {
+			weakTargets = weakTargets[:limit]
+		}
+	}
+
+	resp.WeakTargets = weakTargets
+	return resp, nil
+}
+

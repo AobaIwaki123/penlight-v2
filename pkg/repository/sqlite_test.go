@@ -443,7 +443,65 @@ func TestSQLiteRepository_SeriesAndSongs(t *testing.T) {
 	if len(equalSongs) != 1 || equalSongs[0].Title != "絶対アイドル辞めないで" || equalSongs[0].Color2ID != nil {
 		t.Fatalf("unexpected equal songs: %+v", equalSongs)
 	}
+
+	// 8. Test GetQuizStatistics
+	mem01 := model.ID("mem_01")
+	song01 := model.ID("sng_01")
+	batchLogs := []model.AnswerLog{
+		{
+			ID:             "ans_101",
+			QuizQuestionID: "quiz_101",
+			TargetMemberID: &mem01,
+			GroupID:        "grp_hinata",
+			IsCorrect:      false,
+			ResponseTimeMs: 3000,
+			AnsweredAt:     time.Now().UTC(),
+		},
+		{
+			ID:             "ans_102",
+			QuizQuestionID: "quiz_102",
+			TargetMemberID: &mem01,
+			GroupID:        "grp_hinata",
+			IsCorrect:      true,
+			ResponseTimeMs: 1500,
+			AnsweredAt:     time.Now().UTC(),
+		},
+		{
+			ID:             "ans_103",
+			QuizQuestionID: "quiz_103",
+			TargetSongID:   &song01,
+			GroupID:        "grp_hinata",
+			IsCorrect:      true,
+			ResponseTimeMs: 1200,
+			AnsweredAt:     time.Now().UTC(),
+		},
+	}
+	if err := repo.BatchInsertAnswerLogs(ctx, batchLogs); err != nil {
+		t.Fatalf("BatchInsertAnswerLogs failed: %v", err)
+	}
+
+	stats, err := repo.GetQuizStatistics(ctx, model.QuizStatisticsFilter{Limit: 5})
+	if err != nil {
+		t.Fatalf("GetQuizStatistics failed: %v", err)
+	}
+	if stats.TotalAnswers != 3 {
+		t.Fatalf("expected TotalAnswers=3, got %d", stats.TotalAnswers)
+	}
+	if stats.TotalCorrect != 2 {
+		t.Fatalf("expected TotalCorrect=2, got %d", stats.TotalCorrect)
+	}
+	if len(stats.Groups) != 1 || stats.Groups[0].GroupID != "grp_hinata" {
+		t.Fatalf("unexpected group stats: %+v", stats.Groups)
+	}
+	if len(stats.WeakTargets) < 2 {
+		t.Fatalf("expected at least 2 weak targets, got %d", len(stats.WeakTargets))
+	}
+	// Weakest should be member (50% accuracy) followed by song (100% accuracy)
+	if stats.WeakTargets[0].TargetID != "mem_01" || stats.WeakTargets[0].AccuracyRate != 0.5 {
+		t.Fatalf("unexpected weakest target: %+v", stats.WeakTargets[0])
+	}
 }
+
 
 
 
