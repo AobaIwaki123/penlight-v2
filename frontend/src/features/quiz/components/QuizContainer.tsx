@@ -30,12 +30,13 @@ import { LayoutCompact } from '@/features/quiz/components/layouts/LayoutCompact'
 import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
 import { OfflineModal } from '@/features/quiz/components/OfflineModal';
 import { SongQuizArea } from '@/features/quiz/components/SongQuizArea';
+import { StatisticsModal } from '@/features/quiz/components/StatisticsModal';
 import type { InputMode, LayoutMode } from '@/features/quiz/types';
 import {
   generateAnswerID,
   generateQuizQuestionID,
 } from '@/features/quiz/utils/id';
-import { enqueueAnswer } from '@/features/quiz/utils/idb';
+import { enqueueAnswer, saveAnswerHistory } from '@/features/quiz/utils/idb';
 import { registerImageServiceWorker } from '@/features/quiz/utils/imageCache';
 import {
   loadSavedInputMode,
@@ -52,6 +53,7 @@ import type {
   Member,
   Series,
   Song,
+  TargetStat,
 } from '@/types/generated';
 
 function filterAndShuffleMembers(
@@ -144,9 +146,10 @@ export function QuizContainer() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay');
   const [inputMode, setInputMode] = useState<InputMode>('donut');
 
-  // Modal state for Donut Ring Input & Offline Cache
+  // Modal state for Donut Ring Input & Offline Cache & Statistics
   const [isDonutModalOpen, setIsDonutModalOpen] = useState(false);
   const [isOfflineModalOpen, setIsOfflineModalOpen] = useState(false);
+  const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
   const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
 
   // Session state
@@ -333,6 +336,68 @@ export function QuizContainer() {
     setViewMode('quiz');
   };
 
+  // Launch tailored review session focusing on weakest targets
+  const handleStartWeakTargetQuiz = (weakTargets: TargetStat[]) => {
+    if (weakTargets.length === 0) return;
+
+    const weakTargetMap = new Map(weakTargets.map((w) => [w.target_id, w]));
+
+    // Check predominant target type
+    const memberTargets = weakTargets.filter((w) => w.target_type === 'member');
+    const songTargets = weakTargets.filter((w) => w.target_type === 'song');
+
+    const isSongReview = songTargets.length > memberTargets.length;
+    const targetGroupId = weakTargets[0]?.group_id || filterCriteria.groupId;
+
+    const updatedCriteria: QuizFilterCriteria = {
+      groupId: targetGroupId,
+      generations: [],
+      includeGraduated: true,
+      songMode: isSongReview,
+    };
+    setFilterCriteria(updatedCriteria);
+
+    const targetGroup = allGroups.find((g) => g.id === targetGroupId);
+    if (targetGroup) {
+      setColors(
+        getRelevantColors(
+          allColors,
+          targetGroupId,
+          targetGroup.series_id,
+          allGroups,
+        ),
+      );
+    }
+
+    if (isSongReview) {
+      // Prioritize weak songs
+      const weakSongList = allSongs.filter((s) => weakTargetMap.has(s.id));
+      const otherSongs = allSongs.filter(
+        (s) => s.group_id === targetGroupId && !weakTargetMap.has(s.id),
+      );
+      setSongs([...weakSongList, ...otherSongs].slice(0, 10));
+    } else {
+      // Prioritize weak members
+      const weakMemberList = allMembers.filter((m) => weakTargetMap.has(m.id));
+      const otherMembers = allMembers.filter(
+        (m) =>
+          m.group_id === targetGroupId &&
+          !weakTargetMap.has(m.id) &&
+          m.penlight?.left_color_id &&
+          m.penlight?.right_color_id,
+      );
+      setMembers([...weakMemberList, ...otherMembers].slice(0, 10));
+    }
+
+    setCurrentIndex(0);
+    setScore(0);
+    setIsFinished(false);
+    setSelectedLeft(undefined);
+    setSelectedRight(undefined);
+    setFeedback('idle');
+    setViewMode('quiz');
+  };
+
   const handleReturnToPortal = () => {
     setViewMode('portal');
     setIsFinished(false);
@@ -399,7 +464,7 @@ export function QuizContainer() {
       setFeedback('wrong');
     }
 
-    // Save answer log to local IndexedDB outbox and trigger background sync (ADR-0007, ADR-0032)
+    // Save answer log to local IndexedDB outbox and permanent history (ADR-0007, ADR-0032)
     const answerItem: BatchAnswerItem = {
       id: generateAnswerID(),
       quiz_question_id: generateQuizQuestionID(),
@@ -413,6 +478,9 @@ export function QuizContainer() {
     enqueueAnswer(answerItem)
       .then(() => syncPendingAnswers())
       .catch((err) => console.warn('Failed to enqueue answer:', err));
+    saveAnswerHistory(answerItem).catch((err) =>
+      console.warn('Failed to save answer history:', err),
+    );
   };
 
   // Move to next question
@@ -495,18 +563,29 @@ export function QuizContainer() {
   // Render Portal View when viewMode is 'portal'
   if (viewMode === 'portal') {
     return (
-      <PortalView
-        series={allSeries}
-        groups={allGroups}
-        members={allMembers}
-        songs={allSongs}
-        colors={allColors}
-        selectedGroupId={filterCriteria.groupId}
-        songMode={filterCriteria.songMode}
-        onGroupChange={handleGroupChange}
-        onSongModeChange={handleSongModeChange}
-        onStartQuiz={() => startQuizSession(filterCriteria)}
-      />
+      <>
+        <PortalView
+          series={allSeries}
+          groups={allGroups}
+          members={allMembers}
+          songs={allSongs}
+          colors={allColors}
+          selectedGroupId={filterCriteria.groupId}
+          songMode={filterCriteria.songMode}
+          onGroupChange={handleGroupChange}
+          onSongModeChange={handleSongModeChange}
+          onStartQuiz={() => startQuizSession(filterCriteria)}
+          onOpenStatistics={() => setIsStatisticsModalOpen(true)}
+        />
+        <StatisticsModal
+          opened={isStatisticsModalOpen}
+          onClose={() => setIsStatisticsModalOpen(false)}
+          groups={allGroups}
+          members={allMembers}
+          songs={allSongs}
+          onStartWeakTargetQuiz={handleStartWeakTargetQuiz}
+        />
+      </>
     );
   }
 
@@ -590,6 +669,7 @@ export function QuizContainer() {
         onInputModeChange={handleInputModeChange}
         onOpenFilter={() => setIsFilterModalOpen(true)}
         onOpenOfflineModal={() => setIsOfflineModalOpen(true)}
+        onOpenStatistics={() => setIsStatisticsModalOpen(true)}
         onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
         groupName={currentGroup?.name}
@@ -752,8 +832,26 @@ export function QuizContainer() {
               トップへ戻る
             </Button>
           </MantineGroup>
+          <Button
+            size="xs"
+            variant="subtle"
+            color="indigo"
+            onClick={() => setIsStatisticsModalOpen(true)}
+          >
+            📊 成績・苦手分析を確認する
+          </Button>
         </Stack>
       </Modal>
+
+      {/* 成績・統計モーダル */}
+      <StatisticsModal
+        opened={isStatisticsModalOpen}
+        onClose={() => setIsStatisticsModalOpen(false)}
+        groups={allGroups}
+        members={allMembers}
+        songs={allSongs}
+        onStartWeakTargetQuiz={handleStartWeakTargetQuiz}
+      />
 
       {/* オフライン画像準備モーダル */}
       <OfflineModal
