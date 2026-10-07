@@ -19,7 +19,9 @@ date: 2026-10-05
 
 ## 1. 背景と解決すべき課題 (Context & Problem)
 
-従来のクイズ出題エンジン（`pkg/quiz/`）は、メンバー推しメンカラークイズに特化して構築されており、以下の強い具象結合が存在していた。
+本システムにおいて、実際のユーザー出題・判定は端末内の Local-First（TypeScript / `src/features/quiz/logic.ts`）で実行される（Ref: [ADR-0007](./0007-local-first-offline-pwa-architecture.md)）。一方、サーバーサイド（`pkg/quiz/`）はドメイン仕様・コンプライアンステストの正本アルゴリズムおよび将来のサーバー検証・バッチ処理を担っている。
+
+従来の Go 側クイズエンジン（`pkg/quiz/`）は、メンバー推しメンカラークイズに特化して構築されており、以下の強い具象結合が存在していた。
 
 1. **出題対象の具象結合**:
    - `FilterMembers(members []model.Member, ...)`、`BuildBlendedDeck(pool []model.Member, ...)` のように、引数および戻り値がすべて `model.Member` 構造体にハードコードされていた。

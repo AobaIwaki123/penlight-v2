@@ -86,21 +86,81 @@ func TestServer_BootstrapAndETag(t *testing.T) {
 	}
 }
 
-func TestServer_ImageRedirectFallback(t *testing.T) {
+func TestServer_ImageCacheProxyAndNoReferer(t *testing.T) {
 	srv, _ := setupTestServer(t)
 
-	// Test redirect for known image_key in seeds/data/image_sources.json
-	req := httptest.NewRequest(http.MethodGet, "/images/img_455e72f40ae75d5281943b482e2d2a95.webp", nil)
+	// Spin up a mock official CDN server to verify:
+	// 1. Backend fetches image directly
+	// 2. No Referer header is sent to the upstream CDN
+	var receivedReferer string
+	var upstreamHitCount int
+	mockCDN := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		upstreamHitCount++
+		receivedReferer = r.Header.Get("Referer")
+		w.Header().Set("Content-Type", "image/webp")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("fake-webp-image-binary-data"))
+	}))
+	defer mockCDN.Close()
+
+	// Redirect client requests to mock server via custom transport
+	customClient := &http.Client{
+		Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+			// Proxy request to mockCDN
+			req, err := http.NewRequest(r.Method, mockCDN.URL, r.Body)
+			if err != nil {
+				return nil, err
+			}
+			req.Header = r.Header.Clone()
+			return http.DefaultClient.Do(req)
+		}),
+	}
+	srv.SetHTTPClient(customClient)
+
+	// 1. Initial request: should fetch from upstream, return 200 OK directly (no 302 redirect), and cache locally
+	key := "img_455e72f40ae75d5281943b482e2d2a95.webp"
+	req := httptest.NewRequest(http.MethodGet, "/images/"+key, nil)
 	w := httptest.NewRecorder()
 	srv.Handler().ServeHTTP(w, req)
 
-	if w.Code != http.StatusFound {
-		t.Fatalf("expected 302 Found redirect, got %d", w.Code)
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK, got %d (body: %s)", w.Code, w.Body.String())
 	}
-	loc := w.Header().Get("Location")
-	if loc == "" {
-		t.Fatal("expected Location header in redirect")
+	if w.Header().Get("Location") != "" {
+		t.Fatalf("expected no Location header (direct 200 OK, no 302), got %s", w.Header().Get("Location"))
 	}
+	if w.Header().Get("Cache-Control") != "public, max-age=31536000, immutable" {
+		t.Fatalf("expected immutable Cache-Control, got %s", w.Header().Get("Cache-Control"))
+	}
+	if w.Body.String() != "fake-webp-image-binary-data" {
+		t.Fatalf("expected image body, got %q", w.Body.String())
+	}
+
+	// Verify upstream received NO Referer header (Ref: ADR-0033)
+	if receivedReferer != "" {
+		t.Fatalf("expected empty Referer header sent to upstream CDN, got %q", receivedReferer)
+	}
+	if upstreamHitCount != 1 {
+		t.Fatalf("expected upstream to be hit 1 time, got %d", upstreamHitCount)
+	}
+
+	// 2. Second request: should hit local cache directly without contacting upstream CDN again
+	w2 := httptest.NewRecorder()
+	req2 := httptest.NewRequest(http.MethodGet, "/images/"+key, nil)
+	srv.Handler().ServeHTTP(w2, req2)
+
+	if w2.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK on cached request, got %d", w2.Code)
+	}
+	if upstreamHitCount != 1 {
+		t.Fatalf("expected upstreamHitCount to remain 1 after second request (served from local cache), got %d", upstreamHitCount)
+	}
+}
+
+type roundTripFunc func(r *http.Request) (*http.Response, error)
+
+func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) {
+	return f(r)
 }
 
 func TestServer_EmbeddedFrontendSPA(t *testing.T) {
