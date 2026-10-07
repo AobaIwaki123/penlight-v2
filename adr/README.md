@@ -41,6 +41,7 @@
 | [0032](./0032-answer-log-multi-target-polymorphism-architecture.md) | 回答ログにおけるマルチターゲット多態性永続化アーキテクチャの採用 | Accepted |
 | [0033](./0033-on-demand-cache-through-image-proxy.md) | 外部リファラ漏洩防止とゼロパージを実現するオンデマンド画像キャッシュプロキシアーキテクチャの採用 | Accepted |
 | [0034](./0034-quiz-statistics-and-weak-target-review-architecture.md) | クイズ回答統計集計と苦手克服復習デッキアーキテクチャの採用 | Accepted |
+| [0035](./0035-metadata-verification-and-editing-architecture.md) | メタデータ確認・編集 API および GitOps 逆同期アーキテクチャの採用 | Accepted |
 
 
 ---

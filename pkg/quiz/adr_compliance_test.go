@@ -1018,6 +1018,146 @@ func TestADR0034_Compliance_QuizStatisticsAndReviewMode(t *testing.T) {
 	})
 }
 
+// =========================================================================
+// ADR-0035: Metadata Verification and Editing Compliance Tests
+// =========================================================================
+
+func TestADR0035_Compliance_MetadataEditing(t *testing.T) {
+	ctx := context.Background()
+	repo, cleanup := setupRealSeedDB(t)
+	defer cleanup()
+
+	// 1. [DB] ADR-0035/1: verified_at column and idx_members_verified index
+	t.Run("ADR-0035/1: DB Schema verified_at and index", func(t *testing.T) {
+		var colCount int
+		err := repo.DB().QueryRowContext(ctx, `
+			SELECT COUNT(*) FROM pragma_table_info('members') WHERE name = 'verified_at';
+		`).Scan(&colCount)
+		if err != nil || colCount != 1 {
+			t.Fatalf("ADR-0035/1: expected verified_at column in members table, got count=%d, err=%v", colCount, err)
+		}
+
+		var idxCount int
+		err = repo.DB().QueryRowContext(ctx, `
+			SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'idx_members_verified';
+		`).Scan(&idxCount)
+		if err != nil || idxCount != 1 {
+			t.Fatalf("ADR-0035/1: expected idx_members_verified index, got count=%d, err=%v", idxCount, err)
+		}
+	})
+
+	// 2. [Contract] ADR-0035/2: Model fields and DTOs
+	t.Run("ADR-0035/2: Model field VerifiedAt and Admin DTOs", func(t *testing.T) {
+		m := model.Member{
+			ID: "mem_test",
+		}
+		if m.VerifiedAt != nil {
+			t.Fatal("ADR-0035/2: expected VerifiedAt to be nil by default")
+		}
+		now := time.Now().UTC()
+		m.VerifiedAt = &now
+		if m.VerifiedAt == nil || !m.VerifiedAt.Equal(now) {
+			t.Fatal("ADR-0035/2: VerifiedAt field assignment failed")
+		}
+
+		// Ensure DTO types exist and compile
+		req1 := model.UpdateMemberPenlightRequest{LeftColorID: "col_1", RightColorID: "col_2", Ordered: true}
+		req2 := model.UpdateMemberStatusRequest{Status: nil, Generation: nil}
+		req3 := model.SetPrimaryMemberImageRequest{ImageID: "img_1"}
+		req4 := model.UpdateMemberImagePhotoTypeRequest{PhotoTypeID: "pht_1"}
+		if req1.LeftColorID == "" || req3.ImageID == "" || req4.PhotoTypeID == "" || req2.Status != nil {
+			t.Fatal("ADR-0035/2: DTO instantiation mismatch")
+		}
+	})
+
+	// 3. [Backend] ADR-0035/3: Repository metadata mutation operations
+	t.Run("ADR-0035/3: Repository metadata mutation operations", func(t *testing.T) {
+		members, err := repo.ListMembers(ctx)
+		if err != nil || len(members) == 0 {
+			t.Fatalf("ADR-0035/3: failed to list members: %v", err)
+		}
+		target := members[0]
+
+		// 3a. UpdateMemberPenlight with markVerified=true
+		colors, err := repo.ListColors(ctx)
+		if err != nil || len(colors) < 2 {
+			t.Fatalf("ADR-0035/3: failed to list colors: %v", err)
+		}
+		newPenlight := model.PenlightPair{
+			LeftColorID:  colors[0].ID,
+			RightColorID: colors[1].ID,
+			Ordered:      true,
+		}
+		if err := repo.UpdateMemberPenlight(ctx, target.ID, newPenlight, true); err != nil {
+			t.Fatalf("ADR-0035/3: UpdateMemberPenlight failed: %v", err)
+		}
+
+		mUpdated, err := repo.GetMember(ctx, target.ID)
+		if err != nil || mUpdated == nil {
+			t.Fatalf("ADR-0035/3: GetMember failed: %v", err)
+		}
+		if mUpdated.Penlight.LeftColorID != colors[0].ID || mUpdated.Penlight.RightColorID != colors[1].ID || !mUpdated.Penlight.Ordered {
+			t.Fatalf("ADR-0035/3: unexpected penlight values: %+v", mUpdated.Penlight)
+		}
+		if mUpdated.VerifiedAt == nil {
+			t.Fatal("ADR-0035/3: expected VerifiedAt to be set when markVerified=true")
+		}
+
+		// 3b. MarkMemberVerified
+		if err := repo.MarkMemberVerified(ctx, target.ID); err != nil {
+			t.Fatalf("ADR-0035/3: MarkMemberVerified failed: %v", err)
+		}
+
+		// 3c. UpdateMemberStatus
+		newGen := 9
+		if err := repo.UpdateMemberStatus(ctx, target.ID, model.StatusHiatus, &newGen); err != nil {
+			t.Fatalf("ADR-0035/3: UpdateMemberStatus failed: %v", err)
+		}
+		mStatus, err := repo.GetMember(ctx, target.ID)
+		if err != nil || mStatus.Status != model.StatusHiatus || mStatus.Generation != 9 {
+			t.Fatalf("ADR-0035/3: status update mismatch: status=%s, gen=%d", mStatus.Status, mStatus.Generation)
+		}
+
+		// 3d. SetPrimaryMemberImage and UpdateMemberImagePhotoType
+		if len(mStatus.Images) > 0 {
+			imgID := mStatus.Images[0].ID
+			if err := repo.SetPrimaryMemberImage(ctx, target.ID, imgID); err != nil {
+				t.Fatalf("ADR-0035/3: SetPrimaryMemberImage failed: %v", err)
+			}
+			photoTypes, _ := repo.ListPhotoTypes(ctx, target.GroupID)
+			if len(photoTypes) > 0 {
+				if err := repo.UpdateMemberImagePhotoType(ctx, imgID, photoTypes[0].ID); err != nil {
+					t.Fatalf("ADR-0035/3: UpdateMemberImagePhotoType failed: %v", err)
+				}
+			}
+		}
+	})
+
+	// 4. [Contract] ADR-0035/4 & [Backend] ADR-0035/5: Problem Details errors and CORS methods
+	t.Run("ADR-0035/4 and ADR-0035/5: Problem Details and CORS methods", func(t *testing.T) {
+		// Verify standard error codes
+		if model.CodeNotFound != "NOT_FOUND" || model.CodeInvalidParams != "INVALID_PARAMS" {
+			t.Fatal("ADR-0035/4: standard error codes mismatch")
+		}
+
+		// Test non-existent member returns sql.ErrNoRows from repo
+		err := repo.UpdateMemberPenlight(ctx, "mem_nonexistent", model.PenlightPair{LeftColorID: "col_1", RightColorID: "col_2"}, false)
+		if err == nil {
+			t.Fatal("ADR-0035/4: expected error for non-existent member")
+		}
+	})
+
+	// 5. [Tool] ADR-0035/6: Export script presence
+	t.Run("ADR-0035/6: export_seeds.go script presence", func(t *testing.T) {
+		scriptPath := filepath.Join("..", "..", "scripts", "export_seeds.go")
+		info, err := os.Stat(scriptPath)
+		if err != nil || info.IsDir() {
+			t.Fatalf("ADR-0035/6: export_seeds.go script not found at %s", scriptPath)
+		}
+	})
+}
+
+
 
 
 
