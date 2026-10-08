@@ -55,13 +55,19 @@ export function SwipeableCardStack({
   // 指の水平移動量に応じた回転角（-12deg 〜 +12deg）
   const rotate = useTransform(x, [-260, 0, 260], [-12, 0, 12]);
 
-  // 背後カードのスケール拡大（手前のカードが動くと 0.94 -> 1.0 に近づく）
-  const bgScale = useTransform(
-    x,
-    [-200, 0, 200],
-    shouldReduceMotion ? [1, 1, 1] : [0.98, 0.94, 0.98],
+  // 指の移動距離 (360度 Math.hypot(x, y))
+  const dragDistance = useTransform([x, y], ([latestX, latestY]: number[]) =>
+    Math.hypot(latestX, latestY),
   );
-  const bgOpacity = useTransform(x, [-200, 0, 200], [0.95, 0.6, 0.95]);
+
+  // 背後カードのスケール拡大（手前のカードを払うにつれて 0.94 -> 確定閾値〜退出手前で完全な 1.0 に到達）
+  // スワイプ完了時に突然大きくなる段差を完全に解消
+  const bgScale = useTransform(
+    dragDistance,
+    [0, 160],
+    shouldReduceMotion ? [1, 1] : [0.94, 1.0],
+  );
+  const bgOpacity = useTransform(dragDistance, [0, 140], [0.6, 1.0]);
 
   // スワイプ判定の追跡用
   const isDraggingRef = useRef(false);
