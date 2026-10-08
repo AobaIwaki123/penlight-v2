@@ -184,20 +184,28 @@ export function LayoutOverlay({
             style={{ flexShrink: 0 }}
           >
             <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => onOpenInput?.('left')}
-              title="タップして左手の色を選択"
+              role={onOpenInput ? 'button' : undefined}
+              tabIndex={onOpenInput ? 0 : undefined}
+              onClick={onOpenInput ? () => onOpenInput('left') : undefined}
+              title={onOpenInput ? 'タップして左手の色を選択' : undefined}
               style={{
-                cursor: 'pointer',
+                cursor: onOpenInput ? 'pointer' : 'default',
                 transition: 'transform 0.15s ease',
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
+              onMouseEnter={
+                onOpenInput
+                  ? (e) => {
+                      e.currentTarget.style.transform = 'scale(1.08)';
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                onOpenInput
+                  ? (e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  : undefined
+              }
             >
               <PenlightStick
                 color={selectedLeftColor}
@@ -209,20 +217,28 @@ export function LayoutOverlay({
             </Box>
 
             <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => onOpenInput?.('right')}
-              title="タップして右手の色を選択"
+              role={onOpenInput ? 'button' : undefined}
+              tabIndex={onOpenInput ? 0 : undefined}
+              onClick={onOpenInput ? () => onOpenInput('right') : undefined}
+              title={onOpenInput ? 'タップして右手の色を選択' : undefined}
               style={{
-                cursor: 'pointer',
+                cursor: onOpenInput ? 'pointer' : 'default',
                 transition: 'transform 0.15s ease',
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.08)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
+              onMouseEnter={
+                onOpenInput
+                  ? (e) => {
+                      e.currentTarget.style.transform = 'scale(1.08)';
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                onOpenInput
+                  ? (e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  : undefined
+              }
             >
               <PenlightStick
                 color={selectedRightColor}

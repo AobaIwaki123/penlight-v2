@@ -49,6 +49,7 @@ import type {
   MetadataEditProposal,
   PenlightPair,
 } from '@/types/generated';
+import { SwipeableCardStack } from './SwipeableCardStack';
 
 interface DraftState {
   penlight: PenlightPair;
@@ -469,170 +470,215 @@ export function MetadataProposalPage() {
               minHeight: 0,
             }}
           >
-            <LayoutOverlay
-              target={{
-                ...currentMember,
-                generation: currentDraft.generation,
-              }}
-              costumeTitle={currentCostumeTitle}
-              selectedLeftColor={selectedLeftColor}
-              selectedRightColor={selectedRightColor}
-              isFullscreen
-              onOpenInput={(hand) => {
-                setActiveHand(hand);
-                setIsDonutModalOpen(true);
-              }}
-              onClickGeneration={() => setIsInfoModalOpen(true)}
-              extraBadges={
-                <Group gap={6}>
-                  {/* 在籍ステータスバッジ (常にタップ可能で、変更時は目立つように表示) */}
-                  {(() => {
-                    const isStatusChanged =
-                      currentDraft.status !== currentMember.status;
-                    const isGraduated = currentDraft.status === 'graduated';
-
-                    if (isStatusChanged) {
-                      return (
-                        <Badge
-                          size="sm"
-                          color={isGraduated ? 'red' : 'teal'}
-                          variant="filled"
-                          rightSection={
-                            <IconPencil size={10} style={{ marginLeft: 2 }} />
-                          }
-                          style={{
-                            cursor: 'pointer',
-                            boxShadow: '0 0 0 1.5px #fff',
-                            fontWeight: 800,
-                          }}
-                          onClick={() => setIsInfoModalOpen(true)}
-                          title="タップしてステータスを変更"
-                        >
-                          {isGraduated ? '卒業へ変更' : '現役へ変更'}
-                        </Badge>
-                      );
-                    }
-
-                    if (isGraduated) {
-                      return (
-                        <Badge
-                          size="sm"
-                          color="red.9"
-                          variant="filled"
-                          rightSection={
-                            <IconPencil size={10} style={{ marginLeft: 2 }} />
-                          }
-                          style={{
-                            cursor: 'pointer',
-                            boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.4)',
-                          }}
-                          onClick={() => setIsInfoModalOpen(true)}
-                          title="タップしてステータスを変更"
-                        >
-                          卒業
-                        </Badge>
-                      );
-                    }
-
-                    return (
-                      <Badge
-                        size="sm"
-                        color="gray.4"
-                        variant="outline"
-                        rightSection={
-                          <IconPencil size={10} style={{ marginLeft: 2 }} />
-                        }
-                        style={{
-                          cursor: 'pointer',
-                          color: '#fff',
-                          borderColor: 'rgba(255, 255, 255, 0.5)',
-                        }}
-                        onClick={() => setIsInfoModalOpen(true)}
-                        title="タップしてステータスを変更"
-                      >
-                        現役
-                      </Badge>
-                    );
-                  })()}
-
-                  {/* 期生が変更された場合の強調バッジ */}
-                  {currentDraft.generation !== currentMember.generation && (
-                    <Badge size="sm" color="violet" variant="filled">
-                      期生変更
-                    </Badge>
-                  )}
-
-                  {/* 送信ステータス */}
-                  {isProposalSubmitted && (
-                    <Badge
-                      size="sm"
-                      color="teal"
-                      variant="filled"
-                      leftSection={<IconClock size={12} />}
-                    >
-                      承認待ち
-                    </Badge>
-                  )}
-                </Group>
+            <SwipeableCardStack
+              hasPrev={currentIndex > 0}
+              hasNext={currentIndex < filteredMembers.length - 1}
+              onSwipeNext={() => handleNavigate(1)}
+              onSwipePrev={() => handleNavigate(-1)}
+              disabled={
+                isDonutModalOpen ||
+                isInfoModalOpen ||
+                isDiffModalOpen ||
+                isFilterModalOpen ||
+                isPickerModalOpen ||
+                isSubmitting
               }
-              footer={
-                <Paper
-                  radius="md"
-                  p={6}
-                  style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                    backdropFilter: 'blur(8px)',
-                    width: '100%',
-                    maxWidth: 400,
-                  }}
-                >
-                  <Group justify="space-between" gap="xs" wrap="nowrap">
-                    {/* 変更がある場合のみ「元に戻す」ボタンを表示 */}
-                    {changedCount > 0 && !isProposalSubmitted && (
-                      <Button
-                        variant="subtle"
-                        color="gray"
-                        size="sm"
-                        c="gray.3"
-                        onClick={handleResetDraft}
-                        disabled={isSubmitting}
-                      >
-                        元に戻す
-                      </Button>
+              backgroundCard={(() => {
+                const nextMember = filteredMembers[currentIndex + 1];
+                if (!nextMember) return undefined;
+                const nextDraft =
+                  drafts[nextMember.id] || createDraft(nextMember);
+                const nextLeftColor = colorMap.get(
+                  nextDraft.penlight.left_color_id,
+                );
+                const nextRightColor = colorMap.get(
+                  nextDraft.penlight.right_color_id,
+                );
+                const nextPrimaryImg =
+                  nextMember.images?.find((img) => img.is_primary) ||
+                  nextMember.images?.[0];
+                const nextCostume =
+                  nextPrimaryImg?.photo_type?.name || '公式衣装';
+
+                return (
+                  <LayoutOverlay
+                    target={{
+                      ...nextMember,
+                      generation: nextDraft.generation,
+                    }}
+                    costumeTitle={nextCostume}
+                    selectedLeftColor={nextLeftColor}
+                    selectedRightColor={nextRightColor}
+                    isFullscreen
+                  />
+                );
+              })()}
+            >
+              <LayoutOverlay
+                target={{
+                  ...currentMember,
+                  generation: currentDraft.generation,
+                }}
+                costumeTitle={currentCostumeTitle}
+                selectedLeftColor={selectedLeftColor}
+                selectedRightColor={selectedRightColor}
+                isFullscreen
+                onOpenInput={(hand) => {
+                  setActiveHand(hand);
+                  setIsDonutModalOpen(true);
+                }}
+                onClickGeneration={() => setIsInfoModalOpen(true)}
+                extraBadges={
+                  <Group gap={6}>
+                    {/* 在籍ステータスバッジ (常にタップ可能で、変更時は目立つように表示) */}
+                    {(() => {
+                      const isStatusChanged =
+                        currentDraft.status !== currentMember.status;
+                      const isGraduated = currentDraft.status === 'graduated';
+
+                      if (isStatusChanged) {
+                        return (
+                          <Badge
+                            size="sm"
+                            color={isGraduated ? 'red' : 'teal'}
+                            variant="filled"
+                            rightSection={
+                              <IconPencil size={10} style={{ marginLeft: 2 }} />
+                            }
+                            style={{
+                              cursor: 'pointer',
+                              boxShadow: '0 0 0 1.5px #fff',
+                              fontWeight: 800,
+                            }}
+                            onClick={() => setIsInfoModalOpen(true)}
+                            title="タップしてステータスを変更"
+                          >
+                            {isGraduated ? '卒業へ変更' : '現役へ変更'}
+                          </Badge>
+                        );
+                      }
+
+                      if (isGraduated) {
+                        return (
+                          <Badge
+                            size="sm"
+                            color="red.9"
+                            variant="filled"
+                            rightSection={
+                              <IconPencil size={10} style={{ marginLeft: 2 }} />
+                            }
+                            style={{
+                              cursor: 'pointer',
+                              boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.4)',
+                            }}
+                            onClick={() => setIsInfoModalOpen(true)}
+                            title="タップしてステータスを変更"
+                          >
+                            卒業
+                          </Badge>
+                        );
+                      }
+
+                      return (
+                        <Badge
+                          size="sm"
+                          color="gray.4"
+                          variant="outline"
+                          rightSection={
+                            <IconPencil size={10} style={{ marginLeft: 2 }} />
+                          }
+                          style={{
+                            cursor: 'pointer',
+                            color: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.5)',
+                          }}
+                          onClick={() => setIsInfoModalOpen(true)}
+                          title="タップしてステータスを変更"
+                        >
+                          現役
+                        </Badge>
+                      );
+                    })()}
+
+                    {/* 期生が変更された場合の強調バッジ */}
+                    {currentDraft.generation !== currentMember.generation && (
+                      <Badge size="sm" color="violet" variant="filled">
+                        期生変更
+                      </Badge>
                     )}
 
-                    {/* 提案送信 / 差分確認ボタン */}
-                    <Button
-                      style={{ flex: 1 }}
-                      color={
-                        isProposalSubmitted
-                          ? 'teal'
-                          : changedCount > 0
-                            ? 'violet'
-                            : 'gray'
-                      }
-                      variant="filled"
-                      loading={isSubmitting}
-                      disabled={changedCount === 0 && !isProposalSubmitted}
-                      onClick={() => setIsDiffModalOpen(true)}
-                      leftSection={
-                        isProposalSubmitted ? (
-                          <IconCheck size={18} />
-                        ) : (
-                          <IconSend size={18} />
-                        )
-                      }
-                    >
-                      {isProposalSubmitted
-                        ? '提案送信済み (承認待ち)'
-                        : changedCount > 0
-                          ? `${changedCount}項目の修正を提案`
-                          : '公式回答と一致'}
-                    </Button>
+                    {/* 送信ステータス */}
+                    {isProposalSubmitted && (
+                      <Badge
+                        size="sm"
+                        color="teal"
+                        variant="filled"
+                        leftSection={<IconClock size={12} />}
+                      >
+                        承認待ち
+                      </Badge>
+                    )}
                   </Group>
-                </Paper>
-              }
-            />
+                }
+                footer={
+                  <Paper
+                    radius="md"
+                    p={6}
+                    style={{
+                      backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                      backdropFilter: 'blur(8px)',
+                      width: '100%',
+                      maxWidth: 400,
+                    }}
+                  >
+                    <Group justify="space-between" gap="xs" wrap="nowrap">
+                      {/* 変更がある場合のみ「元に戻す」ボタンを表示 */}
+                      {changedCount > 0 && !isProposalSubmitted && (
+                        <Button
+                          variant="subtle"
+                          color="gray"
+                          size="sm"
+                          c="gray.3"
+                          onClick={handleResetDraft}
+                          disabled={isSubmitting}
+                        >
+                          元に戻す
+                        </Button>
+                      )}
+
+                      {/* 提案送信 / 差分確認ボタン */}
+                      <Button
+                        style={{ flex: 1 }}
+                        color={
+                          isProposalSubmitted
+                            ? 'teal'
+                            : changedCount > 0
+                              ? 'violet'
+                              : 'gray'
+                        }
+                        variant="filled"
+                        loading={isSubmitting}
+                        disabled={changedCount === 0 && !isProposalSubmitted}
+                        onClick={() => setIsDiffModalOpen(true)}
+                        leftSection={
+                          isProposalSubmitted ? (
+                            <IconCheck size={18} />
+                          ) : (
+                            <IconSend size={18} />
+                          )
+                        }
+                      >
+                        {isProposalSubmitted
+                          ? '提案送信済み (承認待ち)'
+                          : changedCount > 0
+                            ? `${changedCount}項目の修正を提案`
+                            : '公式回答と一致'}
+                      </Button>
+                    </Group>
+                  </Paper>
+                }
+              />
+            </SwipeableCardStack>
           </Box>
         ) : (
           <Paper p="xl" ta="center" w="100%">
