@@ -44,6 +44,7 @@
 | [0035](./0035-metadata-verification-and-editing-architecture.md) | メタデータ確認・編集 API および GitOps 逆同期アーキテクチャの採用 | Superseded by ADR-0036/0037 |
 | [0036](./0036-admin-gallery-and-bootstrap-master-extension.md) | 管理画面承認ビューと Bootstrap マスタ拡張の採用 | Accepted |
 | [0037](./0037-metadata-edit-proposal-storage-and-approval.md) | メタデータ編集提案の保存・承認・競合管理 | Accepted |
+| [0038](./0038-member-card-swipe-gesture-navigation.md) | メタデータ編集画面におけるカードスワイプ操作とアニメーション責務分離アーキテクチャの採用 | Accepted |
 
 
 ---
