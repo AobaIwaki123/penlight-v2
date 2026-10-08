@@ -20,6 +20,7 @@ import {
   IconLayout,
   IconMoon,
   IconMusic,
+  IconPencil,
   IconSun,
 } from '@tabler/icons-react';
 
@@ -35,6 +36,7 @@ interface HeaderProps {
   onOpenFilter?: () => void;
   onOpenOfflineModal?: () => void;
   onOpenStatistics?: () => void;
+  onEditMember?: () => void;
   onGoHome?: () => void;
   groupThemeColor?: string;
   groupName?: string;
@@ -49,6 +51,7 @@ export function Header({
   onOpenFilter,
   onOpenOfflineModal,
   onOpenStatistics,
+  onEditMember,
   onGoHome,
   groupThemeColor,
   groupName,
@@ -258,6 +261,21 @@ export function Header({
             title="絞り込みフィルター"
           >
             <IconFilter size={18} />
+          </ActionIcon>
+        )}
+
+        {/* 編集提案ボタン (出題中メンバーの編集へ遷移) */}
+        {onEditMember && (
+          <ActionIcon
+            variant="light"
+            color="violet"
+            size="lg"
+            radius="md"
+            onClick={onEditMember}
+            title="出題メンバーの情報を編集提案"
+            aria-label="出題メンバーの情報を編集提案"
+          >
+            <IconPencil size={18} />
           </ActionIcon>
         )}
 

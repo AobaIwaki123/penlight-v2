@@ -37,24 +37,6 @@
   },
   {
     "group_slug": "hinatazaka46",
-    "family_name": "丹生",
-    "given_name": "明里",
-    "family_name_kana": "にぶ",
-    "given_name_kana": "あかり",
-    "generation": 2,
-    "status": "graduated",
-    "left_color": "オレンジ",
-    "right_color": "オレンジ",
-    "images": [
-      {
-        "photo_type_slug": "13th_single",
-        "url": "https://cdn.hinatazaka46.com/images/14/4a0/9896ff77e7b70bfc73418fd9f1043.jpg",
-        "is_primary": true
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
     "family_name": "佐々木",
     "given_name": "久美",
     "family_name_kana": "ささき",
@@ -104,24 +86,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/d51/52c019274111cb3b916a0f8aac3b8-03.jpg",
         "is_primary": true,
         "photo_type_slug": "5th_member"
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
-    "family_name": "加藤",
-    "given_name": "史帆",
-    "family_name_kana": "かとう",
-    "given_name_kana": "しほ",
-    "generation": 1,
-    "status": "graduated",
-    "left_color": "ブルー",
-    "right_color": "ブルー",
-    "images": [
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_01_01.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -325,24 +289,6 @@
   },
   {
     "group_slug": "hinatazaka46",
-    "family_name": "東村",
-    "given_name": "芽依",
-    "family_name_kana": "ひがしむら",
-    "given_name_kana": "めい",
-    "generation": 1,
-    "status": "graduated",
-    "left_color": "サクラピンク",
-    "right_color": "サクラピンク",
-    "images": [
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_07.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
     "family_name": "松尾",
     "given_name": "桜",
     "family_name_kana": "まつお",
@@ -464,24 +410,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/249/c9216245dc6e1bb429ca60ef175bb/800_800_102400.jpg",
         "is_primary": true,
         "photo_type_slug": "13th_single"
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
-    "family_name": "濱岸",
-    "given_name": "ひより",
-    "family_name_kana": "はまぎし",
-    "given_name_kana": "ひより",
-    "generation": 2,
-    "status": "graduated",
-    "left_color": "ホワイト",
-    "right_color": "オレンジ",
-    "images": [
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_13.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },
@@ -613,24 +541,6 @@
   },
   {
     "group_slug": "hinatazaka46",
-    "family_name": "高本",
-    "given_name": "彩花",
-    "family_name_kana": "たかもと",
-    "given_name_kana": "あやか",
-    "generation": 1,
-    "status": "graduated",
-    "left_color": "ホワイト",
-    "right_color": "エメラルドグリーン",
-    "images": [
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_06.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
     "family_name": "高瀬",
     "given_name": "愛奈",
     "family_name_kana": "たかせ",
@@ -680,24 +590,6 @@
         "url": "https://cdn.hinatazaka46.com/images/14/2d0/201d8f3005ee07574c8ce7db5cb16-03.jpg",
         "is_primary": true,
         "photo_type_slug": "5th_member"
-      }
-    ]
-  },
-  {
-    "group_slug": "hinatazaka46",
-    "family_name": "齊藤",
-    "given_name": "京子",
-    "family_name_kana": "さいとう",
-    "given_name_kana": "きょうこ",
-    "generation": 1,
-    "status": "graduated",
-    "left_color": "ホワイト",
-    "right_color": "ホワイト",
-    "images": [
-      {
-        "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_02.jpg",
-        "is_primary": true,
-        "photo_type_slug": "5th_hinatansai_towel"
       }
     ]
   },

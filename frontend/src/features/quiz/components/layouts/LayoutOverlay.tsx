@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Text } from '@mantine/core';
+import { IconPencil } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
@@ -10,6 +11,14 @@ interface LayoutOverlayProps extends TargetLayoutProps {
   isFullscreen?: boolean;
   /** 写真の最下部に重ねて表示する領域 (解答フィードバックバーなど) */
   footer?: ReactNode;
+  /** 写真の右上に配置するコントロール (編集時の写真切替など) */
+  photoControl?: ReactNode;
+  /** 期生バッジタップ時のコールバック */
+  onClickGeneration?: () => void;
+  /** 衣装名タップ時のコールバック */
+  onClickCostume?: () => void;
+  /** メンバー名・期生の横に追加表示するバッジ (例: 編集済みバッジ、ステータスバッジ) */
+  extraBadges?: ReactNode;
 }
 
 export function LayoutOverlay({
@@ -20,11 +29,16 @@ export function LayoutOverlay({
   onOpenInput,
   isFullscreen,
   footer,
+  photoControl,
+  onClickGeneration,
+  onClickCostume,
+  extraBadges,
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
-  const imageSrc =
-    getImageUrl(primaryImg?.image_key) ||
-    'https://placehold.co/400x500/7cc7e8/ffffff?text=Penlight+Quiz';
+  const imageFallback = `data:image/svg+xml,${encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="#343a40"/><text x="50%" y="42%" text-anchor="middle" fill="white" font-size="18">画像を読み込めません</text></svg>',
+  )}`;
+  const imageSrc = getImageUrl(primaryImg?.image_key) || imageFallback;
 
   return (
     <Box
@@ -53,6 +67,7 @@ export function LayoutOverlay({
       >
         <Image
           src={imageSrc}
+          fallbackSrc={imageFallback}
           alt={`${target.family_name} ${target.given_name}`}
           fit="cover"
           style={{
@@ -62,6 +77,12 @@ export function LayoutOverlay({
             height: '100%',
           }}
         />
+
+        {photoControl && (
+          <Box style={{ position: 'absolute', top: 12, right: 12 }}>
+            {photoControl}
+          </Box>
+        )}
 
         {/* 自然な下部フェードグラデーション */}
         <Box
@@ -93,25 +114,75 @@ export function LayoutOverlay({
         >
           {/* 左側: メンバー名と衣装 */}
           <Box
-            style={{ color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.6)' }}
+            style={{
+              color: '#fff',
+              textShadow: '0 2px 4px rgba(0,0,0,0.6)',
+              minWidth: 0,
+            }}
           >
             <Group gap={8} align="center" mb={2}>
               <Text size="xl" fw={800} c="white">
                 {target.family_name} {target.given_name}
               </Text>
-              <Badge size="sm" color="orange" variant="filled">
+              <Badge
+                size="sm"
+                color="orange"
+                variant="filled"
+                rightSection={
+                  onClickGeneration ? (
+                    <IconPencil size={11} style={{ marginLeft: 2 }} />
+                  ) : undefined
+                }
+                style={
+                  onClickGeneration
+                    ? {
+                        cursor: 'pointer',
+                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                        boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.4)',
+                        userSelect: 'none',
+                      }
+                    : undefined
+                }
+                onClick={onClickGeneration}
+                title={
+                  onClickGeneration
+                    ? 'タップして期生・ステータスを変更'
+                    : undefined
+                }
+              >
                 {target.generation}期生
               </Badge>
+              {extraBadges}
             </Group>
             {costumeTitle && (
-              <Text size="xs" c="gray.3">
+              <Text
+                size="xs"
+                c="gray.3"
+                style={
+                  onClickCostume
+                    ? {
+                        cursor: 'pointer',
+                        textDecoration: 'underline dotted',
+                      }
+                    : undefined
+                }
+                onClick={onClickCostume}
+                title={
+                  onClickCostume ? 'タップして写真・衣装を変更' : undefined
+                }
+              >
                 {costumeTitle}
               </Text>
             )}
           </Box>
 
           {/* 右側: 写真に重なる2本の光るペンライト (タップでカラー選択モーダル展開) */}
-          <Group gap={16} align="flex-end">
+          <Group
+            gap={16}
+            align="flex-end"
+            wrap="nowrap"
+            style={{ flexShrink: 0 }}
+          >
             <Box
               role="button"
               tabIndex={0}

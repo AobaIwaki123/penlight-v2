@@ -44,3 +44,10 @@ export function generateAnswerID(): string {
 export function generateQuizQuestionID(): string {
   return `quiz_${generateUUIDv7()}`;
 }
+
+/**
+ * Generate a TypeID for metadata edit proposals (prp_<uuidv7>).
+ */
+export function generateMetadataProposalID(): string {
+  return `prp_${generateUUIDv7()}`;
+}

@@ -18,15 +18,6 @@
     "dest_key": "img_847a20ba1ae45b5390e2696db99c6dc4.webp"
   },
   {
-    "image_id": "img_d42e599b224c5b34be0b263dd7d9a31f",
-    "member_id": "mem_79623099c3c35bd69b2f88b24d3dad38",
-    "name": "丹生明里",
-    "group": "hinatazaka46",
-    "photo_type_slug": "13th_single",
-    "url": "https://cdn.hinatazaka46.com/images/14/4a0/9896ff77e7b70bfc73418fd9f1043.jpg",
-    "dest_key": "img_d42e599b224c5b34be0b263dd7d9a31f.webp"
-  },
-  {
     "image_id": "img_e47daec5db0751699f8281ae61064f91",
     "member_id": "mem_8fc76fc0b89951cc9fe0b4d28e2dac0c",
     "name": "佐々木久美",
@@ -52,15 +43,6 @@
     "photo_type_slug": "5th_member",
     "url": "https://cdn.hinatazaka46.com/images/14/d51/52c019274111cb3b916a0f8aac3b8-03.jpg",
     "dest_key": "img_e6486950dcb352f9997964c948c63ecc.webp"
-  },
-  {
-    "image_id": "img_4b57e50edbe6532b9272c5faa7d06dec",
-    "member_id": "mem_194f683faca85e43bcf38b859d845b6c",
-    "name": "加藤史帆",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_01_01.jpg",
-    "dest_key": "img_4b57e50edbe6532b9272c5faa7d06dec.webp"
   },
   {
     "image_id": "img_ad3d8ead8ff552ca9a97d379ae5610c7",
@@ -162,15 +144,6 @@
     "dest_key": "img_09e30eaf7303566a8a5bf2eeefddf048.webp"
   },
   {
-    "image_id": "img_fc8eb2503f4c52b280195c77c1573d5e",
-    "member_id": "mem_e0f4fe5b5493518b891bcce77fe308f3",
-    "name": "東村芽依",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_07.jpg",
-    "dest_key": "img_fc8eb2503f4c52b280195c77c1573d5e.webp"
-  },
-  {
     "image_id": "img_fee5f99c18ea530c80677ccee22880e9",
     "member_id": "mem_e44f49a59156551cb9f7fcd91d24faa1",
     "name": "松尾桜",
@@ -232,15 +205,6 @@
     "photo_type_slug": "13th_single",
     "url": "https://cdn.hinatazaka46.com/images/14/249/c9216245dc6e1bb429ca60ef175bb/800_800_102400.jpg",
     "dest_key": "img_6659f3c82b235fd79bdaf33a2451a858.webp"
-  },
-  {
-    "image_id": "img_6cbdbfc72f5d557d9f7075b99ce5e26e",
-    "member_id": "mem_42d807c188dc5d65adba6fa5676f5221",
-    "name": "濱岸ひより",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_13.jpg",
-    "dest_key": "img_6cbdbfc72f5d557d9f7075b99ce5e26e.webp"
   },
   {
     "image_id": "img_2e04c092d6ed56cabd8768c2dedd2665",
@@ -306,15 +270,6 @@
     "dest_key": "img_564a605068585d72bcdb3608d7e7a1e2.webp"
   },
   {
-    "image_id": "img_a8e9f6db42915d1a8a7026afde47793a",
-    "member_id": "mem_2098487fb2b45b129414de6e61808ec3",
-    "name": "高本彩花",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_06.jpg",
-    "dest_key": "img_a8e9f6db42915d1a8a7026afde47793a.webp"
-  },
-  {
     "image_id": "img_590214468c4c5cf198afeb3d453b50e6",
     "member_id": "mem_6c4b735992ef5962bf0b3aff3369675e",
     "name": "高瀬愛奈",
@@ -340,15 +295,6 @@
     "photo_type_slug": "5th_member",
     "url": "https://cdn.hinatazaka46.com/images/14/2d0/201d8f3005ee07574c8ce7db5cb16-03.jpg",
     "dest_key": "img_eb3e8032a1e55308b9f8f8e3bdc8a336.webp"
-  },
-  {
-    "image_id": "img_70d464ba4e765cf5880c7b98c4cdb7fc",
-    "member_id": "mem_557bdbe582b65aaa8bda577d6b8eaf0a",
-    "name": "齊藤京子",
-    "group": "hinatazaka46",
-    "photo_type_slug": "5th_hinatansai_towel",
-    "url": "https://storage-store.plusmember.jp/upload/images/240316_5thhinatan_towel_kobetsu_al3uhw_02.jpg",
-    "dest_key": "img_70d464ba4e765cf5880c7b98c4cdb7fc.webp"
   },
   {
     "image_id": "img_79fb832d845a571ea74eb1e93ae73f29",

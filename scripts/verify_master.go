@@ -40,7 +40,8 @@ func main() {
 
 	// 1. Verify master version
 	var currentVersion string
-	err = db.QueryRow("SELECT version FROM master_versions WHERE id = 'current';").Scan(&currentVersion)
+	var currentRevision int
+	err = db.QueryRow("SELECT version, data_revision FROM master_versions WHERE id = 'current';").Scan(&currentVersion, &currentRevision)
 	if err != nil {
 		fmt.Printf("❌ Failed to query master_versions: %v\n", err)
 		hasErrors = true
@@ -152,7 +153,7 @@ func main() {
 	if err == nil && resp.StatusCode == http.StatusOK {
 		resp.Body.Close()
 		fmt.Println("=== [Live Server Check (http://localhost:8080)] ===")
-		
+
 		bootResp, err := client.Get("http://localhost:8080/api/v1/sync/bootstrap")
 		if err != nil {
 			fmt.Printf("❌ Bootstrap endpoint failed: %v\n", err)
@@ -160,7 +161,7 @@ func main() {
 		} else {
 			defer bootResp.Body.Close()
 			etag := bootResp.Header.Get("ETag")
-			expectedEtag := fmt.Sprintf(`"%s"`, model.CurrentMasterVersion)
+			expectedEtag := fmt.Sprintf(`"%s:%d:graduated=%t"`, currentVersion, currentRevision, false)
 			if etag != expectedEtag {
 				fmt.Printf("❌ Server ETag mismatch: got %s, expected %s\n", etag, expectedEtag)
 				hasErrors = true

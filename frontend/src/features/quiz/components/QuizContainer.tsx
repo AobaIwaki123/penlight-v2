@@ -13,6 +13,7 @@ import {
   Text,
 } from '@mantine/core';
 import { IconHome, IconRotateClockwise, IconTrophy } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { PortalView } from '@/features/portal/components/PortalView';
 import { fetchBootstrapData } from '@/features/quiz/api/client';
@@ -114,6 +115,8 @@ function getRelevantColors(
 }
 
 export function QuizContainer() {
+  const router = useRouter();
+
   // Master data from backend API
   const [allSeries, setAllSeries] = useState<Series[]>([]);
   const [allGroups, setAllGroups] = useState<Group[]>([]);
@@ -670,6 +673,17 @@ export function QuizContainer() {
         onOpenFilter={() => setIsFilterModalOpen(true)}
         onOpenOfflineModal={() => setIsOfflineModalOpen(true)}
         onOpenStatistics={() => setIsStatisticsModalOpen(true)}
+        onEditMember={
+          !isSongMode && currentMember
+            ? () => {
+                const params = new URLSearchParams({
+                  group_id: currentMember.group_id,
+                  member_id: currentMember.id,
+                });
+                router.push(`/edit?${params.toString()}`);
+              }
+            : undefined
+        }
         onGoHome={handleReturnToPortal}
         groupThemeColor={currentGroup?.theme_color_hex}
         groupName={currentGroup?.name}

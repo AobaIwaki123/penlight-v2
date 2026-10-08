@@ -20,11 +20,12 @@ import {
   IconArrowRight,
   IconChartBar,
   IconColorSwatch,
+  IconEdit,
   IconFlame,
   IconMusic,
   IconUsers,
 } from '@tabler/icons-react';
-
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { GroupLogo } from '@/features/portal/components/GroupLogo';
 import type {
@@ -137,18 +138,33 @@ export function PortalView({
               </Box>
             </Group>
 
-            {onOpenStatistics && (
+            <Group gap={6}>
               <ActionIcon
+                component={Link}
+                href={`/edit?group_id=${encodeURIComponent(selectedGroupId)}`}
                 variant="light"
-                color="blue"
+                color="violet"
                 size="lg"
                 radius="md"
-                onClick={onOpenStatistics}
-                title="成績・統計分析"
+                title="回答を編集"
+                aria-label="回答を編集"
               >
-                <IconChartBar size={20} />
+                <IconEdit size={20} />
               </ActionIcon>
-            )}
+              {onOpenStatistics && (
+                <ActionIcon
+                  variant="light"
+                  color="blue"
+                  size="lg"
+                  radius="md"
+                  onClick={onOpenStatistics}
+                  title="成績・統計分析"
+                  aria-label="成績・統計分析"
+                >
+                  <IconChartBar size={20} />
+                </ActionIcon>
+              )}
+            </Group>
           </Group>
         </Paper>
 
