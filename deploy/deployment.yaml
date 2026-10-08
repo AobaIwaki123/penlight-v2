@@ -24,7 +24,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: penlight
-          image: ghcr.io/aobaiwaki123/penlight-v2:3636c51
+          image: ghcr.io/aobaiwaki123/penlight-v2:1dcb0ae
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
