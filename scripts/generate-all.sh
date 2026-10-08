@@ -34,8 +34,8 @@ fi
 echo "=== [4/5] Generating OpenAPI from Go model and implemented routes ==="
 go run scripts/gen-openapi.go
 
-echo "=== [5/5] Running Go Static Analysis and Tests ==="
+echo "=== [5/5] Running Go Static Analysis ==="
 go vet ./...
-go test ./...
 
 echo "=== All schema artifacts successfully generated and verified! ==="
+

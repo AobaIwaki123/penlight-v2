@@ -161,7 +161,7 @@ test('opens directly to target member when member_id query param is provided', a
   await expect(page.getByText('3期生')).toBeVisible();
 });
 
-test('supports swipe navigation with draft preservation and list boundary resistance', async ({
+test('supports forward-only swipe navigation with draft preservation and button return', async ({
   page,
 }) => {
   await page.goto('/edit');
@@ -177,7 +177,7 @@ test('supports swipe navigation with draft preservation and list boundary resist
   await infoModal.getByRole('button', { name: '完了' }).click();
   await expect(page.getByText('5期生')).toBeVisible();
 
-  // 2. 左スワイプで次へ移動 (一花 -> 二葉)
+  // 2. スワイプで次へ移動 (一花 -> 二葉)
   const card = page.locator('text=テスト 一花').first();
   const box = await card.boundingBox();
   if (box) {
@@ -192,7 +192,7 @@ test('supports swipe navigation with draft preservation and list boundary resist
   // 二葉へ切り替わっていること
   await expect(page.getByText('テスト 二葉')).toBeVisible();
 
-  // 3. 末尾でさらに左スワイプしても循環しないこと (二葉にとどまる)
+  // 3. 末尾でスワイプしても循環しないこと (二葉にとどまる)
   const card2 = page.locator('text=テスト 二葉').first();
   const box2 = await card2.boundingBox();
   if (box2) {
@@ -205,15 +205,8 @@ test('supports swipe navigation with draft preservation and list boundary resist
   }
   await expect(page.getByText('テスト 二葉')).toBeVisible();
 
-  // 4. 右スワイプで前へ戻る (二葉 -> 一花)
-  if (box2) {
-    const startX = box2.x + box2.width / 2;
-    const startY = box2.y + box2.height / 2;
-    await page.mouse.move(startX, startY);
-    await page.mouse.down();
-    await page.mouse.move(startX + 180, startY, { steps: 5 });
-    await page.mouse.up();
-  }
+  // 4. 「前へ」ボタンで戻る (二葉 -> 一花)
+  await page.getByRole('button', { name: '前へ' }).click();
 
   // 一花へ戻り、変更した下書き（5期生）が保持されていること
   await expect(page.getByText('テスト 一花')).toBeVisible();

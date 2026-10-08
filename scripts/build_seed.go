@@ -197,6 +197,17 @@ func main() {
 	var imageSQL []string
 
 	sql = append(sql, "\n-- Idol Members")
+	// Clean up obsolete records removed from seeds/data/members.json (Ref: ADR-0021, ADR-0023)
+	validMemberIDs := make([]string, 0, len(members))
+	for _, m := range members {
+		fullName := fmt.Sprintf("%s%s", m.FamilyName, m.GivenName)
+		validMemberIDs = append(validMemberIDs, fmt.Sprintf("'%s'", typeID("mem", uuid.NewSHA1(nsMember, []byte(fmt.Sprintf("%s:%s", m.GroupSlug, fullName))))))
+	}
+	if len(validMemberIDs) > 0 {
+		inClause := strings.Join(validMemberIDs, ", ")
+		sql = append(sql, fmt.Sprintf("DELETE FROM member_images WHERE member_id NOT IN (%s);", inClause))
+		sql = append(sql, fmt.Sprintf("DELETE FROM members WHERE id NOT IN (%s);", inClause))
+	}
 	for _, m := range members {
 		gid, ok := groupMap[m.GroupSlug]
 		if !ok {
