@@ -642,8 +642,6 @@ func (s *Server) handleAdminUpdateImagePhotoType(w http.ResponseWriter, r *http.
 	})
 }
 
-
-
 func (s *Server) getImageSourceURL(key string) (string, bool) {
 	s.imageMu.RLock()
 	url, ok := s.imageSources[key]
@@ -787,6 +785,7 @@ func applyMigrations(db *sql.DB) error {
 		"000001_init.up.sql",
 		"000002_add_series_and_songs.up.sql",
 		"000003_add_member_verified_at.up.sql",
+		"000004_add_metadata_edit_proposals.up.sql",
 	}
 
 	for _, filename := range migrationFiles {

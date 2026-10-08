@@ -28,7 +28,7 @@ func setupRealSeedDB(t *testing.T) (*repository.SQLiteRepository, func()) {
 		t.Fatalf("failed to create sqlite repo: %v", err)
 	}
 
-	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql"} {
+	for _, migrationFile := range []string{"000001_init.up.sql", "000002_add_series_and_songs.up.sql", "000003_add_member_verified_at.up.sql", "000004_add_metadata_edit_proposals.up.sql"} {
 		migrationBytes, err := os.ReadFile(filepath.Join("..", "..", "migrations", migrationFile))
 		if err != nil {
 			t.Fatalf("failed to read migration %s: %v", migrationFile, err)
@@ -662,14 +662,14 @@ func TestADR0033_Compliance_CacheProxySpecification(t *testing.T) {
 func TestADR0001_ADR0006_Compliance_TypeIDPrefixRules(t *testing.T) {
 	t.Run("ADR-0001/1: TypeID prefixes strictly follow entity type rules", func(t *testing.T) {
 		prefixes := map[string]string{
-			"Series":     "ser_",
-			"Group":      "grp_",
-			"Member":     "mem_",
-			"Color":      "col_",
-			"PhotoType":  "pht_",
-			"Song":       "sng_",
-			"User":       "usr_",
-			"AnswerLog":  "ans_",
+			"Series":    "ser_",
+			"Group":     "grp_",
+			"Member":    "mem_",
+			"Color":     "col_",
+			"PhotoType": "pht_",
+			"Song":      "sng_",
+			"User":      "usr_",
+			"AnswerLog": "ans_",
 		}
 
 		ctx := context.Background()
@@ -1156,9 +1156,3 @@ func TestADR0035_Compliance_MetadataEditing(t *testing.T) {
 		}
 	})
 }
-
-
-
-
-
-

@@ -155,7 +155,7 @@ export function StatisticsModal({
           </Text>
         </Stack>
       ) : (
-        <ScrollArea.Autosize maxHeight="70vh" offsetScrollbars>
+        <ScrollArea.Autosize mah="70vh" offsetScrollbars>
           <Stack gap="md" py="xs">
             {/* サマリーカード: 全体正答率・回答数・平均時間 */}
             <Card withBorder radius="md" p="md">
@@ -323,7 +323,7 @@ export function StatisticsModal({
                             </ThemeIcon>
 
                             <Box>
-                              <Text size="xs" fw={700} truncate maxW={160}>
+                              <Text size="xs" fw={700} truncate maw={160}>
                                 {item.name}
                               </Text>
                               <Text size="10px" c="dimmed">

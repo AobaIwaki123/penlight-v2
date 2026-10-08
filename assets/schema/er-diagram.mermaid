@@ -16,6 +16,7 @@ erDiagram
     MEMBER ||--o{ ANSWER_LOG : "target_member_id"
     MEMBER ||--o{ BATCH_ANSWER_ITEM : "target_member_id"
     MEMBER ||--o{ MEMBER_IMAGE : "member_id"
+    MEMBER ||--o{ METADATA_EDIT_PROPOSAL : "member_id"
     MEMBER ||--o{ QUIZ_QUESTION : "target_member_id"
     MEMBER ||--o{ SUBMIT_ANSWER_REQUEST : "target_member_id"
     PHOTO_TYPE ||--o{ MEMBER_IMAGE : "photo_type_id"
@@ -29,6 +30,8 @@ erDiagram
     SONG ||--o{ BATCH_ANSWER_ITEM : "target_song_id"
     USER ||--o{ ANSWER_LOG : "user_id"
     USER ||--o{ BATCH_ANSWER_ITEM : "user_id"
+    USER ||--o{ METADATA_EDIT_PROPOSAL : "approver_user_id"
+    USER ||--o{ METADATA_EDIT_PROPOSAL : "proposer_user_id"
 
     GROUP {
         string id PK "grp_... (UUID v7)"
@@ -64,6 +67,7 @@ erDiagram
     }
 
     MEMBER {
+        int metadata_revision
         string id PK "mem_... (UUID v7 immutable surrogate key)"
         string group_id FK "grp_..."
         string family_name "e.g. '加藤'"
@@ -94,9 +98,24 @@ erDiagram
     }
 
     MASTER_VERSION {
+        int data_revision
         string id PK "'current'"
         string version "Git commit hash or semantic version"
         datetime updated_at
+    }
+
+    METADATA_EDIT_PROPOSAL {
+        string id PK
+        string member_id FK
+        int base_revision
+        string changes_json
+        string status
+        datetime submitted_at
+        datetime approved_at
+        datetime rejected_at
+        string proposer_user_id FK
+        string approver_user_id FK
+        string rejection_reason
     }
 
     USER {

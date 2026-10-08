@@ -1038,4 +1038,3 @@ components:
       properties:
         photo_type_id:
           $ref: "#/components/schemas/ID"
-

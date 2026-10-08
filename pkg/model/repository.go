@@ -39,4 +39,3 @@ type Repository interface {
 	SetPrimaryMemberImage(ctx context.Context, memberID ID, imageID ID) error
 	UpdateMemberImagePhotoType(ctx context.Context, imageID ID, photoTypeID ID) error
 }
-

@@ -99,6 +99,9 @@ func main() {
 								colName = parts[0]
 							}
 						}
+						if dbTag != "" {
+							colName = strings.Split(dbTag, ",")[0]
+						}
 
 						isPK := strings.Contains(dbTag, "pk") || colName == "id"
 						isFK := strings.Contains(dbTag, "fk") || (strings.HasSuffix(colName, "_id") && !isPK)
@@ -157,7 +160,7 @@ func main() {
 	buf.WriteString("\n")
 
 	// 2. エンティティ定義出力
-	entityOrder := []string{"GROUP", "COLOR", "PHOTO_TYPE", "MEMBER", "MEMBER_IMAGE", "MASTER_VERSION", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
+	entityOrder := []string{"GROUP", "COLOR", "PHOTO_TYPE", "MEMBER", "MEMBER_IMAGE", "MASTER_VERSION", "METADATA_EDIT_PROPOSAL", "USER", "ANSWER_LOG", "QUIZ_QUESTION"}
 	for _, name := range entityOrder {
 		ent, ok := entities[name]
 		if !ok {
@@ -239,7 +242,7 @@ func inferTargetEntity(fkCol string) string {
 		return "SONG"
 	case "photo_type_id":
 		return "PHOTO_TYPE"
-	case "user_id":
+	case "user_id", "proposer_user_id", "approver_user_id":
 		return "USER"
 	case "quiz_question_id":
 		return "QUIZ_QUESTION"
