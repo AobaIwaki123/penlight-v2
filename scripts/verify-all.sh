@@ -39,8 +39,7 @@ run_step() {
     fi
 }
 
-run_step 1 "Running Schema Generation" ./scripts/generate-all.sh
-
+run_step 1 "Running Schema Generation & Tests" ./scripts/generate-all.sh
 
 if [ "$STAGE_MODE" = true ]; then
     if [ "$AI_MODE" = false ]; then

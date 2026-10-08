@@ -17,17 +17,25 @@ interface SwipeableCardStackProps {
    */
   children: ReactNode;
   /**
-   * 背後にチラ見せするカード要素（次のカード）
+   * 背後にチラ見せするカード要素（次または前のカード）
    */
   backgroundCard?: ReactNode;
+  /**
+   * 前のアイテムが存在するかどうか
+   */
+  hasPrev: boolean;
   /**
    * 次のアイテムが存在するかどうか
    */
   hasNext: boolean;
   /**
-   * スワイプ完了（次へ進む）時のコールバック
+   * 左スワイプ完了（次へ進む）時のコールバック
    */
   onSwipeNext: () => void;
+  /**
+   * 右スワイプ完了（前へ戻る）時のコールバック
+   */
+  onSwipePrev: () => void;
   /**
    * ジェスチャーを無効化するかどうか（モーダル表示中など）
    */
@@ -42,8 +50,10 @@ const TAP_THRESHOLD_PX = 10; // 10px 未満の移動はタップと判定
 export function SwipeableCardStack({
   children,
   backgroundCard,
+  hasPrev,
   hasNext,
   onSwipeNext,
+  onSwipePrev,
   disabled = false,
 }: SwipeableCardStackProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -94,12 +104,11 @@ export function SwipeableCardStack({
     if (disabled) return;
 
     let deltaX = info.offset.x;
-    let deltaY = info.offset.y;
+    const deltaY = info.offset.y;
 
-    // リスト末尾（次がない）で引っ張る場合は強い抵抗（Rubber-band effect）
-    if (!hasNext) {
-      deltaX = deltaX * 0.25;
-      deltaY = deltaY * 0.25;
+    // リスト端での抵抗（Rubber-band effect）: 先頭で右、末尾で左に引いた場合
+    if ((deltaX > 0 && !hasPrev) || (deltaX < 0 && !hasNext)) {
+      deltaX = deltaX * 0.25; // 強い抵抗
     }
 
     x.set(deltaX);
@@ -111,10 +120,9 @@ export function SwipeableCardStack({
     if (disabled) return;
 
     const offsetX = info.offset.x;
-    const offsetY = info.offset.y;
-    const movedDistance = Math.hypot(offsetX, offsetY);
-    const velocityMagnitude = Math.hypot(info.velocity.x, info.velocity.y);
+    const velocityX = info.velocity.x;
 
+    const movedDistance = Math.hypot(info.offset.x, info.offset.y);
     if (movedDistance < TAP_THRESHOLD_PX) {
       // 10px 未満はタップ扱い（位置をリセット）
       animate(x, 0, { type: 'spring', stiffness: 450, damping: 30 });
@@ -123,25 +131,19 @@ export function SwipeableCardStack({
       return;
     }
 
-    // どの方向（左右上下）に払っても、十分な距離またはフリック速度があれば「次のメンバー」へ進む
+    // 次へ (左スワイプ確定)
     const isSwipingNext =
-      (movedDistance >= SWIPE_THRESHOLD_X ||
-        velocityMagnitude >= SWIPE_VELOCITY_X) &&
+      (offsetX < -SWIPE_THRESHOLD_X || velocityX < -SWIPE_VELOCITY_X) &&
       hasNext;
 
-    if (isSwipingNext) {
-      // 払った方向へカードを投げる (イグジット)
-      const exitDistance = shouldReduceMotion ? 250 : 550;
-      const angle = Math.atan2(offsetY, offsetX);
-      const targetExitX = Math.cos(angle) * exitDistance;
-      const targetExitY = Math.sin(angle) * exitDistance;
+    // 前へ (右スワイプ確定)
+    const isSwipingPrev =
+      (offsetX > SWIPE_THRESHOLD_X || velocityX > SWIPE_VELOCITY_X) && hasPrev;
 
-      animate(x, targetExitX, {
-        type: 'spring',
-        stiffness: 300,
-        damping: 25,
-      });
-      animate(y, targetExitY, {
+    if (isSwipingNext) {
+      // 画面左外へイグジット
+      const targetExit = shouldReduceMotion ? -220 : -500;
+      animate(x, targetExit, {
         type: 'spring',
         stiffness: 300,
         damping: 25,
@@ -151,8 +153,21 @@ export function SwipeableCardStack({
         y.set(0);
         isDraggingRef.current = false;
       });
+    } else if (isSwipingPrev) {
+      // 画面右外へイグジット
+      const targetExit = shouldReduceMotion ? 220 : 500;
+      animate(x, targetExit, {
+        type: 'spring',
+        stiffness: 300,
+        damping: 25,
+      }).then(() => {
+        onSwipePrev();
+        x.set(0);
+        y.set(0);
+        isDraggingRef.current = false;
+      });
     } else {
-      // 閾値未満または末尾（次がない）の場合はスプリングで中央へ復帰
+      // 閾値未満または端での復帰（スプリングで元位置へ戻す）
       animate(x, 0, {
         type: 'spring',
         stiffness: 350,
