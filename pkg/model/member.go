@@ -14,6 +14,12 @@ const (
 	StatusHiatus    MemberStatus = "hiatus"    // 休業中
 )
 
+// MemberListOptions controls the public member list scope without changing the
+// default Local-First bootstrap behavior (Ref: ADR-0036).
+type MemberListOptions struct {
+	IncludeGraduated bool `json:"include_graduated"`
+}
+
 // PenlightPair holds the two penlight colors assigned to a member.
 type PenlightPair struct {
 	LeftColorID  ID   `json:"left_color_id"`  // col_... (Left hand / Color 1)

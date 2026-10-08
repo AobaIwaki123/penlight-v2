@@ -26,4 +26,3 @@ func (s Song) GetCorrectColors() []ID {
 	}
 	return []ID{s.Color1ID}
 }
-

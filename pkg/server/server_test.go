@@ -431,134 +431,171 @@ func TestServer_QuizStatistics(t *testing.T) {
 	}
 }
 
-func TestServer_AdminMetadataOperations(t *testing.T) {
+func TestServer_MetadataEditProposalWorkflow(t *testing.T) {
 	srv, _ := setupTestServer(t)
 
-	// Fetch a member from bootstrap endpoint to test with
-	reqBootstrap := httptest.NewRequest(http.MethodGet, "/api/v1/sync/bootstrap", nil)
-	wBootstrap := httptest.NewRecorder()
-	srv.Handler().ServeHTTP(wBootstrap, reqBootstrap)
-	if wBootstrap.Code != http.StatusOK {
-		t.Fatalf("bootstrap failed with %d", wBootstrap.Code)
-	}
-	var bootstrapData struct {
-		Members []model.Member    `json:"members"`
-		Colors  []model.Color     `json:"colors"`
-		Photos  []model.PhotoType `json:"photo_types"`
-	}
-	if err := json.Unmarshal(wBootstrap.Body.Bytes(), &bootstrapData); err != nil {
-		t.Fatalf("failed to decode bootstrap: %v", err)
-	}
-	if len(bootstrapData.Members) == 0 {
-		t.Fatal("no members found in seed")
-	}
-	targetMember := bootstrapData.Members[0]
-
-	// 1. GET /api/v1/admin/members/{id}
-	reqGet := httptest.NewRequest(http.MethodGet, "/api/v1/admin/members/"+string(targetMember.ID), nil)
-	wGet := httptest.NewRecorder()
-	srv.Handler().ServeHTTP(wGet, reqGet)
-	if wGet.Code != http.StatusOK {
-		t.Fatalf("expected 200 OK, got %d", wGet.Code)
-	}
-	var mGet model.Member
-	if err := json.Unmarshal(wGet.Body.Bytes(), &mGet); err != nil {
-		t.Fatalf("failed to decode member: %v", err)
-	}
-	if mGet.ID != targetMember.ID {
-		t.Fatalf("expected ID=%s, got %s", targetMember.ID, mGet.ID)
-	}
-
-	// 2. POST /api/v1/admin/members/{id}/verify
-	reqVerify := httptest.NewRequest(http.MethodPost, "/api/v1/admin/members/"+string(targetMember.ID)+"/verify", nil)
-	wVerify := httptest.NewRecorder()
-	srv.Handler().ServeHTTP(wVerify, reqVerify)
-	if wVerify.Code != http.StatusOK {
-		t.Fatalf("expected 200 OK, got %d", wVerify.Code)
-	}
-	var mVerified model.Member
-	if err := json.Unmarshal(wVerify.Body.Bytes(), &mVerified); err != nil {
-		t.Fatalf("failed to decode verified member: %v", err)
-	}
-	if mVerified.VerifiedAt == nil {
-		t.Fatal("expected VerifiedAt to be set after verify")
-	}
-
-	// 3. PATCH /api/v1/admin/members/{id}/penlight
-	if len(bootstrapData.Colors) >= 2 {
-		c1 := bootstrapData.Colors[0].ID
-		c2 := bootstrapData.Colors[1].ID
-		payload := `{"left_color_id":"` + string(c1) + `","right_color_id":"` + string(c2) + `","ordered":true}`
-		reqPenlight := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/members/"+string(targetMember.ID)+"/penlight", strings.NewReader(payload))
-		reqPenlight.Header.Set("Content-Type", "application/json")
-		wPenlight := httptest.NewRecorder()
-		srv.Handler().ServeHTTP(wPenlight, reqPenlight)
-		if wPenlight.Code != http.StatusOK {
-			t.Fatalf("expected 200 OK, got %d: %s", wPenlight.Code, wPenlight.Body.String())
+	requestBootstrap := func(path string, etag string) (*httptest.ResponseRecorder, model.BootstrapResponse) {
+		t.Helper()
+		req := httptest.NewRequest(http.MethodGet, path, nil)
+		if etag != "" {
+			req.Header.Set("If-None-Match", etag)
 		}
-		var mPenlight model.Member
-		if err := json.Unmarshal(wPenlight.Body.Bytes(), &mPenlight); err != nil {
-			t.Fatalf("failed to decode updated penlight: %v", err)
-		}
-		if mPenlight.Penlight.LeftColorID != c1 || mPenlight.Penlight.RightColorID != c2 || !mPenlight.Penlight.Ordered {
-			t.Fatalf("unexpected penlight update: %+v", mPenlight.Penlight)
-		}
-	}
-
-	// 4. PATCH /api/v1/admin/members/{id}/status
-	statusPayload := `{"status":"hiatus"}`
-	reqStatus := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/members/"+string(targetMember.ID)+"/status", strings.NewReader(statusPayload))
-	reqStatus.Header.Set("Content-Type", "application/json")
-	wStatus := httptest.NewRecorder()
-	srv.Handler().ServeHTTP(wStatus, reqStatus)
-	if wStatus.Code != http.StatusOK {
-		t.Fatalf("expected 200 OK, got %d: %s", wStatus.Code, wStatus.Body.String())
-	}
-	var mStatus model.Member
-	if err := json.Unmarshal(wStatus.Body.Bytes(), &mStatus); err != nil {
-		t.Fatalf("failed to decode updated status: %v", err)
-	}
-	if mStatus.Status != model.StatusHiatus {
-		t.Fatalf("expected hiatus, got %s", mStatus.Status)
-	}
-
-	// 5. PUT /api/v1/admin/members/{id}/images/primary
-	if len(targetMember.Images) > 0 {
-		imgID := targetMember.Images[0].ID
-		imgPayload := `{"image_id":"` + string(imgID) + `"}`
-		reqImg := httptest.NewRequest(http.MethodPut, "/api/v1/admin/members/"+string(targetMember.ID)+"/images/primary", strings.NewReader(imgPayload))
-		reqImg.Header.Set("Content-Type", "application/json")
-		wImg := httptest.NewRecorder()
-		srv.Handler().ServeHTTP(wImg, reqImg)
-		if wImg.Code != http.StatusOK {
-			t.Fatalf("expected 200 OK, got %d: %s", wImg.Code, wImg.Body.String())
-		}
-
-		// 6. PATCH /api/v1/admin/images/{id}/photo-type
-		if len(bootstrapData.Photos) > 0 {
-			phtID := bootstrapData.Photos[0].ID
-			ptPayload := `{"photo_type_id":"` + string(phtID) + `"}`
-			reqPT := httptest.NewRequest(http.MethodPatch, "/api/v1/admin/images/"+string(imgID)+"/photo-type", strings.NewReader(ptPayload))
-			reqPT.Header.Set("Content-Type", "application/json")
-			wPT := httptest.NewRecorder()
-			srv.Handler().ServeHTTP(wPT, reqPT)
-			if wPT.Code != http.StatusOK {
-				t.Fatalf("expected 200 OK, got %d: %s", wPT.Code, wPT.Body.String())
+		w := httptest.NewRecorder()
+		srv.Handler().ServeHTTP(w, req)
+		var response model.BootstrapResponse
+		if w.Code == http.StatusOK {
+			if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+				t.Fatalf("failed to decode bootstrap: %v", err)
 			}
 		}
+		return w, response
 	}
 
-	// 7. Test CORS preflight allows PATCH and PUT
-	reqOptions := httptest.NewRequest(http.MethodOptions, "/api/v1/admin/members/"+string(targetMember.ID)+"/penlight", nil)
-	wOptions := httptest.NewRecorder()
-	srv.Handler().ServeHTTP(wOptions, reqOptions)
-	if wOptions.Code != http.StatusNoContent {
-		t.Fatalf("expected 204 No Content for OPTIONS, got %d", wOptions.Code)
+	initial, bootstrap := requestBootstrap("/api/v1/sync/bootstrap", "")
+	if initial.Code != http.StatusOK || len(bootstrap.Members) == 0 || len(bootstrap.PhotoTypes) == 0 {
+		t.Fatalf("bootstrap is incomplete: status=%d members=%d photo_types=%d", initial.Code, len(bootstrap.Members), len(bootstrap.PhotoTypes))
 	}
-	allowMethods := wOptions.Header().Get("Access-Control-Allow-Methods")
-	if !strings.Contains(allowMethods, "PATCH") || !strings.Contains(allowMethods, "PUT") {
-		t.Fatalf("expected PATCH and PUT in Access-Control-Allow-Methods, got %q", allowMethods)
+	graduated, graduatedBootstrap := requestBootstrap("/api/v1/sync/bootstrap?include_graduated=true", "")
+	if graduated.Code != http.StatusOK || graduated.Header().Get("ETag") == initial.Header().Get("ETag") || len(graduatedBootstrap.Members) <= len(bootstrap.Members) {
+		t.Fatalf("include_graduated must have its own ETag: default=%q graduated=%q", initial.Header().Get("ETag"), graduated.Header().Get("ETag"))
+	}
+	conditional, _ := requestBootstrap("/api/v1/sync/bootstrap", initial.Header().Get("ETag"))
+	if conditional.Code != http.StatusNotModified {
+		t.Fatalf("expected conditional bootstrap to return 304, got %d", conditional.Code)
+	}
+
+	target := bootstrap.Members[0]
+	updatedPenlight := target.Penlight
+	updatedPenlight.Ordered = !updatedPenlight.Ordered
+	proposalID := model.ID("prp_test_server_workflow")
+	request := model.SubmitMetadataEditProposalRequest{
+		ID:           proposalID,
+		BaseRevision: target.MetadataRevision,
+		Changes: model.MetadataEditChanges{
+			Penlight: &model.PenlightChange{Before: target.Penlight, After: updatedPenlight},
+		},
+	}
+	requestJSON, err := json.Marshal(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	postProposal := func(payload []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/members/"+string(target.ID)+"/metadata-edit-proposals", strings.NewReader(string(payload)))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+		srv.Handler().ServeHTTP(w, req)
+		return w
+	}
+
+	submitted := postProposal(requestJSON)
+	if submitted.Code != http.StatusOK {
+		t.Fatalf("expected proposal submission 200, got %d: %s", submitted.Code, submitted.Body.String())
+	}
+	var proposal model.MetadataEditProposal
+	if err := json.Unmarshal(submitted.Body.Bytes(), &proposal); err != nil {
+		t.Fatal(err)
+	}
+	if proposal.Status != model.ProposalPending || proposal.ID != proposalID {
+		t.Fatalf("unexpected submitted proposal: %+v", proposal)
+	}
+
+	// A pending proposal is visible to the admin queue but does not alter the public member or ETag.
+	pendingList := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(pendingList, httptest.NewRequest(http.MethodGet, "/api/v1/admin/metadata-edit-proposals", nil))
+	if pendingList.Code != http.StatusOK || !strings.Contains(pendingList.Body.String(), string(proposalID)) {
+		t.Fatalf("pending proposal was not listed: status=%d body=%s", pendingList.Code, pendingList.Body.String())
+	}
+	unchanged, _ := requestBootstrap("/api/v1/sync/bootstrap", initial.Header().Get("ETag"))
+	if unchanged.Code != http.StatusNotModified {
+		t.Fatalf("pending proposal changed bootstrap ETag: status=%d", unchanged.Code)
+	}
+
+	approveReq := httptest.NewRequest(http.MethodPost, "/api/v1/admin/metadata-edit-proposals/"+string(proposalID)+"/approve", nil)
+	approvedResponse := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(approvedResponse, approveReq)
+	if approvedResponse.Code != http.StatusOK {
+		t.Fatalf("expected approval 200, got %d: %s", approvedResponse.Code, approvedResponse.Body.String())
+	}
+	if err := json.Unmarshal(approvedResponse.Body.Bytes(), &proposal); err != nil {
+		t.Fatal(err)
+	}
+	if proposal.Status != model.ProposalApproved || proposal.ApprovedAt == nil {
+		t.Fatalf("unexpected approved proposal: %+v", proposal)
+	}
+
+	afterApproval, approvedBootstrap := requestBootstrap("/api/v1/sync/bootstrap", "")
+	if afterApproval.Code != http.StatusOK || afterApproval.Header().Get("ETag") == initial.Header().Get("ETag") {
+		t.Fatalf("approval did not update bootstrap ETag: before=%q after=%q", initial.Header().Get("ETag"), afterApproval.Header().Get("ETag"))
+	}
+	var approvedMember *model.Member
+	for i := range approvedBootstrap.Members {
+		if approvedBootstrap.Members[i].ID == target.ID {
+			approvedMember = &approvedBootstrap.Members[i]
+			break
+		}
+	}
+	if approvedMember == nil || approvedMember.Penlight.Ordered != updatedPenlight.Ordered || approvedMember.MetadataRevision != target.MetadataRevision+1 || approvedMember.VerifiedAt == nil {
+		t.Fatalf("approval did not update public member: %+v", approvedMember)
+	}
+
+	// Re-approval and same-ID resubmission are idempotent.
+	approvedAgain := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(approvedAgain, httptest.NewRequest(http.MethodPost, "/api/v1/admin/metadata-edit-proposals/"+string(proposalID)+"/approve", nil))
+	if approvedAgain.Code != http.StatusOK || approvedAgain.Body.String() == "" {
+		t.Fatalf("re-approval was not idempotent: status=%d", approvedAgain.Code)
+	}
+	resubmitted := postProposal(requestJSON)
+	if resubmitted.Code != http.StatusOK || !strings.Contains(resubmitted.Body.String(), `"status":"approved"`) {
+		t.Fatalf("same-ID resubmission was not idempotent: status=%d body=%s", resubmitted.Code, resubmitted.Body.String())
+	}
+
+	// A different payload under the same ID is rejected.
+	request.Changes.Penlight.After.Ordered = !request.Changes.Penlight.After.Ordered
+	differentJSON, err := json.Marshal(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	different := postProposal(differentJSON)
+	if different.Code != http.StatusBadRequest {
+		t.Fatalf("expected same-ID content mismatch 400, got %d", different.Code)
+	}
+
+	// Rejection records the decision without changing the public revision or ETag.
+	rejectID := model.ID("prp_test_server_rejection")
+	rejectRequest := model.SubmitMetadataEditProposalRequest{
+		ID:           rejectID,
+		BaseRevision: approvedMember.MetadataRevision,
+		Changes: model.MetadataEditChanges{
+			Generation: &model.GenerationChange{Before: approvedMember.Generation, After: approvedMember.Generation + 1},
+		},
+	}
+	rejectJSON, err := json.Marshal(rejectRequest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rejectedSubmission := postProposal(rejectJSON); rejectedSubmission.Code != http.StatusOK {
+		t.Fatalf("expected second proposal submission 200, got %d: %s", rejectedSubmission.Code, rejectedSubmission.Body.String())
+	}
+	reason := `{"reason":"not enough evidence"}`
+	rejectHTTP := httptest.NewRequest(http.MethodPost, "/api/v1/admin/metadata-edit-proposals/"+string(rejectID)+"/reject", strings.NewReader(reason))
+	rejectHTTP.Header.Set("Content-Type", "application/json")
+	rejectedResponse := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(rejectedResponse, rejectHTTP)
+	if rejectedResponse.Code != http.StatusOK || !strings.Contains(rejectedResponse.Body.String(), `"status":"rejected"`) {
+		t.Fatalf("expected rejection 200, got %d: %s", rejectedResponse.Code, rejectedResponse.Body.String())
+	}
+	emptyReject := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(emptyReject, httptest.NewRequest(http.MethodPost, "/api/v1/admin/metadata-edit-proposals/"+string(rejectID)+"/reject", nil))
+	if emptyReject.Code != http.StatusOK {
+		t.Fatalf("empty rejection body should be accepted: status=%d body=%s", emptyReject.Code, emptyReject.Body.String())
+	}
+	unchangedAfterReject, _ := requestBootstrap("/api/v1/sync/bootstrap", afterApproval.Header().Get("ETag"))
+	if unchangedAfterReject.Code != http.StatusNotModified {
+		t.Fatalf("rejection changed bootstrap ETag: status=%d", unchangedAfterReject.Code)
+	}
+	invalidGraduated, _ := requestBootstrap("/api/v1/sync/bootstrap?include_graduated=1", "")
+	if invalidGraduated.Code != http.StatusBadRequest {
+		t.Fatalf("invalid include_graduated should return 400, got %d", invalidGraduated.Code)
 	}
 }
-
-

@@ -45,10 +45,15 @@ if [ "$STAGE_MODE" = true ]; then
     if [ "$AI_MODE" = false ]; then
         echo "=== Auto-staging generated artifacts (--stage) ==="
     fi
-    git add frontend/src/types/generated.ts assets/schema/ seeds/seed.sql seeds/data/image_sources.json data/image_sources.json 2>/dev/null || true
+    git add frontend/src/types/generated.ts assets/schema/ api/openapi.yaml seeds/seed.sql 2>/dev/null || true
+    for optional_file in seeds/data/image_sources.json data/image_sources.json; do
+        if [ -e "$optional_file" ]; then
+            git add "$optional_file" 2>/dev/null || true
+        fi
+    done
 fi
 
-run_step 2 "Verifying Schema Sync (git diff)" git diff --exit-code frontend/src/types/generated.ts assets/schema/
+run_step 2 "Verifying Schema Sync (git diff)" git diff --exit-code frontend/src/types/generated.ts assets/schema/ api/openapi.yaml
 run_step 3 "Verifying Master Data Integrity" go run scripts/verify_master.go
 run_step 4 "Verifying Dockerfile & Base Image Integrity" go run scripts/verify_dockerfile.go
 run_step 5 "Running Biome Lint & Format Check" biome check

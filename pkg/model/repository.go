@@ -15,7 +15,7 @@ type Repository interface {
 	ListGroupsBySeries(ctx context.Context, seriesID ID) ([]Group, error)
 	ListColors(ctx context.Context) ([]Color, error)
 	ListPhotoTypes(ctx context.Context, groupID ID) ([]PhotoType, error)
-	ListMembers(ctx context.Context) ([]Member, error)
+	ListMembers(ctx context.Context, options ...MemberListOptions) ([]Member, error)
 	ListMembersByGroup(ctx context.Context, groupID ID) ([]Member, error)
 	ListMembersBySeries(ctx context.Context, seriesID ID) ([]Member, error)
 	ListMemberImages(ctx context.Context, memberID ID) ([]MemberImage, error)
@@ -31,11 +31,10 @@ type Repository interface {
 	BatchInsertAnswerLogs(ctx context.Context, logs []AnswerLog) error
 	GetQuizStatistics(ctx context.Context, filter QuizStatisticsFilter) (*QuizStatisticsResponse, error)
 
-	// Member lookups and metadata mutations (Ref: ADR-0017, docs/notes/10)
+	// Member lookups and metadata edit proposals (Ref: ADR-0017, ADR-0037)
 	GetMember(ctx context.Context, id ID) (*Member, error)
-	UpdateMemberPenlight(ctx context.Context, id ID, penlight PenlightPair, markVerified bool) error
-	UpdateMemberStatus(ctx context.Context, id ID, status MemberStatus, generation *int) error
-	MarkMemberVerified(ctx context.Context, id ID) error
-	SetPrimaryMemberImage(ctx context.Context, memberID ID, imageID ID) error
-	UpdateMemberImagePhotoType(ctx context.Context, imageID ID, photoTypeID ID) error
+	CreateMetadataEditProposal(ctx context.Context, proposal MetadataEditProposal) (*MetadataEditProposal, error)
+	ListMetadataEditProposals(ctx context.Context, status *MetadataEditProposalStatus) ([]MetadataEditProposal, error)
+	ApproveMetadataEditProposal(ctx context.Context, id ID, approverUserID *ID) (*MetadataEditProposal, error)
+	RejectMetadataEditProposal(ctx context.Context, id ID, approverUserID *ID, reason *string) (*MetadataEditProposal, error)
 }

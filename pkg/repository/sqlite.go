@@ -273,9 +273,11 @@ func (r *SQLiteRepository) ListPhotoTypes(ctx context.Context, groupID model.ID)
 	return photoTypes, nil
 }
 
-// ListMembers returns all non-graduated members with their primary image.
-func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, error) {
-	const query = `
+// ListMembers returns members with their primary image. Graduated members are
+// excluded by default to preserve the public quiz bootstrap behavior.
+func (r *SQLiteRepository) ListMembers(ctx context.Context, options ...model.MemberListOptions) ([]model.Member, error) {
+	includeGraduated := len(options) > 0 && options[0].IncludeGraduated
+	query := `
 		SELECT m.id, m.group_id, m.family_name, m.given_name, m.family_name_kana, m.given_name_kana,
 		       m.generation, m.status, m.left_color_id, m.right_color_id, m.ordered,
 		       m.joined_at, m.graduated_at, m.verified_at, m.created_at, m.updated_at, m.metadata_revision,
@@ -284,9 +286,11 @@ func (r *SQLiteRepository) ListMembers(ctx context.Context) ([]model.Member, err
 		FROM members m
 		LEFT JOIN member_images mi ON m.id = mi.member_id AND mi.is_primary = 1
 		LEFT JOIN photo_types pt ON mi.photo_type_id = pt.id
-		WHERE m.status != 'graduated'
-		ORDER BY m.generation ASC, m.family_name_kana ASC;
-	`
+`
+	if !includeGraduated {
+		query += "\t\tWHERE m.status != 'graduated'\n"
+	}
+	query += "\t\tORDER BY m.generation ASC, m.family_name_kana ASC;\n"
 	return r.queryMembers(ctx, query)
 }
 
@@ -1001,159 +1005,4 @@ func (r *SQLiteRepository) GetMember(ctx context.Context, id model.ID) (*model.M
 	m.Images = images
 
 	return &m, nil
-}
-
-// UpdateMemberPenlight updates the penlight colors and order for a member.
-// If markVerified is true, verified_at is set to current UTC time.
-func (r *SQLiteRepository) UpdateMemberPenlight(ctx context.Context, id model.ID, penlight model.PenlightPair, markVerified bool) error {
-	now := time.Now().UTC().Format(time.RFC3339)
-	orderedInt := 0
-	if penlight.Ordered {
-		orderedInt = 1
-	}
-
-	var query string
-	var args []any
-	if markVerified {
-		query = `
-			UPDATE members
-			SET left_color_id = ?, right_color_id = ?, ordered = ?, verified_at = ?, updated_at = ?
-			WHERE id = ?;
-		`
-		args = []any{string(penlight.LeftColorID), string(penlight.RightColorID), orderedInt, now, now, string(id)}
-	} else {
-		query = `
-			UPDATE members
-			SET left_color_id = ?, right_color_id = ?, ordered = ?, updated_at = ?
-			WHERE id = ?;
-		`
-		args = []any{string(penlight.LeftColorID), string(penlight.RightColorID), orderedInt, now, string(id)}
-	}
-
-	res, err := r.db.ExecContext(ctx, query, args...)
-	if err != nil {
-		return fmt.Errorf("failed to update member penlight: %w", err)
-	}
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to check rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-	return nil
-}
-
-// UpdateMemberStatus updates the activity status and optionally generation for a member.
-func (r *SQLiteRepository) UpdateMemberStatus(ctx context.Context, id model.ID, status model.MemberStatus, generation *int) error {
-	now := time.Now().UTC().Format(time.RFC3339)
-	var query string
-	var args []any
-	if generation != nil {
-		query = `
-			UPDATE members
-			SET status = ?, generation = ?, updated_at = ?
-			WHERE id = ?;
-		`
-		args = []any{string(status), *generation, now, string(id)}
-	} else {
-		query = `
-			UPDATE members
-			SET status = ?, updated_at = ?
-			WHERE id = ?;
-		`
-		args = []any{string(status), now, string(id)}
-	}
-
-	res, err := r.db.ExecContext(ctx, query, args...)
-	if err != nil {
-		return fmt.Errorf("failed to update member status: %w", err)
-	}
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to check rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-	return nil
-}
-
-// MarkMemberVerified updates the member's verified_at timestamp to now.
-func (r *SQLiteRepository) MarkMemberVerified(ctx context.Context, id model.ID) error {
-	now := time.Now().UTC().Format(time.RFC3339)
-	const query = `
-		UPDATE members
-		SET verified_at = ?, updated_at = ?
-		WHERE id = ?;
-	`
-	res, err := r.db.ExecContext(ctx, query, now, now, string(id))
-	if err != nil {
-		return fmt.Errorf("failed to mark member verified: %w", err)
-	}
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to check rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-	return nil
-}
-
-// SetPrimaryMemberImage marks the specified image as primary for the member and resets other images.
-func (r *SQLiteRepository) SetPrimaryMemberImage(ctx context.Context, memberID model.ID, imageID model.ID) error {
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
-	}
-	defer tx.Rollback()
-
-	now := time.Now().UTC().Format(time.RFC3339)
-
-	// Verify image belongs to member
-	var count int
-	err = tx.QueryRowContext(ctx, "SELECT COUNT(*) FROM member_images WHERE id = ? AND member_id = ?;", string(imageID), string(memberID)).Scan(&count)
-	if err != nil {
-		return fmt.Errorf("failed to verify member image: %w", err)
-	}
-	if count == 0 {
-		return sql.ErrNoRows
-	}
-
-	// Reset existing primary images for this member
-	_, err = tx.ExecContext(ctx, "UPDATE member_images SET is_primary = 0, updated_at = ? WHERE member_id = ?;", now, string(memberID))
-	if err != nil {
-		return fmt.Errorf("failed to reset primary images: %w", err)
-	}
-
-	// Set target image as primary
-	_, err = tx.ExecContext(ctx, "UPDATE member_images SET is_primary = 1, updated_at = ? WHERE id = ?;", now, string(imageID))
-	if err != nil {
-		return fmt.Errorf("failed to set target primary image: %w", err)
-	}
-
-	return tx.Commit()
-}
-
-// UpdateMemberImagePhotoType updates the costume/photo type category for a member image.
-func (r *SQLiteRepository) UpdateMemberImagePhotoType(ctx context.Context, imageID model.ID, photoTypeID model.ID) error {
-	now := time.Now().UTC().Format(time.RFC3339)
-	const query = `
-		UPDATE member_images
-		SET photo_type_id = ?, updated_at = ?
-		WHERE id = ?;
-	`
-	res, err := r.db.ExecContext(ctx, query, string(photoTypeID), now, string(imageID))
-	if err != nil {
-		return fmt.Errorf("failed to update member image photo type: %w", err)
-	}
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to check rows affected: %w", err)
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-	return nil
 }

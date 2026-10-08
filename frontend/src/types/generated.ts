@@ -5,37 +5,6 @@
  */
 
 //////////
-// source: admin.go
-
-/**
- * UpdateMemberPenlightRequest represents the payload to update a member's penlight colors.
- */
-export interface UpdateMemberPenlightRequest {
-  left_color_id: ID;
-  right_color_id: ID;
-  ordered: boolean;
-}
-/**
- * UpdateMemberStatusRequest represents the payload to update a member's activity status and/or generation.
- */
-export interface UpdateMemberStatusRequest {
-  status?: MemberStatus;
-  generation?: number /* int */;
-}
-/**
- * SetPrimaryMemberImageRequest represents the payload to set a member's primary/default image.
- */
-export interface SetPrimaryMemberImageRequest {
-  image_id: ID;
-}
-/**
- * UpdateMemberImagePhotoTypeRequest represents the payload to update a member image's costume/photo category.
- */
-export interface UpdateMemberImagePhotoTypeRequest {
-  photo_type_id: ID;
-}
-
-//////////
 // source: answer.go
 
 /**
@@ -80,6 +49,7 @@ export interface BootstrapResponse {
   series: Series[];
   groups: Group[];
   colors: Color[];
+  photo_types: PhotoType[];
   members: Member[];
   songs: Song[];
   generated_at: string;
@@ -324,6 +294,13 @@ export const StatusActive: MemberStatus = "active"; // 現役活動中
 export const StatusGraduated: MemberStatus = "graduated"; // 卒業
 export const StatusHiatus: MemberStatus = "hiatus"; // 休業中
 /**
+ * MemberListOptions controls the public member list scope without changing the
+ * default Local-First bootstrap behavior (Ref: ADR-0036).
+ */
+export interface MemberListOptions {
+  include_graduated: boolean;
+}
+/**
  * PenlightPair holds the two penlight colors assigned to a member.
  */
 export interface PenlightPair {
@@ -414,6 +391,21 @@ export interface MetadataEditChanges {
   status?: MemberStatusChange;
   primary_image_id?: PrimaryImageChange;
   image_photo_types?: ImagePhotoTypeChange[];
+}
+/**
+ * SubmitMetadataEditProposalRequest is the user-facing proposal submission
+ * payload. The member is identified by the URL path.
+ */
+export interface SubmitMetadataEditProposalRequest {
+  id: ID;
+  base_revision: number /* int */;
+  changes: MetadataEditChanges;
+}
+/**
+ * RejectMetadataEditProposalRequest is the optional rejection reason payload.
+ */
+export interface RejectMetadataEditProposalRequest {
+  reason?: string;
 }
 /**
  * MetadataEditProposal retains a submission and its final decision (Ref: ADR-0037).

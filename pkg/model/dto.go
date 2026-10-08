@@ -4,12 +4,13 @@ import "time"
 
 // BootstrapResponse contains all master records required for offline PWA operation (Ref: ADR-0007, ADR-0026, ADR-0027).
 type BootstrapResponse struct {
-	Series      []Series  `json:"series"`
-	Groups      []Group   `json:"groups"`
-	Colors      []Color   `json:"colors"`
-	Members     []Member  `json:"members"`
-	Songs       []Song    `json:"songs"`
-	GeneratedAt time.Time `json:"generated_at"`
+	Series      []Series    `json:"series"`
+	Groups      []Group     `json:"groups"`
+	Colors      []Color     `json:"colors"`
+	PhotoTypes  []PhotoType `json:"photo_types"`
+	Members     []Member    `json:"members"`
+	Songs       []Song      `json:"songs"`
+	GeneratedAt time.Time   `json:"generated_at"`
 }
 
 // GenerateQuizRequest holds query parameters for quiz generation.
@@ -122,4 +123,3 @@ type QuizStatisticsResponse struct {
 	WeakTargets           []TargetStat   `json:"weak_targets,omitempty"` // 苦手克服向けワーストN件
 	Extra                 map[string]any `json:"extra,omitempty"`        // 将来の拡張・実験的集計データ
 }
-

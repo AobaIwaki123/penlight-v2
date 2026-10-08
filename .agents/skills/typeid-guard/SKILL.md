@@ -19,11 +19,16 @@ description: プレフィックス付き不変サロゲートキー（TypeID / U
 | プレフィックス | エンティティ種別 | 例 |
 |---|---|---|
 | `grp_` | グループ (Group) | `grp_019245a1...` |
+| `ser_` | シリーズ (Series) | `ser_019245a0...` |
 | `col_` | ペンライトカラー (Color) | `col_019245a2...` |
 | `mem_` | メンバー (Member) | `mem_019245a3...` |
+| `sng_` | 楽曲 (Song) | `sng_019245a4...` |
+| `img_` | メンバー画像 (MemberImage) | `img_019245a5...` |
+| `pht_` | 写真種別 (PhotoType) | `pht_019245a6...` |
 | `quiz_` | クイズ設問 (QuizQuestion) | `quiz_019245a4...` |
 | `usr_` | ユーザー (User) | `usr_019245a5...` |
 | `ans_` | 回答ログ (AnswerLog) | `ans_019245a6...` |
+| `prp_` | メタデータ編集提案 (MetadataEditProposal) | `prp_019245a7...` |
 
 3. **アセットファイル命名の連動**:
    - メンバーの顔写真・画像ファイル名は必ず `mem_<uuid>.webp` とし、差し替え時も新 UUID を付与して旧ファイルを上書きしないこと (Ref: ADR-0008)。
