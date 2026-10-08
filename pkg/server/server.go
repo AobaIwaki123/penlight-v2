@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -131,7 +132,7 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, If-None-Match")
 
 		if r.Method == http.MethodOptions {
@@ -149,13 +150,11 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/api/v1/quiz/statistics", s.handleQuizStatistics)
 	s.mux.HandleFunc("/images/", s.handleImage)
 
-	// Admin metadata operations (Ref: ADR-0014, ADR-0017, docs/notes/10)
-	s.mux.HandleFunc("GET /api/v1/admin/members/{id}", s.handleAdminGetMember)
-	s.mux.HandleFunc("POST /api/v1/admin/members/{id}/verify", s.handleAdminVerifyMember)
-	s.mux.HandleFunc("PATCH /api/v1/admin/members/{id}/penlight", s.handleAdminUpdateMemberPenlight)
-	s.mux.HandleFunc("PATCH /api/v1/admin/members/{id}/status", s.handleAdminUpdateMemberStatus)
-	s.mux.HandleFunc("PUT /api/v1/admin/members/{id}/images/primary", s.handleAdminSetPrimaryMemberImage)
-	s.mux.HandleFunc("PATCH /api/v1/admin/images/{id}/photo-type", s.handleAdminUpdateImagePhotoType)
+	// Metadata edit proposals and approval (Ref: ADR-0036, ADR-0037).
+	s.mux.HandleFunc("POST /api/v1/members/{id}/metadata-edit-proposals", s.handleSubmitMetadataEditProposal)
+	s.mux.HandleFunc("GET /api/v1/admin/metadata-edit-proposals", s.handleListMetadataEditProposals)
+	s.mux.HandleFunc("POST /api/v1/admin/metadata-edit-proposals/{id}/approve", s.handleApproveMetadataEditProposal)
+	s.mux.HandleFunc("POST /api/v1/admin/metadata-edit-proposals/{id}/reject", s.handleRejectMetadataEditProposal)
 
 	// Embedded frontend static SPA handler (Ref: ADR-0002, ADR-0011)
 	if assets, err := frontend.Assets(); err == nil {
@@ -223,12 +222,24 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
-	// ETag checking via master_versions
-	version, _ := s.repo.GetMasterVersion(ctx)
+	includeGraduated, err := parseIncludeGraduated(r)
+	if err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Bootstrap Query", err.Error())
+		return
+	}
+
+	// ETag includes both the public data revision and the retrieval condition so
+	// a graduated-inclusive response cannot satisfy the default response cache.
+	version, err := s.repo.GetMasterVersion(ctx)
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
 	var etag string
 	if version != nil {
-		etag = fmt.Sprintf(`"%s"`, version.Version)
+		etag = fmt.Sprintf(`"%s:%d:graduated=%t"`, version.Version, version.DataRevision, includeGraduated)
 		if match := r.Header.Get("If-None-Match"); match == etag {
+			w.Header().Set("ETag", etag)
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
@@ -255,10 +266,13 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	members, err := s.repo.ListMembers(ctx)
+	members, err := s.repo.ListMembers(ctx, model.MemberListOptions{IncludeGraduated: includeGraduated})
 	if err != nil {
-		http.Error(w, "failed to list members", http.StatusInternalServerError)
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
 		return
+	}
+	if members == nil {
+		members = make([]model.Member, 0)
 	}
 
 	// Populate images for each member
@@ -269,9 +283,18 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	photoTypes, err := s.repo.ListPhotoTypes(ctx, "")
+	if err != nil {
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+		return
+	}
+	if photoTypes == nil {
+		photoTypes = make([]model.PhotoType, 0)
+	}
+
 	songs, err := s.repo.ListSongs(ctx)
 	if err != nil {
-		http.Error(w, "failed to list songs", http.StatusInternalServerError)
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
 		return
 	}
 	if songs == nil {
@@ -282,6 +305,7 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		Series:      series,
 		Groups:      groups,
 		Colors:      colors,
+		PhotoTypes:  photoTypes,
 		Members:     members,
 		Songs:       songs,
 		GeneratedAt: time.Now().UTC(),
@@ -292,6 +316,17 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("ETag", etag)
 	}
 	_ = json.NewEncoder(w).Encode(resp)
+}
+
+func parseIncludeGraduated(r *http.Request) (bool, error) {
+	values, ok := r.URL.Query()["include_graduated"]
+	if !ok {
+		return false, nil
+	}
+	if len(values) != 1 || (values[0] != "true" && values[0] != "false") {
+		return false, fmt.Errorf("include_graduated must be exactly true or false")
+	}
+	return strconv.ParseBool(values[0])
 }
 
 func writeProblemDetails(w http.ResponseWriter, status int, code, title, detail string) {
@@ -420,226 +455,150 @@ func (s *Server) handleQuizStatistics(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(stats)
 }
 
-func (s *Server) handleAdminGetMember(w http.ResponseWriter, r *http.Request) {
-	id := model.ID(r.PathValue("id"))
-	if id == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	m, err := s.repo.GetMember(ctx, id)
-	if err != nil {
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-	if m == nil {
-		writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(m)
+func hasTypeIDPrefix(id model.ID, prefix model.Prefix) bool {
+	return strings.HasPrefix(string(id), string(prefix)+"_")
 }
 
-func (s *Server) handleAdminVerifyMember(w http.ResponseWriter, r *http.Request) {
-	id := model.ID(r.PathValue("id"))
-	if id == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
-		return
+func decodeJSONBody(w http.ResponseWriter, r *http.Request, target any) error {
+	decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		return err
 	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	if err := s.repo.MarkMemberVerified(ctx, id); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
-			return
+	var extra any
+	if err := decoder.Decode(&extra); err != io.EOF {
+		if err == nil {
+			return fmt.Errorf("request body must contain one JSON value")
 		}
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
+		return err
 	}
-
-	m, err := s.repo.GetMember(ctx, id)
-	if err != nil {
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(m)
+	return nil
 }
 
-func (s *Server) handleAdminUpdateMemberPenlight(w http.ResponseWriter, r *http.Request) {
-	id := model.ID(r.PathValue("id"))
-	if id == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
+func writeMetadataProposalError(w http.ResponseWriter, err error, subject string) {
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
+		writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Metadata Proposal Not Found", subject+" was not found")
+	case errors.Is(err, model.ErrMetadataProposalConflict),
+		errors.Is(err, model.ErrMetadataProposalContentMismatch),
+		errors.Is(err, model.ErrMetadataProposalInvalidState),
+		errors.Is(err, model.ErrMetadataProposalInvalid):
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Metadata Proposal", err.Error())
+	default:
+		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+	}
+}
+
+func (s *Server) handleSubmitMetadataEditProposal(w http.ResponseWriter, r *http.Request) {
+	memberID := model.ID(r.PathValue("id"))
+	if !hasTypeIDPrefix(memberID, model.PrefixMember) {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "member ID must use mem_ prefix")
 		return
 	}
 
-	var req model.UpdateMemberPenlightRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
+	var req model.SubmitMetadataEditProposalRequest
+	if err := decodeJSONBody(w, r, &req); err != nil {
 		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
 		return
 	}
-
-	if req.LeftColorID == "" || req.RightColorID == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "Both left_color_id and right_color_id are required")
+	if !hasTypeIDPrefix(req.ID, model.PrefixProposal) {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Proposal ID", "proposal ID must use prp_ prefix")
 		return
 	}
-
-	penlight := model.PenlightPair{
-		LeftColorID:  req.LeftColorID,
-		RightColorID: req.RightColorID,
-		Ordered:      req.Ordered,
-	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	if err := s.repo.UpdateMemberPenlight(ctx, id, penlight, true); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
-			return
-		}
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
+	if req.BaseRevision < 1 {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Base Revision", "base_revision must be at least 1")
 		return
 	}
-
-	m, err := s.repo.GetMember(ctx, id)
-	if err != nil {
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(m)
-}
-
-func (s *Server) handleAdminUpdateMemberStatus(w http.ResponseWriter, r *http.Request) {
-	id := model.ID(r.PathValue("id"))
-	if id == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
-		return
-	}
-
-	var req model.UpdateMemberStatusRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
-		return
-	}
-
-	if req.Status == nil {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "status is required")
-		return
-	}
-	status := *req.Status
-	if status != model.StatusActive && status != model.StatusGraduated && status != model.StatusHiatus {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Status", "status must be 'active', 'graduated', or 'hiatus'")
+	if err := req.Changes.Validate(); err != nil {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Changes", err.Error())
 		return
 	}
 
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
-
-	if err := s.repo.UpdateMemberStatus(ctx, id, status, req.Generation); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("Member with ID %q was not found", id))
-			return
-		}
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	m, err := s.repo.GetMember(ctx, id)
-	if err != nil {
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(m)
-}
-
-func (s *Server) handleAdminSetPrimaryMemberImage(w http.ResponseWriter, r *http.Request) {
-	id := model.ID(r.PathValue("id"))
-	if id == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Member ID", "Member ID is required")
-		return
-	}
-
-	var req model.SetPrimaryMemberImageRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
-		return
-	}
-
-	if req.ImageID == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "image_id is required")
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	if err := s.repo.SetPrimaryMemberImage(ctx, id, req.ImageID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Image Not Found", fmt.Sprintf("Image %q belonging to member %q was not found", req.ImageID, id))
-			return
-		}
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	m, err := s.repo.GetMember(ctx, id)
-	if err != nil {
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(m)
-}
-
-func (s *Server) handleAdminUpdateImagePhotoType(w http.ResponseWriter, r *http.Request) {
-	imageID := model.ID(r.PathValue("id"))
-	if imageID == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Image ID", "Image ID is required")
-		return
-	}
-
-	var req model.UpdateMemberImagePhotoTypeRequest
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1024*1024)).Decode(&req); err != nil {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
-		return
-	}
-
-	if req.PhotoTypeID == "" {
-		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Parameters", "photo_type_id is required")
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	if err := s.repo.UpdateMemberImagePhotoType(ctx, imageID, req.PhotoTypeID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Image Not Found", fmt.Sprintf("Image with ID %q was not found", imageID))
-			return
-		}
-		writeProblemDetails(w, http.StatusInternalServerError, model.CodeInternalError, "Database Error", err.Error())
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]any{
-		"status":        "ok",
-		"image_id":      imageID,
-		"photo_type_id": req.PhotoTypeID,
+	proposal, err := s.repo.CreateMetadataEditProposal(ctx, model.MetadataEditProposal{
+		ID:           req.ID,
+		MemberID:     memberID,
+		BaseRevision: req.BaseRevision,
+		Changes:      req.Changes,
+		Status:       model.ProposalPending,
 	})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeProblemDetails(w, http.StatusNotFound, model.CodeNotFound, "Member Not Found", fmt.Sprintf("member %q was not found", memberID))
+			return
+		}
+		writeMetadataProposalError(w, err, fmt.Sprintf("member %q", memberID))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(proposal)
+}
+
+func (s *Server) handleListMetadataEditProposals(w http.ResponseWriter, r *http.Request) {
+	status := model.ProposalPending
+	values, ok := r.URL.Query()["status"]
+	if ok {
+		if len(values) != 1 || (values[0] != string(model.ProposalPending) && values[0] != string(model.ProposalApproved) && values[0] != string(model.ProposalRejected)) {
+			writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Proposal Status", "status must be pending, approved, or rejected")
+			return
+		}
+		status = model.MetadataEditProposalStatus(values[0])
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+	proposals, err := s.repo.ListMetadataEditProposals(ctx, &status)
+	if err != nil {
+		writeMetadataProposalError(w, err, "metadata proposals")
+		return
+	}
+	if proposals == nil {
+		proposals = make([]model.MetadataEditProposal, 0)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(proposals)
+}
+
+func (s *Server) handleApproveMetadataEditProposal(w http.ResponseWriter, r *http.Request) {
+	proposalID := model.ID(r.PathValue("id"))
+	if !hasTypeIDPrefix(proposalID, model.PrefixProposal) {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Proposal ID", "proposal ID must use prp_ prefix")
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+	proposal, err := s.repo.ApproveMetadataEditProposal(ctx, proposalID, nil)
+	if err != nil {
+		writeMetadataProposalError(w, err, fmt.Sprintf("proposal %q", proposalID))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(proposal)
+}
+
+func (s *Server) handleRejectMetadataEditProposal(w http.ResponseWriter, r *http.Request) {
+	proposalID := model.ID(r.PathValue("id"))
+	if !hasTypeIDPrefix(proposalID, model.PrefixProposal) {
+		writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid Proposal ID", "proposal ID must use prp_ prefix")
+		return
+	}
+	var req model.RejectMetadataEditProposalRequest
+	if r.Body != http.NoBody {
+		if err := decodeJSONBody(w, r, &req); err != nil {
+			writeProblemDetails(w, http.StatusBadRequest, model.CodeInvalidParams, "Invalid JSON", err.Error())
+			return
+		}
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+	defer cancel()
+	proposal, err := s.repo.RejectMetadataEditProposal(ctx, proposalID, nil, req.Reason)
+	if err != nil {
+		writeMetadataProposalError(w, err, fmt.Sprintf("proposal %q", proposalID))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(proposal)
 }
 
 func (s *Server) getImageSourceURL(key string) (string, bool) {

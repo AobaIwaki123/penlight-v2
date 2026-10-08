@@ -290,7 +290,7 @@ func main() {
 	// 8. Generate MasterVersion SQL
 	sql = append(sql, "\n-- Master Version (Ref: ADR-0021)")
 	sql = append(sql, fmt.Sprintf(
-		"INSERT OR REPLACE INTO master_versions (id, version, updated_at)\nVALUES ('current', '%s', '%s');",
+		"INSERT INTO master_versions (id, version, updated_at)\nVALUES ('current', '%s', '%s')\nON CONFLICT(id) DO UPDATE SET version = excluded.version, updated_at = excluded.updated_at;",
 		model.CurrentMasterVersion,
 		nowUTC,
 	))

@@ -1035,5 +1035,6 @@ VALUES ('sng_44393ccc97d25cb5b8efc91993195742', 'grp_b62a919c8f63527db1c00dcab23
 ON CONFLICT(id) DO UPDATE SET group_id = excluded.group_id, title = excluded.title, kana = excluded.kana, color1_id = excluded.color1_id, color2_id = excluded.color2_id, updated_at = excluded.updated_at;
 
 -- Master Version (Ref: ADR-0021)
-INSERT OR REPLACE INTO master_versions (id, version, updated_at)
-VALUES ('current', '2026.10.05-3', '2026-10-04T00:00:00Z');
+INSERT INTO master_versions (id, version, updated_at)
+VALUES ('current', '2026.10.05-3', '2026-10-04T00:00:00Z')
+ON CONFLICT(id) DO UPDATE SET version = excluded.version, updated_at = excluded.updated_at;

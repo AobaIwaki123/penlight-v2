@@ -33,8 +33,11 @@ description: Go構造体（pkg/model/）を唯一のマスターとし、TypeScr
 # 【基本】スキーマ・型定義・ER図の一括再生成と検証（最優先）
 ./scripts/generate-all.sh
 
+# OpenAPIだけを再生成する場合
+go run scripts/gen-openapi.go
+
 # 【差分検証】生成漏れや手動改変がないか確認（CI / コミット前）
-git diff --exit-code frontend/src/types/generated.ts assets/schema/
+git diff --exit-code frontend/src/types/generated.ts assets/schema/ api/openapi.yaml
 
 # 【初回環境セットアップ】tygo が見つからない場合
 go install github.com/gzuidhof/tygo@latest
@@ -49,4 +52,5 @@ go install github.com/gzuidhof/tygo@latest
 - [ ] `pkg/model/` 以外の派生成果物を直接手書きで書き換えていないか
 - [ ] `./scripts/generate-all.sh` が正常終了し、`frontend/src/types/generated.ts` と `assets/schema/` が同期されたか
 - [ ] `git diff --exit-code` で意図しない破壊的変更がないか確認したか
+- [ ] `api/openapi.yaml` は `scripts/gen-openapi.go` から生成され、実装済みルートと一致しているか
 - [ ] 新規エンティティに適切な TypeID プレフィックス（`grp_`, `col_`, `mem_` 等）が付与されているか

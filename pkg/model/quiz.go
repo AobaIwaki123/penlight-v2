@@ -34,4 +34,3 @@ type QuizFilter struct {
 	IncludeGraduated bool  `json:"include_graduated"`
 	SongMode         bool  `json:"song_mode"` // true: 楽曲カラークイズ, false: メンバーカラークイズ (ADR-0029)
 }
-
