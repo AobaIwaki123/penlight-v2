@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Box, Group, Image, Paper, Text } from '@mantine/core';
+import { IconPencil } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { getImageUrl } from '@/features/quiz/api/client';
 import { PenlightStick } from '@/features/quiz/components/PenlightStick';
@@ -10,9 +11,14 @@ interface LayoutOverlayProps extends TargetLayoutProps {
   isFullscreen?: boolean;
   /** 写真の最下部に重ねて表示する領域 (解答フィードバックバーなど) */
   footer?: ReactNode;
-  /** 編集画面で同じ写真レイアウトに重ねるメンバー情報と写真操作 */
-  memberDetails?: ReactNode;
+  /** 写真の右上に配置するコントロール (編集時の写真切替など) */
   photoControl?: ReactNode;
+  /** 期生バッジタップ時のコールバック */
+  onClickGeneration?: () => void;
+  /** 衣装名タップ時のコールバック */
+  onClickCostume?: () => void;
+  /** メンバー名・期生の横に追加表示するバッジ (例: 編集済みバッジ、ステータスバッジ) */
+  extraBadges?: ReactNode;
 }
 
 export function LayoutOverlay({
@@ -23,8 +29,10 @@ export function LayoutOverlay({
   onOpenInput,
   isFullscreen,
   footer,
-  memberDetails,
   photoControl,
+  onClickGeneration,
+  onClickCostume,
+  extraBadges,
 }: LayoutOverlayProps) {
   const primaryImg = target.images?.[0];
   const imageFallback = `data:image/svg+xml,${encodeURIComponent(
@@ -110,25 +118,61 @@ export function LayoutOverlay({
               color: '#fff',
               textShadow: '0 2px 4px rgba(0,0,0,0.6)',
               minWidth: 0,
-              maxWidth: memberDetails ? 'calc(100% - 116px)' : undefined,
             }}
           >
-            {memberDetails || (
-              <>
-                <Group gap={8} align="center" mb={2}>
-                  <Text size="xl" fw={800} c="white">
-                    {target.family_name} {target.given_name}
-                  </Text>
-                  <Badge size="sm" color="orange" variant="filled">
-                    {target.generation}期生
-                  </Badge>
-                </Group>
-                {costumeTitle && (
-                  <Text size="xs" c="gray.3">
-                    {costumeTitle}
-                  </Text>
-                )}
-              </>
+            <Group gap={8} align="center" mb={2}>
+              <Text size="xl" fw={800} c="white">
+                {target.family_name} {target.given_name}
+              </Text>
+              <Badge
+                size="sm"
+                color="orange"
+                variant="filled"
+                rightSection={
+                  onClickGeneration ? (
+                    <IconPencil size={11} style={{ marginLeft: 2 }} />
+                  ) : undefined
+                }
+                style={
+                  onClickGeneration
+                    ? {
+                        cursor: 'pointer',
+                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                        boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.4)',
+                        userSelect: 'none',
+                      }
+                    : undefined
+                }
+                onClick={onClickGeneration}
+                title={
+                  onClickGeneration
+                    ? 'タップして期生・ステータスを変更'
+                    : undefined
+                }
+              >
+                {target.generation}期生
+              </Badge>
+              {extraBadges}
+            </Group>
+            {costumeTitle && (
+              <Text
+                size="xs"
+                c="gray.3"
+                style={
+                  onClickCostume
+                    ? {
+                        cursor: 'pointer',
+                        textDecoration: 'underline dotted',
+                      }
+                    : undefined
+                }
+                onClick={onClickCostume}
+                title={
+                  onClickCostume ? 'タップして写真・衣装を変更' : undefined
+                }
+              >
+                {costumeTitle}
+              </Text>
             )}
           </Box>
 

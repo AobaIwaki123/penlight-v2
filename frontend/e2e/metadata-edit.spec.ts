@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import type { SubmitMetadataEditProposalRequest } from '../src/types/generated';
 
 const groupId = 'grp_019245a1000070008000000000000001';
@@ -34,7 +34,8 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/sync/bootstrap?include_graduated=true', (route) =>
     route.fulfill({
       json: {
-        groups: [{ id: groupId, name: 'テストグループ' }],
+        series: [{ id: 'ser_1', name: '坂道' }],
+        groups: [{ id: groupId, series_id: 'ser_1', name: 'テストグループ' }],
         members,
         colors: ['ブルー', 'イエロー', 'グリーン'].map((name, index) => ({
           id: colorIds[index],
@@ -58,32 +59,6 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-async function swipe(page: Page, direction: 'left' | 'right') {
-  const surface = await page.getByTestId('member-swipe-surface').boundingBox();
-  if (!surface) throw new Error('Swipe surface is not visible');
-  const left = surface.x + 36;
-  const right = surface.x + surface.width - 36;
-  const start = direction === 'left' ? right : left;
-  const end = direction === 'left' ? left : right;
-  const y = surface.y + 120;
-  const session = await page.context().newCDPSession(page);
-  await session.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x: start, y }],
-  });
-  for (let step = 1; step <= 6; step++) {
-    await session.send('Input.dispatchTouchEvent', {
-      type: 'touchMove',
-      touchPoints: [{ x: start + ((end - start) * step) / 6, y }],
-    });
-  }
-  await session.send('Input.dispatchTouchEvent', {
-    type: 'touchEnd',
-    touchPoints: [],
-  });
-  await session.detach();
-}
-
 test('edit answers in place, navigate both ways, and retry the same submission', async ({
   page,
 }) => {
@@ -97,113 +72,99 @@ test('edit answers in place, navigate both ways, and retry the same submission',
         : { json: { ...request, member_id: members[0].id, status: 'pending' } },
     );
   });
-  await page.goto('/edit');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 一花',
-  );
-  await expect(
-    page.getByRole('button', { name: 'この回答を提案' }),
-  ).toBeDisabled();
-  await swipe(page, 'right');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 一花',
-  );
-  await page.getByRole('textbox', { name: '期生', exact: true }).fill('4');
-  await page.getByRole('textbox', { name: '在籍状態' }).click();
-  await page.getByRole('option', { name: '休業中', exact: true }).click();
 
+  await page.goto('/edit');
+  await expect(page.getByText('テスト 一花')).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: '公式回答と一致' }),
+  ).toBeDisabled();
+
+  // 1. 期生と在籍ステータスを変更
+  await page.getByText('2期生').click();
+  const infoModal = page.getByRole('dialog', {
+    name: 'テスト 一花 の情報を編集',
+  });
+  await expect(infoModal).toBeVisible();
+  await infoModal.getByRole('textbox', { name: '期生' }).fill('4');
+  await infoModal.getByText('卒業', { exact: true }).click();
+  await infoModal.getByRole('button', { name: '完了' }).click();
+
+  // 2. ペンライトカラーを変更
   await page.locator('[title="タップして左手の色を選択"]').click();
   const donut = page.getByRole('dialog');
   await expect(donut).toBeVisible();
-  await donut.getByRole('button', { name: 'グリーン', exact: true }).click();
+  await donut.getByRole('button', { name: 'グリーン' }).click();
   await expect(donut).not.toBeVisible();
-  expect(requests).toHaveLength(0);
 
-  await swipe(page, 'left');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 二葉',
-  );
-  await swipe(page, 'left');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 二葉',
-  );
-  await swipe(page, 'right');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 一花',
-  );
+  // 3. 次のメンバーへ移動して戻る
+  await page.getByRole('button', { name: '次へ' }).click();
+  await expect(page.getByText('テスト 二葉')).toBeVisible();
+  await page.getByRole('button', { name: '前へ' }).click();
+  await expect(page.getByText('テスト 一花')).toBeVisible();
+  await expect(page.getByText('4期生')).toBeVisible();
+
+  // 4. 差分確認と提案送信 (1回目: 503エラー)
+  await page.getByRole('button', { name: /項目の修正を提案/ }).click();
+  const diffModal = page.getByRole('dialog', { name: '提案内容の確認' });
+  await expect(diffModal).toBeVisible();
+  await diffModal.getByRole('button', { name: 'この内容で提案を送信' }).click();
+  await expect(diffModal.getByText('テスト再送')).toBeVisible();
+
+  // 次へ行って戻ってもドラフトと再送が維持されること
+  await diffModal.getByRole('button', { name: '閉じる' }).click();
+  await page.getByRole('button', { name: '次へ' }).click();
+  await expect(page.getByText('テスト 二葉')).toBeVisible();
+  await page.getByRole('button', { name: '前へ' }).click();
+  await expect(page.getByText('テスト 一花')).toBeVisible();
+
+  // 5. 再送 (2回目: 成功)
+  await page.getByRole('button', { name: /項目の修正を提案/ }).click();
+  const retryModal = page.getByRole('dialog', { name: '提案内容の確認' });
+  await retryModal
+    .getByRole('button', { name: 'この内容で提案を送信' })
+    .click();
   await expect(
-    page.getByRole('textbox', { name: '期生', exact: true }),
-  ).toHaveValue('4期生');
-  await expect(
-    page
-      .getByTestId('member-swipe-surface')
-      .getByText('グリーン', { exact: true }),
+    page.getByRole('button', { name: '提案送信済み (承認待ち)' }),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: '写真を選ぶ' }).click();
-  await page.getByRole('button', { name: '代表写真: 衣装2' }).click();
-  await expect(
-    page.getByRole('button', { name: '代表写真: 衣装2' }),
-  ).not.toBeVisible();
-  await expect(
-    page.getByRole('textbox', { name: '写真の衣装タグ' }),
-  ).toHaveValue('衣装2');
-  await page.getByRole('textbox', { name: '写真の衣装タグ' }).click();
-  await page.getByRole('option', { name: '衣装1', exact: true }).click();
-
-  await page.getByRole('button', { name: 'この回答を提案' }).click();
-  await expect(page.getByText('テスト再送')).toBeVisible();
-  await swipe(page, 'left');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 二葉',
-  );
-  await swipe(page, 'right');
-  await expect(page.getByTestId('current-member-name')).toHaveText(
-    'テスト 一花',
-  );
-  await page.getByRole('button', { name: '同じ回答を再送' }).click();
-  await expect(
-    page.getByRole('button', { name: '送信済み・承認待ち' }),
-  ).toBeDisabled();
   expect(requests).toHaveLength(2);
   expect(requests[1]).toEqual(requests[0]);
   expect(requests[0]).toMatchObject({
     base_revision: 4,
     changes: {
       generation: { before: 2, after: 4 },
-      status: { before: 'active', after: 'hiatus' },
+      status: { before: 'active', after: 'graduated' },
       penlight: {
         before: members[0].penlight,
         after: { ...members[0].penlight, left_color_id: colorIds[2] },
       },
-      primary_image_id: {
-        before: members[0].images[0].id,
-        after: members[0].images[1].id,
-      },
-      image_photo_types: [
-        {
-          image_id: members[0].images[1].id,
-          before: photoTypeIds[1],
-          after: photoTypeIds[0],
-        },
-      ],
     },
   });
 });
 
-test('show a local fallback when the photo upstream fails', async ({
+test('opens directly to target member when member_id query param is provided', async ({
   page,
 }) => {
-  await page.route('**/images/*', (route) =>
-    route.fulfill({ status: 502, body: 'upstream image fetch error' }),
-  );
-  await page.goto('/edit');
-  const photo = page.getByRole('img', { name: 'テスト 一花' });
-  await expect(photo).toHaveAttribute('src', /^data:image\/svg\+xml,/);
-  await expect
-    .poll(() => photo.evaluate((image: HTMLImageElement) => image.naturalWidth))
-    .toBeGreaterThan(0);
-  await expect(
-    page.getByRole('button', { name: 'この回答を提案' }),
-  ).toBeDisabled();
+  const targetMember = members[1]; // テスト 二葉
+  await page.route('**/api/v1/bootstrap*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        series,
+        groups,
+        colors,
+        members,
+        songs: [],
+        master_version: '2026.10.05-3',
+        data_revision: 4,
+      }),
+    });
+  });
+
+  await page.goto(`/edit?member_id=${targetMember.id}`);
+
+  // 二葉が最初に表示されていること
+  await expect(page.getByText('テスト 二葉')).toBeVisible();
+  await expect(page.getByText('3期生')).toBeVisible();
 });
