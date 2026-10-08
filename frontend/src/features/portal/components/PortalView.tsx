@@ -141,7 +141,7 @@ export function PortalView({
             <Group gap={6}>
               <ActionIcon
                 component={Link}
-                href="/edit"
+                href={`/edit?group_id=${encodeURIComponent(selectedGroupId)}`}
                 variant="light"
                 color="violet"
                 size="lg"
