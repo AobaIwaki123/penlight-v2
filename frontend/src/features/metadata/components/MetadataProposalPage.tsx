@@ -444,7 +444,13 @@ export function MetadataProposalPage() {
         onLayoutModeChange={() => {}}
         inputMode="donut"
         onInputModeChange={() => {}}
-        onGoHome={() => router.push('/')}
+        onGoHome={() => {
+          if (typeof window !== 'undefined' && window.history.length > 1) {
+            router.back();
+          } else {
+            router.push('/');
+          }
+        }}
         groupName={currentGroup?.name}
         groupThemeColor={currentGroup?.theme_color_hex}
         onOpenFilter={() => setIsFilterModalOpen(true)}
@@ -471,10 +477,8 @@ export function MetadataProposalPage() {
             }}
           >
             <SwipeableCardStack
-              hasPrev={currentIndex > 0}
               hasNext={currentIndex < filteredMembers.length - 1}
               onSwipeNext={() => handleNavigate(1)}
-              onSwipePrev={() => handleNavigate(-1)}
               disabled={
                 isDonutModalOpen ||
                 isInfoModalOpen ||
