@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/fs"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -644,9 +645,7 @@ func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 
 	// 1. Check if local asset file already exists
 	localPath := filepath.Join(s.cfg.AssetDir, key)
-	if _, err := os.Stat(localPath); err == nil {
-		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-		http.ServeFile(w, r, localPath)
+	if s.serveCachedImage(w, r, localPath) {
 		return
 	}
 
@@ -704,23 +703,49 @@ func (s *Server) handleImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 4. Serve image directly from backend with immutable cache headers
-	contentType := resp.Header.Get("Content-Type")
-	if contentType == "" {
-		if strings.HasSuffix(key, ".webp") {
-			contentType = "image/webp"
-		} else if strings.HasSuffix(key, ".jpg") || strings.HasSuffix(key, ".jpeg") {
-			contentType = "image/jpeg"
-		} else if strings.HasSuffix(key, ".png") {
-			contentType = "image/png"
-		} else {
-			contentType = "application/octet-stream"
-		}
-	}
+	contentType := imageContentType(key, imgBytes, resp.Header.Get("Content-Type"))
 
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(imgBytes)
+}
+
+// Seed assets may store JPEG bytes under immutable .webp keys. An empty name
+// makes ServeContent determine Content-Type from the bytes, not the extension.
+func (s *Server) serveCachedImage(w http.ResponseWriter, r *http.Request, localPath string) bool {
+	file, err := os.Open(localPath)
+	if err != nil {
+		return false
+	}
+	defer file.Close()
+
+	info, err := file.Stat()
+	if err != nil {
+		return false
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	http.ServeContent(w, r, "", info.ModTime(), file)
+	return true
+}
+
+func imageContentType(key string, body []byte, upstream string) string {
+	detected := http.DetectContentType(body)
+	if strings.HasPrefix(detected, "image/") {
+		return detected
+	}
+
+	if upstream != "" {
+		if mediaType, _, err := mime.ParseMediaType(upstream); err == nil && strings.HasPrefix(mediaType, "image/") {
+			return mediaType
+		}
+	}
+
+	if extensionType := mime.TypeByExtension(filepath.Ext(key)); extensionType != "" {
+		return extensionType
+	}
+	return "application/octet-stream"
 }
 
 func applyMigrations(db *sql.DB) error {

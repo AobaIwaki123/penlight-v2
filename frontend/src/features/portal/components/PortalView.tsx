@@ -146,8 +146,8 @@ export function PortalView({
                 color="violet"
                 size="lg"
                 radius="md"
-                title="データ修正を提案"
-                aria-label="データ修正を提案"
+                title="回答を編集"
+                aria-label="回答を編集"
               >
                 <IconEdit size={20} />
               </ActionIcon>

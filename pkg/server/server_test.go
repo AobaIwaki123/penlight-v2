@@ -1,7 +1,9 @@
 package server_test
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -154,6 +156,45 @@ func TestServer_ImageCacheProxyAndNoReferer(t *testing.T) {
 	}
 	if upstreamHitCount != 1 {
 		t.Fatalf("expected upstreamHitCount to remain 1 after second request (served from local cache), got %d", upstreamHitCount)
+	}
+}
+
+func TestServer_ImageContentTypeMatchesBytesOnProxyAndCache(t *testing.T) {
+	srv, _ := setupTestServer(t)
+	key := "img_455e72f40ae75d5281943b482e2d2a95.webp"
+	// This is the JPEG signature used by the seeded assets that are stored under
+	// immutable .webp keys.
+	jpegBytes := []byte{0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 'J', 'F', 'I', 'F', 0x00}
+	upstreamHits := 0
+	srv.SetHTTPClient(&http.Client{Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+		upstreamHits++
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Header:     http.Header{"Content-Type": {"image/webp"}},
+			Body:       io.NopCloser(bytes.NewReader(jpegBytes)),
+		}, nil
+	})})
+
+	for _, source := range []string{"proxy", "cache"} {
+		req := httptest.NewRequest(http.MethodGet, "/images/"+key, nil)
+		w := httptest.NewRecorder()
+		srv.Handler().ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Fatalf("%s: expected 200 OK, got %d", source, w.Code)
+		}
+		if got := w.Header().Get("Content-Type"); got != "image/jpeg" {
+			t.Fatalf("%s: expected image/jpeg for JPEG bytes, got %q", source, got)
+		}
+		if !bytes.Equal(w.Body.Bytes(), jpegBytes) {
+			t.Fatalf("%s: expected unchanged image body", source)
+		}
+		if w.Header().Get("Cache-Control") != "public, max-age=31536000, immutable" {
+			t.Fatalf("%s: expected immutable cache headers", source)
+		}
+	}
+	if upstreamHits != 1 {
+		t.Fatalf("expected one upstream hit, got %d", upstreamHits)
 	}
 }
 

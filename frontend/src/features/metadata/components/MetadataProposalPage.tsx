@@ -1,18 +1,17 @@
 'use client';
 
 import {
+  ActionIcon,
   Alert,
   Badge,
   Box,
   Button,
   Card,
   Container,
-  Divider,
   Group,
   Image,
-  Modal,
   NumberInput,
-  Paper,
+  Popover,
   Progress,
   Select,
   SimpleGrid,
@@ -23,13 +22,10 @@ import {
 import {
   IconAlertCircle,
   IconArrowLeft,
-  IconArrowRight,
   IconArrowsLeftRight,
   IconCheck,
-  IconCloudUpload,
-  IconEdit,
   IconPhoto,
-  IconRotateClockwise,
+  IconRestore,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import {
@@ -44,7 +40,8 @@ import {
   getImageUrl,
   submitMetadataEditProposal,
 } from '@/features/quiz/api/client';
-import { PenlightStick } from '@/features/quiz/components/PenlightStick';
+import { DonutRingModal } from '@/features/quiz/components/inputs/DonutRingModal';
+import { LayoutOverlay } from '@/features/quiz/components/layouts/LayoutOverlay';
 import { generateMetadataProposalID } from '@/features/quiz/utils/id';
 import type {
   BootstrapResponse,
@@ -58,7 +55,6 @@ import type {
   PenlightPair,
   PhotoType,
   PrimaryImageChange,
-  SubmitMetadataEditProposalRequest,
 } from '@/types/generated';
 
 interface DraftState {
@@ -89,43 +85,6 @@ function createDraft(member: Member): DraftState {
       (member.images || []).map((image) => [image.id, image.photo_type_id]),
     ),
   };
-}
-
-function statusLabel(status: MemberStatus): string {
-  switch (status) {
-    case 'active':
-      return '現役';
-    case 'graduated':
-      return '卒業';
-    case 'hiatus':
-      return '休業中';
-    default:
-      return status;
-  }
-}
-
-function statusColor(status: MemberStatus): string {
-  switch (status) {
-    case 'active':
-      return 'teal';
-    case 'graduated':
-      return 'gray';
-    default:
-      return 'yellow';
-  }
-}
-
-function colorLabel(color: Color | undefined): string {
-  return color ? `${color.name} (${color.hex_code})` : '未選択';
-}
-
-function formatPenlight(
-  penlight: PenlightPair,
-  colorMap: Map<string, Color>,
-): string {
-  return `${colorLabel(colorMap.get(penlight.left_color_id))} / ${colorLabel(
-    colorMap.get(penlight.right_color_id),
-  )}`;
 }
 
 function buildChanges(member: Member, draft: DraftState): MetadataEditChanges {
@@ -192,133 +151,64 @@ function changeCount(changes: MetadataEditChanges): number {
   );
 }
 
-function ProposalDiff({
-  member,
-  changes,
-  colors,
-  photoTypes,
-}: {
-  member: Member;
-  changes: MetadataEditChanges;
-  colors: Color[];
-  photoTypes: PhotoType[];
-}) {
-  const colorMap = new Map(colors.map((color) => [color.id, color]));
-  const photoTypeMap = new Map(
-    photoTypes.map((photoType) => [photoType.id, photoType]),
-  );
-  const imageMap = new Map(
-    (member.images || []).map((image) => [image.id, image]),
-  );
-  const rows: Array<{ label: string; before: string; after: string }> = [];
-
-  if (changes.penlight) {
-    rows.push({
-      label: 'ペンライト色・左右順序',
-      before: formatPenlight(changes.penlight.before, colorMap),
-      after: formatPenlight(changes.penlight.after, colorMap),
-    });
-  }
-  if (changes.generation) {
-    rows.push({
-      label: '期生',
-      before: `${changes.generation.before}期生`,
-      after: `${changes.generation.after}期生`,
-    });
-  }
-  if (changes.status) {
-    rows.push({
-      label: '状態',
-      before: statusLabel(changes.status.before),
-      after: statusLabel(changes.status.after),
-    });
-  }
-  if (changes.primary_image_id) {
-    rows.push({
-      label: '代表写真',
-      before: changes.primary_image_id.before
-        ? imageMap.get(changes.primary_image_id.before)?.image_key || '設定済み'
-        : '未設定',
-      after:
-        imageMap.get(changes.primary_image_id.after)?.image_key || '選択写真',
-    });
-  }
-  for (const change of changes.image_photo_types || []) {
-    rows.push({
-      label: `${imageMap.get(change.image_id)?.image_key || change.image_id} の衣装タグ`,
-      before: photoTypeMap.get(change.before)?.name || change.before,
-      after: photoTypeMap.get(change.after)?.name || change.after,
-    });
-  }
-
-  if (rows.length === 0) {
-    return (
-      <Text size="sm" c="dimmed">
-        変更項目を選択すると、ここに変更前後が表示されます。
-      </Text>
-    );
-  }
-
-  return (
-    <Stack gap="xs">
-      {rows.map((row) => (
-        <Paper key={row.label} withBorder p="sm" radius="sm">
-          <Text size="xs" fw={700} c="dimmed" mb={4}>
-            {row.label}
-          </Text>
-          <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="xs">
-            <Box>
-              <Text size="xs" c="dimmed">
-                変更前
-              </Text>
-              <Text size="sm">{row.before}</Text>
-            </Box>
-            <Box>
-              <Text size="xs" c="violet.7">
-                変更後
-              </Text>
-              <Text size="sm" fw={600} c="violet.8">
-                {row.after}
-              </Text>
-            </Box>
-          </SimpleGrid>
-        </Paper>
-      ))}
-    </Stack>
-  );
+interface SubmissionState {
+  id: string;
+  bodyKey: string;
+  result?: MetadataEditProposal;
+  error?: string;
 }
 
-function MetadataProposalEditorModal({
-  opened,
-  onClose,
+function MemberAnswerEditor({
   member,
   colors,
   photoTypes,
-  onSubmitted,
+  draft,
+  submission,
+  onDraftChange,
+  onSubmissionChange,
+  onNavigate,
 }: {
-  opened: boolean;
-  onClose: () => void;
   member: Member;
   colors: Color[];
   photoTypes: PhotoType[];
-  onSubmitted: (proposal: MetadataEditProposal) => void;
+  draft: DraftState;
+  submission?: SubmissionState;
+  onDraftChange: (draft: DraftState) => void;
+  onSubmissionChange: (submission: SubmissionState) => void;
+  onNavigate: (direction: -1 | 1) => void;
 }) {
-  const [draft, setDraft] = useState<DraftState>(() => createDraft(member));
-  const [proposal, setProposal] = useState<MetadataEditProposal | null>(null);
-  const [proposalId, setProposalId] = useState<string | null>(null);
+  const [activeHand, setActiveHand] = useState<'left' | 'right'>('left');
+  const [donutOpened, setDonutOpened] = useState(false);
+  const [photosOpened, setPhotosOpened] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const proposalBodyKey = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!opened) return;
-    setDraft(createDraft(member));
-    setProposal(null);
-    setProposalId(null);
-    setSubmitError(null);
-    proposalBodyKey.current = null;
-  }, [opened, member]);
+  const gesture = useRef<{ x: number; y: number; pointerId: number } | null>(
+    null,
+  );
+  const swiped = useRef(false);
+  const colorMap = new Map(colors.map((color) => [color.id, color]));
+  const availableColors = colors
+    .filter((color) => !color.group_id || color.group_id === member.group_id)
+    .sort((a, b) => a.display_order - b.display_order);
+  const availablePhotoTypes = photoTypes.filter(
+    (type) => type.group_id === member.group_id,
+  );
+  const primaryImage =
+    member.images?.find((image) => image.id === draft.primaryImageId) ||
+    getPrimaryImage(member) ||
+    member.images?.[0];
+  const changes = buildChanges(member, draft);
+  const changedItems = changeCount(changes);
+  const bodyKey = JSON.stringify({
+    base_revision: member.metadata_revision,
+    changes,
+  });
+  const currentSubmission =
+    submission?.bodyKey === bodyKey ? submission : undefined;
+  const submitted = Boolean(currentSubmission?.result);
+  const selectedPhotoType = primaryImage
+    ? draft.photoTypeIDs[primaryImage.id] || primaryImage.photo_type_id
+    : null;
 
   useEffect(() => {
     const updateOnline = () => setIsOnline(navigator.onLine);
@@ -331,512 +221,350 @@ function MetadataProposalEditorModal({
     };
   }, []);
 
-  const availableColors = useMemo(
-    () =>
-      colors.filter(
-        (color) => !color.group_id || color.group_id === member.group_id,
-      ),
-    [colors, member.group_id],
-  );
-  const availablePhotoTypes = useMemo(
-    () =>
-      photoTypes.filter((photoType) => photoType.group_id === member.group_id),
-    [member.group_id, photoTypes],
-  );
-  const colorMap = useMemo(
-    () => new Map(colors.map((color) => [color.id, color])),
-    [colors],
-  );
-  const changes = useMemo(() => buildChanges(member, draft), [draft, member]);
-  const changedItems = changeCount(changes);
-  const bodyKey = JSON.stringify({
-    member_id: member.id,
-    base_revision: member.metadata_revision,
-    changes,
-  });
-  const proposalIsCurrent =
-    proposal !== null && proposalBodyKey.current === bodyKey;
-  const reusableProposalID =
-    proposalId !== null && proposalBodyKey.current === bodyKey;
-
   const updateDraft = (update: Partial<DraftState>) => {
-    setDraft((current) => ({ ...current, ...update }));
-  };
-
-  const updatePhotoType = (imageId: string, photoTypeId: string | null) => {
-    if (!photoTypeId) return;
-    setDraft((current) => ({
-      ...current,
-      photoTypeIDs: {
-        ...current.photoTypeIDs,
-        [imageId]: photoTypeId,
-      },
-    }));
+    onDraftChange({ ...draft, ...update });
   };
 
   const handleSubmit = async () => {
-    if (changedItems === 0 || !isOnline) return;
-
-    let currentProposalId = proposalId;
-    if (!currentProposalId || proposalBodyKey.current !== bodyKey) {
-      currentProposalId = generateMetadataProposalID();
-      setProposalId(currentProposalId);
-      proposalBodyKey.current = bodyKey;
-      setProposal(null);
-    }
-
-    const request: SubmitMetadataEditProposalRequest = {
-      id: currentProposalId,
-      base_revision: member.metadata_revision,
-      changes,
+    if (changedItems === 0 || !isOnline || isSubmitting || submitted) return;
+    const attempt: SubmissionState = {
+      id: currentSubmission?.id || generateMetadataProposalID(),
+      bodyKey,
     };
-
+    onSubmissionChange(attempt);
     setIsSubmitting(true);
-    setSubmitError(null);
     try {
-      const result = await submitMetadataEditProposal(member.id, request);
-      setProposal(result);
-      onSubmitted(result);
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : String(err));
+      const result = await submitMetadataEditProposal(member.id, {
+        id: attempt.id,
+        base_revision: member.metadata_revision,
+        changes,
+      });
+      onSubmissionChange({ ...attempt, result });
+    } catch (error) {
+      onSubmissionChange({
+        ...attempt,
+        error: error instanceof Error ? error.message : String(error),
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const primaryImage = getPrimaryImage(member);
-  const colorOptions = availableColors.map((color) => ({
-    value: color.id,
-    label: colorLabel(color),
-  }));
-  const photoTypeOptions = availablePhotoTypes.map((photoType) => ({
-    value: photoType.id,
-    label: photoType.name,
-  }));
-
-  return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title={
-        <Group gap="xs">
-          <IconEdit size={20} />
-          <Text fw={700}>このメンバーの修正提案</Text>
-        </Group>
-      }
-      centered
-      radius="md"
-      size="lg"
-    >
-      <Stack gap="md">
-        <Paper
-          radius="md"
-          p="sm"
-          withBorder
-          style={{
-            background:
-              'linear-gradient(135deg, var(--mantine-color-violet-0), transparent)',
-          }}
-        >
-          <Group justify="space-between" align="center" wrap="nowrap">
-            <Group gap="sm" wrap="nowrap">
-              <Image
-                src={getImageUrl(primaryImage?.image_key)}
-                alt={`${member.family_name} ${member.given_name}`}
-                w={64}
-                h={64}
-                radius="sm"
-                fit="cover"
-                fallbackSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='100%25' height='100%25' fill='%23f1f3f5'/%3E%3C/svg%3E"
-              />
-              <Box>
-                <Text fw={800}>
-                  {member.family_name} {member.given_name}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {member.generation}期生 / revision {member.metadata_revision}
-                </Text>
-              </Box>
-            </Group>
-            <Group gap="xs" wrap="nowrap">
-              <PenlightStick
-                color={colorMap.get(member.penlight.left_color_id)}
-                label="公式 左"
-                height={42}
-                width={18}
-              />
-              <PenlightStick
-                color={colorMap.get(member.penlight.right_color_id)}
-                label="公式 右"
-                height={42}
-                width={18}
-              />
-            </Group>
-          </Group>
-        </Paper>
-
-        <Alert color="violet" icon={<IconCloudUpload size={18} />}>
-          公開データは直接変更されません。変更前後を含む提案として保存され、承認後に反映されます。
-        </Alert>
-
-        {!isOnline && (
-          <Alert color="yellow" icon={<IconAlertCircle size={18} />}>
-            オフライン中は提案を送信できません。オンライン復帰後に再送してください。
-          </Alert>
-        )}
-
-        <Divider label="変更内容" labelPosition="left" />
-        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-          <Select
-            label="左手の公式色"
-            data={colorOptions}
-            value={draft.penlight.left_color_id}
-            onChange={(value) =>
-              value &&
-              updateDraft({
-                penlight: { ...draft.penlight, left_color_id: value },
-              })
-            }
-            searchable
-          />
-          <Select
-            label="右手の公式色"
-            data={colorOptions}
-            value={draft.penlight.right_color_id}
-            onChange={(value) =>
-              value &&
-              updateDraft({
-                penlight: { ...draft.penlight, right_color_id: value },
-              })
-            }
-            searchable
-          />
-        </SimpleGrid>
-        <Button
-          variant="light"
-          color="violet"
-          leftSection={<IconArrowsLeftRight size={16} />}
-          onClick={() =>
-            updateDraft({
-              penlight: {
-                ...draft.penlight,
-                left_color_id: draft.penlight.right_color_id,
-                right_color_id: draft.penlight.left_color_id,
-              },
-            })
-          }
-        >
-          左右を入れ替える
-        </Button>
-
-        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-          <NumberInput
-            label="期生"
-            min={1}
-            value={draft.generation}
-            onChange={(value) =>
-              updateDraft({
-                generation:
-                  typeof value === 'number' && Number.isFinite(value)
-                    ? value
-                    : draft.generation,
-              })
-            }
-          />
-          <Select
-            label="状態"
-            data={statusOptions}
-            value={draft.status}
-            onChange={(value) =>
-              value && updateDraft({ status: value as MemberStatus })
-            }
-          />
-        </SimpleGrid>
-
-        <Divider label="代表写真" labelPosition="left" />
-        {(member.images || []).length === 0 ? (
-          <Text size="sm" c="dimmed">
-            登録写真がありません。
-          </Text>
-        ) : (
-          <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="sm">
-            {(member.images || []).map((image) => {
-              const isSelected = draft.primaryImageId === image.id;
-              return (
-                <Card
-                  key={image.id}
-                  withBorder
-                  p="xs"
-                  radius="sm"
-                  role="button"
-                  tabIndex={0}
-                  style={{
-                    cursor: 'pointer',
-                    borderColor: isSelected
-                      ? 'var(--mantine-color-violet-6)'
-                      : undefined,
-                  }}
-                  onClick={() => updateDraft({ primaryImageId: image.id })}
-                >
-                  <Image
-                    src={getImageUrl(image.image_key)}
-                    alt={image.image_key}
-                    h={110}
-                    fit="cover"
-                    fallbackSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='160'%3E%3Crect width='100%25' height='100%25' fill='%23f1f3f5'/%3E%3C/svg%3E"
-                  />
-                  <Group justify="space-between" gap={4} mt="xs">
-                    <Text size="xs" truncate>
-                      {image.photo_type?.name || image.image_key}
-                    </Text>
-                    {isSelected && (
-                      <IconCheck
-                        size={16}
-                        color="var(--mantine-color-violet-6)"
-                      />
-                    )}
-                  </Group>
-                </Card>
-              );
-            })}
-          </SimpleGrid>
-        )}
-
-        <Divider label="衣装タグ" labelPosition="left" />
-        {(member.images || []).length === 0 ? (
-          <Text size="sm" c="dimmed">
-            登録写真がありません。
-          </Text>
-        ) : availablePhotoTypes.length === 0 ? (
-          <Text size="sm" c="dimmed">
-            このグループに利用可能な衣装種別がありません。
-          </Text>
-        ) : (
-          <Stack gap="sm">
-            {(member.images || []).map((image) => (
-              <Group key={image.id} align="end" wrap="nowrap">
-                <IconPhoto size={18} color="gray" />
-                <Select
-                  style={{ flex: 1 }}
-                  label={image.image_key}
-                  data={photoTypeOptions}
-                  value={draft.photoTypeIDs[image.id] || image.photo_type_id}
-                  onChange={(value) => updatePhotoType(image.id, value)}
-                  searchable
-                />
-              </Group>
-            ))}
-          </Stack>
-        )}
-
-        <Card withBorder radius="md" p="sm">
-          <Stack gap="sm">
-            <Group justify="space-between">
-              <Text fw={700}>変更前後を確認</Text>
-              <Badge
-                color={changedItems > 0 ? 'violet' : 'gray'}
-                variant="light"
-              >
-                {changedItems > 0 ? `${changedItems}件の変更` : '変更なし'}
-              </Badge>
-            </Group>
-            <ProposalDiff
-              member={member}
-              changes={changes}
-              colors={colors}
-              photoTypes={photoTypes}
-            />
-            {proposalIsCurrent && proposal && (
-              <Alert
-                color="teal"
-                icon={<IconCheck size={18} />}
-                title="承認待ちとして保存しました"
-              >
-                提案 ID: {proposal.id}
-              </Alert>
-            )}
-            {submitError && (
-              <Alert
-                color="red"
-                icon={<IconAlertCircle size={18} />}
-                title="送信できませんでした"
-              >
-                {submitError}
-                {proposalId && (
-                  <Text size="xs" mt={4}>
-                    同じ内容の再送では {proposalId} を再利用します。
-                  </Text>
-                )}
-              </Alert>
-            )}
-            <Group grow>
-              <Button variant="default" onClick={onClose}>
-                閉じる
-              </Button>
-              <Button
-                color="violet"
-                leftSection={
-                  reusableProposalID ? (
-                    <IconRotateClockwise size={18} />
-                  ) : (
-                    <IconCheck size={18} />
-                  )
-                }
-                loading={isSubmitting}
-                disabled={changedItems === 0 || !isOnline}
-                onClick={handleSubmit}
-              >
-                {reusableProposalID ? '同じ提案を再送信' : '提案を送信'}
-              </Button>
-            </Group>
-          </Stack>
-        </Card>
-      </Stack>
-    </Modal>
-  );
-}
-
-function MemberTriageCard({
-  member,
-  colors,
-  pending,
-  onSwipe,
-}: {
-  member: Member;
-  colors: Color[];
-  pending?: MetadataEditProposal;
-  onSwipe: () => void;
-}) {
-  const gestureStart = useRef<{ x: number; y: number } | null>(null);
-  const colorMap = new Map(colors.map((color) => [color.id, color]));
-  const primaryImage = getPrimaryImage(member) || member.images?.[0];
-  const imageSrc =
-    getImageUrl(primaryImage?.image_key) ||
-    'https://placehold.co/400x560/7cc7e8/ffffff?text=Penlight+Quiz';
-
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-    gestureStart.current = { x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    swiped.current = false;
+    gesture.current = null;
+    if (isSubmitting || (event.pointerType === 'mouse' && event.button !== 0))
+      return;
+    // Input gestures belong to the input. Only the photo surface starts a swipe.
+    if (
+      !event.currentTarget.contains(event.target as Node) ||
+      (event.target as HTMLElement).closest(
+        'button, input, select, [role="button"], [role="combobox"]',
+      )
+    )
+      return;
+    gesture.current = {
+      x: event.clientX,
+      y: event.clientY,
+      pointerId: event.pointerId,
+    };
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = gesture.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+      swiped.current = true;
+      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }
+    }
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const start = gestureStart.current;
-    gestureStart.current = null;
-    if (!start) return;
-    const deltaX = event.clientX - start.x;
-    const deltaY = event.clientY - start.y;
-    if (Math.abs(deltaX) >= 56 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      onSwipe();
+    const start = gesture.current;
+    gesture.current = null;
+    if (!start || start.pointerId !== event.pointerId) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) >= 56 && Math.abs(dx) > Math.abs(dy)) {
+      swiped.current = true;
+      onNavigate(dx < 0 ? 1 : -1);
     }
   };
 
   return (
-    <Paper
-      radius="lg"
-      shadow="md"
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={() => {
-        gestureStart.current = null;
-      }}
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: 'min(62dvh, 520px)',
-        minHeight: 360,
-        overflow: 'hidden',
-        backgroundColor: '#000',
-        cursor: 'grab',
-        touchAction: 'pan-y',
-        userSelect: 'none',
-      }}
-    >
-      <Image
-        src={imageSrc}
-        alt={`${member.family_name} ${member.given_name}`}
-        fit="cover"
+    <>
+      <Box
+        data-testid="member-swipe-surface"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={() => {
+          gesture.current = null;
+        }}
+        onClickCapture={(event) => {
+          if (swiped.current) {
+            event.preventDefault();
+            event.stopPropagation();
+            swiped.current = false;
+          }
+        }}
+        onDragStart={(event) => event.preventDefault()}
         style={{
-          position: 'absolute',
-          inset: 0,
           width: '100%',
-          height: '100%',
-        }}
-      />
-      <Box
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background:
-            'linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.48) 56%, transparent 100%)',
-          pointerEvents: 'none',
-        }}
-      />
-      <Group
-        justify="space-between"
-        align="flex-start"
-        style={{ position: 'absolute', top: 14, left: 14, right: 14 }}
-      >
-        <Badge color="violet" variant="filled">
-          公式データを表示中
-        </Badge>
-        {pending && (
-          <Badge
-            color="teal"
-            variant="filled"
-            leftSection={<IconCheck size={12} />}
-          >
-            提案済み・承認待ち
-          </Badge>
-        )}
-      </Group>
-      <Box
-        style={{
-          position: 'absolute',
-          bottom: 16,
-          left: 16,
-          right: 16,
+          display: 'flex',
+          flex: 1,
+          minHeight: 0,
+          touchAction: 'pan-y',
         }}
       >
-        <Group justify="space-between" align="flex-end" wrap="nowrap">
-          <Box
-            style={{ color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.6)' }}
-          >
-            <Group gap="xs" align="center" mb={4} wrap="nowrap">
-              <Text size="xl" fw={800} c="white">
+        <LayoutOverlay
+          target={{ ...member, images: primaryImage ? [primaryImage] : [] }}
+          costumeTitle={primaryImage?.photo_type?.name || ''}
+          selectedLeftColor={colorMap.get(draft.penlight.left_color_id)}
+          selectedRightColor={colorMap.get(draft.penlight.right_color_id)}
+          onOpenInput={(hand) => {
+            setActiveHand(hand);
+            setDonutOpened(true);
+          }}
+          isFullscreen
+          photoControl={
+            <Popover
+              opened={photosOpened}
+              onChange={setPhotosOpened}
+              width={300}
+              position="bottom-end"
+              withinPortal
+            >
+              <Popover.Target>
+                <Button
+                  size="xs"
+                  color="dark"
+                  leftSection={<IconPhoto size={16} />}
+                  onClick={() => setPhotosOpened(!photosOpened)}
+                  disabled={isSubmitting}
+                >
+                  写真を選ぶ
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size="sm" fw={700} mb="xs">
+                  代表写真
+                </Text>
+                {(member.images || []).length === 0 ? (
+                  <Text size="sm" c="dimmed">
+                    登録写真がありません
+                  </Text>
+                ) : (
+                  <SimpleGrid cols={2} spacing="xs">
+                    {(member.images || []).map((image) => (
+                      <Card
+                        key={image.id}
+                        component="button"
+                        type="button"
+                        aria-label={`代表写真: ${image.photo_type?.name || '登録写真'}`}
+                        aria-pressed={draft.primaryImageId === image.id}
+                        withBorder
+                        p={4}
+                        onClick={() => {
+                          updateDraft({ primaryImageId: image.id });
+                          setPhotosOpened(false);
+                        }}
+                        style={{
+                          cursor: 'pointer',
+                          borderColor:
+                            draft.primaryImageId === image.id
+                              ? 'var(--mantine-color-violet-6)'
+                              : undefined,
+                        }}
+                      >
+                        <Image
+                          src={getImageUrl(image.image_key)}
+                          alt={image.photo_type?.name || '登録写真'}
+                          h={96}
+                          fit="cover"
+                        />
+                        <Text size="xs" mt={4}>
+                          {image.photo_type?.name || '登録写真'}
+                        </Text>
+                      </Card>
+                    ))}
+                  </SimpleGrid>
+                )}
+              </Popover.Dropdown>
+            </Popover>
+          }
+          memberDetails={
+            <Stack gap={6} w="100%" style={{ maxWidth: 210 }}>
+              <Text
+                size="xl"
+                fw={800}
+                c="white"
+                data-testid="current-member-name"
+              >
                 {member.family_name} {member.given_name}
               </Text>
-              <Badge
-                size="sm"
-                color={statusColor(member.status)}
+              <Group gap={6} wrap="nowrap">
+                <NumberInput
+                  aria-label="期生"
+                  value={draft.generation}
+                  min={1}
+                  allowDecimal={false}
+                  allowNegative={false}
+                  suffix="期生"
+                  size="xs"
+                  style={{ flex: 1, minWidth: 0 }}
+                  disabled={isSubmitting}
+                  onChange={(value) => {
+                    if (
+                      typeof value === 'number' &&
+                      Number.isInteger(value) &&
+                      value >= 1
+                    ) {
+                      updateDraft({ generation: value });
+                    }
+                  }}
+                />
+                <Select
+                  aria-label="在籍状態"
+                  value={draft.status}
+                  data={statusOptions}
+                  size="xs"
+                  style={{ flex: 1, minWidth: 0 }}
+                  allowDeselect={false}
+                  disabled={isSubmitting}
+                  onChange={(value) =>
+                    value && updateDraft({ status: value as MemberStatus })
+                  }
+                />
+              </Group>
+              {primaryImage && (
+                <Select
+                  aria-label="写真の衣装タグ"
+                  size="xs"
+                  data={availablePhotoTypes.map((type) => ({
+                    value: type.id,
+                    label: type.name,
+                  }))}
+                  value={selectedPhotoType}
+                  allowDeselect={false}
+                  disabled={isSubmitting}
+                  onChange={(value) =>
+                    value &&
+                    updateDraft({
+                      photoTypeIDs: {
+                        ...draft.photoTypeIDs,
+                        [primaryImage.id]: value,
+                      },
+                    })
+                  }
+                />
+              )}
+            </Stack>
+          }
+          footer={
+            <Group gap="xs" wrap="nowrap" w="100%">
+              <ActionIcon
+                aria-label="左右の色を入れ替える"
                 variant="filled"
+                color="dark"
+                size="lg"
+                disabled={isSubmitting}
+                onClick={() =>
+                  updateDraft({
+                    penlight: {
+                      ...draft.penlight,
+                      left_color_id: draft.penlight.right_color_id,
+                      right_color_id: draft.penlight.left_color_id,
+                    },
+                  })
+                }
               >
-                {member.generation}期生 / {statusLabel(member.status)}
-              </Badge>
+                <IconArrowsLeftRight size={18} />
+              </ActionIcon>
+              <Button
+                style={{ flex: 1 }}
+                color={submitted ? 'teal' : 'violet'}
+                leftSection={<IconCheck size={18} />}
+                loading={isSubmitting}
+                disabled={changedItems === 0 || !isOnline || submitted}
+                onClick={handleSubmit}
+              >
+                {submitted
+                  ? '送信済み・承認待ち'
+                  : currentSubmission?.error
+                    ? '同じ回答を再送'
+                    : 'この回答を提案'}
+              </Button>
+              <ActionIcon
+                aria-label="公式の回答に戻す"
+                variant="filled"
+                color="dark"
+                size="lg"
+                disabled={changedItems === 0 || isSubmitting}
+                onClick={() => onDraftChange(createDraft(member))}
+              >
+                <IconRestore size={18} />
+              </ActionIcon>
             </Group>
-            <Text size="xs" c="gray.3">
-              ペンライト正解: 左右の色を表示しています
-            </Text>
-          </Box>
-          <Group gap={12} align="flex-end" wrap="nowrap">
-            <PenlightStick
-              color={colorMap.get(member.penlight.left_color_id)}
-              label="公式 左"
-              height={74}
-              width={28}
-              textColor="#fff"
-            />
-            <PenlightStick
-              color={colorMap.get(member.penlight.right_color_id)}
-              label="公式 右"
-              height={74}
-              width={28}
-              textColor="#fff"
-            />
-          </Group>
-        </Group>
+          }
+        />
       </Box>
-    </Paper>
+      <Group justify="space-between" w="100%">
+        <Text size="xs" c="dimmed">
+          ← 次のメンバー / 前のメンバー →
+        </Text>
+        <Badge
+          color={submitted ? 'teal' : changedItems > 0 ? 'violet' : 'gray'}
+          variant="light"
+        >
+          {submitted
+            ? '承認待ち'
+            : changedItems > 0
+              ? `${changedItems}項目を編集`
+              : '公式の回答'}
+        </Badge>
+      </Group>
+      {currentSubmission?.error && (
+        <Alert color="red" icon={<IconAlertCircle size={16} />}>
+          {currentSubmission.error}
+        </Alert>
+      )}
+      {!isOnline && (
+        <Alert color="yellow" icon={<IconAlertCircle size={16} />}>
+          送信にはインターネット接続が必要です。
+        </Alert>
+      )}
+      <DonutRingModal
+        opened={donutOpened}
+        onClose={() => setDonutOpened(false)}
+        colors={availableColors}
+        selectedLeftColor={colorMap.get(draft.penlight.left_color_id)}
+        selectedRightColor={colorMap.get(draft.penlight.right_color_id)}
+        initialHand={activeHand}
+        disabled={isSubmitting}
+        onColorSelect={(hand, color) =>
+          updateDraft({
+            penlight: {
+              ...draft.penlight,
+              [hand === 'left' ? 'left_color_id' : 'right_color_id']: color.id,
+            },
+          })
+        }
+        onAnswer={({ leftColorId, rightColorId }) =>
+          updateDraft({
+            penlight: {
+              ...draft.penlight,
+              left_color_id: leftColorId,
+              right_color_id: rightColorId,
+            },
+          })
+        }
+      />
+    </>
   );
 }
 
@@ -844,13 +572,10 @@ export function MetadataProposalPage() {
   const [bootstrap, setBootstrap] = useState<BootstrapResponse | null>(null);
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [history, setHistory] = useState<number[]>([]);
-  const [isComplete, setIsComplete] = useState(false);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [pendingProposals, setPendingProposals] = useState<
-    Record<string, MetadataEditProposal>
+  const [drafts, setDrafts] = useState<Record<string, DraftState>>({});
+  const [submissions, setSubmissions] = useState<
+    Record<string, SubmissionState>
   >({});
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -858,116 +583,66 @@ export function MetadataProposalPage() {
     fetchBootstrapData({ includeGraduated: true })
       .then((data) => {
         if (!mounted) return;
-        const requestedGroup =
-          typeof window !== 'undefined'
-            ? new URLSearchParams(window.location.search).get('group_id') || ''
-            : '';
-        const groupID = data.groups.some((group) => group.id === requestedGroup)
-          ? requestedGroup
-          : data.groups[0]?.id || '';
+        const requestedGroup = new URLSearchParams(window.location.search).get(
+          'group_id',
+        );
+        setSelectedGroupId(
+          data.groups.find((group) => group.id === requestedGroup)?.id ||
+            data.groups[0]?.id ||
+            '',
+        );
         setBootstrap(data);
-        setSelectedGroupId(groupID);
-        setIsLoading(false);
       })
-      .catch((err) => {
-        if (!mounted) return;
-        setError(err instanceof Error ? err.message : String(err));
-        setIsLoading(false);
+      .catch((error) => {
+        if (mounted)
+          setError(error instanceof Error ? error.message : String(error));
       });
-
     return () => {
       mounted = false;
     };
   }, []);
 
-  const groups = bootstrap?.groups || [];
-  const members = bootstrap?.members || [];
-  const colors = bootstrap?.colors || [];
-  const photoTypes = bootstrap?.photo_types || [];
   const groupMembers = useMemo(
-    () => members.filter((member) => member.group_id === selectedGroupId),
-    [members, selectedGroupId],
+    () =>
+      (bootstrap?.members || [])
+        .filter((member) => member.group_id === selectedGroupId)
+        .sort(
+          (a, b) =>
+            Number(a.status === 'graduated') - Number(b.status === 'graduated'),
+        ),
+    [bootstrap, selectedGroupId],
   );
   const currentMember = groupMembers[currentIndex];
-  const currentPending = currentMember
-    ? pendingProposals[currentMember.id]
-    : undefined;
-
-  const advanceMember = () => {
-    if (!currentMember) return;
-    setHistory((current) => [...current, currentIndex]);
-    if (currentIndex + 1 >= groupMembers.length) {
-      setIsComplete(true);
-      return;
-    }
-    setCurrentIndex((current) => current + 1);
-  };
-
-  const undoMember = () => {
-    const previous = history[history.length - 1];
-    if (previous === undefined) return;
-    setHistory((current) => current.slice(0, -1));
-    setCurrentIndex(previous);
-    setIsComplete(false);
-  };
-
-  const restartMembers = () => {
-    setCurrentIndex(0);
-    setHistory([]);
-    setIsComplete(false);
-  };
-
-  const handleGroupChange = (groupID: string | null) => {
-    if (!groupID) return;
-    setSelectedGroupId(groupID);
-    restartMembers();
-  };
-
-  if (isLoading) {
-    return (
-      <Container size="xs" py="xl">
-        <Stack align="center" gap="sm">
-          <Text size="sm" c="dimmed">
-            修正提案モードを読み込んでいます...
-          </Text>
-        </Stack>
-      </Container>
-    );
-  }
 
   if (error) {
     return (
       <Container size="xs" py="xl">
-        <Alert
-          color="red"
-          title="読み込みに失敗しました"
-          icon={<IconAlertCircle />}
-        >
+        <Alert color="red" title="読み込みに失敗しました">
           {error}
         </Alert>
-        <Button
-          component={Link}
-          href="/"
-          mt="md"
-          leftSection={<IconArrowLeft size={16} />}
-        >
-          クイズへ戻る
-        </Button>
       </Container>
     );
   }
-
-  const selectedGroup = groups.find((group) => group.id === selectedGroupId);
-  const groupOptions = groups.map((group) => ({
-    value: group.id,
-    label: group.name,
-  }));
+  if (!bootstrap) {
+    return (
+      <Container size="xs" py="xl">
+        <Text size="sm" c="dimmed">
+          回答を読み込んでいます…
+        </Text>
+      </Container>
+    );
+  }
 
   return (
     <Container
       size="xs"
       p={0}
-      style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}
+      style={{
+        height: '100dvh',
+        minHeight: 640,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
       <Box
         px="md"
@@ -976,145 +651,93 @@ export function MetadataProposalPage() {
           borderBottom: '1px solid var(--mantine-color-default-border)',
         }}
       >
-        <Group justify="space-between" align="center" mb="xs">
-          <Group gap="xs">
-            <Button
-              component={Link}
-              href="/"
-              variant="subtle"
-              color="gray"
-              px="xs"
-              leftSection={<IconArrowLeft size={18} />}
-            >
-              戻る
-            </Button>
-            <Title order={2} size="h3">
-              修正提案
-            </Title>
-          </Group>
-          <IconEdit size={22} color="var(--mantine-color-violet-6)" />
+        <Group justify="space-between" mb="xs">
+          <Button
+            component={Link}
+            href="/"
+            variant="subtle"
+            color="gray"
+            px="xs"
+            leftSection={<IconArrowLeft size={18} />}
+          >
+            戻る
+          </Button>
+          <Title order={2} size="h3">
+            正しい回答を提案
+          </Title>
         </Group>
         <Select
           aria-label="対象グループ"
-          data={groupOptions}
+          data={bootstrap.groups.map((group) => ({
+            value: group.id,
+            label: group.name,
+          }))}
           value={selectedGroupId}
-          onChange={handleGroupChange}
+          onChange={(value) => {
+            if (!value) return;
+            setSelectedGroupId(value);
+            setCurrentIndex(0);
+          }}
           size="xs"
           allowDeselect={false}
         />
       </Box>
-
-      <Stack gap="sm" px="md" pt="sm" pb="md" style={{ flexGrow: 1 }}>
-        <Group justify="space-between" align="center">
-          <Box>
-            <Text size="xs" fw={700} c="dimmed">
-              {selectedGroup?.name || 'メンバー'} の公式データ確認
-            </Text>
-            <Text size="xs" c="dimmed">
-              左右にスワイプしてメンバーを切り替えます
-            </Text>
-          </Box>
-          <Badge color="blue" variant="light">
-            {groupMembers.length > 0 && !isComplete
-              ? `${currentIndex + 1} / ${groupMembers.length}`
-              : `${groupMembers.length}人`}
-          </Badge>
+      <Box px="md" pt="xs">
+        <Group justify="space-between" mb={4}>
+          <Text size="xs" c="dimmed">
+            表示されている回答をタップして編集
+          </Text>
+          <Text size="xs" fw={700}>
+            {groupMembers.length ? currentIndex + 1 : 0} / {groupMembers.length}
+          </Text>
         </Group>
-
         <Progress
           value={
-            groupMembers.length > 0 && !isComplete
+            groupMembers.length
               ? ((currentIndex + 1) / groupMembers.length) * 100
-              : isComplete
-                ? 100
-                : 0
+              : 0
           }
           size="xs"
           radius="xl"
-          color="violet"
         />
-
-        {groupMembers.length === 0 ? (
-          <Alert color="gray" icon={<IconAlertCircle size={18} />}>
-            このグループには表示できるメンバーがいません。
-          </Alert>
-        ) : isComplete ? (
-          <Paper withBorder radius="lg" p="xl" style={{ textAlign: 'center' }}>
-            <Stack align="center" gap="sm">
-              <IconCheck size={44} color="var(--mantine-color-teal-6)" />
-              <Text fw={800}>このグループを確認しました</Text>
-              <Text size="sm" c="dimmed">
-                提案済みの内容は承認待ちとして保存されています。
-              </Text>
-              <Button
-                variant="light"
-                color="violet"
-                leftSection={<IconRotateClockwise size={16} />}
-                onClick={restartMembers}
-              >
-                先頭からもう一度見る
-              </Button>
-            </Stack>
-          </Paper>
-        ) : currentMember ? (
-          <>
-            <MemberTriageCard
-              member={currentMember}
-              colors={colors}
-              pending={currentPending}
-              onSwipe={advanceMember}
-            />
-            <Text size="xs" c="dimmed" ta="center">
-              正解（公式ペンライト色）は表示済みです。必要なメンバーだけ修正を提案できます。
-            </Text>
-            <Button
-              fullWidth
-              size="md"
-              color="violet"
-              variant="light"
-              leftSection={<IconEdit size={18} />}
-              onClick={() => setIsEditorOpen(true)}
-            >
-              {currentPending
-                ? '提案内容を確認・再送'
-                : 'このメンバーの修正を提案'}
-            </Button>
-            <Group grow>
-              <Button
-                variant="subtle"
-                color="gray"
-                disabled={history.length === 0}
-                onClick={undoMember}
-              >
-                ひとつ戻る
-              </Button>
-              <Button
-                variant="light"
-                rightSection={<IconArrowRight size={16} />}
-                onClick={advanceMember}
-              >
-                次のメンバー
-              </Button>
-            </Group>
-          </>
-        ) : null}
+      </Box>
+      <Stack gap="xs" px="md" pt="sm" pb="sm" style={{ flex: 1, minHeight: 0 }}>
+        {currentMember ? (
+          <MemberAnswerEditor
+            key={currentMember.id}
+            member={currentMember}
+            colors={bootstrap.colors}
+            photoTypes={bootstrap.photo_types || []}
+            draft={drafts[currentMember.id] || createDraft(currentMember)}
+            submission={submissions[currentMember.id]}
+            onDraftChange={(draft) =>
+              setDrafts((current) => ({
+                ...current,
+                [currentMember.id]: draft,
+              }))
+            }
+            onSubmissionChange={(submission) =>
+              setSubmissions((current) => ({
+                ...current,
+                [currentMember.id]: submission,
+              }))
+            }
+            onNavigate={(direction) =>
+              setCurrentIndex((index) =>
+                Math.max(
+                  0,
+                  Math.min(groupMembers.length - 1, index + direction),
+                ),
+              )
+            }
+          />
+        ) : (
+          <Text c="dimmed">このグループには登録メンバーがいません。</Text>
+        )}
+        <Text size="10px" c="dimmed" ta="center">
+          送信した回答は承認後に公開データへ反映されます。
+        </Text>
       </Stack>
-
-      {currentMember && (
-        <MetadataProposalEditorModal
-          opened={isEditorOpen}
-          onClose={() => setIsEditorOpen(false)}
-          member={currentMember}
-          colors={colors}
-          photoTypes={photoTypes}
-          onSubmitted={(proposal) =>
-            setPendingProposals((current) => ({
-              ...current,
-              [currentMember.id]: proposal,
-            }))
-          }
-        />
-      )}
     </Container>
   );
 }
